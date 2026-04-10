@@ -2,234 +2,2170 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My</title>
-
-    <link rel="stylesheet" href="style.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For My Fat Cat 🐱🍰</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        .cool {
-            width: 960px;
-            margin: 0 auto;
+        @import url('https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;600&family=Caveat:wght@700&display=swap');
+        :root {
+            --bg-gradient: radial-gradient(circle, #fff5f8 0%, #fbc2eb 100%);
+            --card-bg: rgba(255,255,255,0.75);
+            --text-main: #d81b60; --text-sub: #880e4f;
+            --accent: #ff4081; --border-color: #ffffff;
+            --max-width: 700px;
         }
-        .car{
-            width: 100px;
-            height: 100px;
-            background-color: violet;
-            margin: 10px;
+        body.night-mode {
+            --bg-gradient: radial-gradient(circle, #2c3e50 0%, #000000 100%);
+            --card-bg: rgba(30,30,50,0.85);
+            --text-main: #f48fb1; --text-sub: #ce93d8;
+            --accent: #ba68c8; --border-color: #4a4a6a;
         }
+        * { margin:0; padding:0; box-sizing:border-box; transition:background 0.4s,color 0.4s; user-select:none; -webkit-tap-highlight-color:transparent; }
+        body { min-height:100vh; display:flex; justify-content:center; align-items:center; background:var(--bg-gradient); font-family:'Anuphan',sans-serif; overflow-x:hidden; padding:60px 0; cursor:crosshair; position:relative; }
+        #heart-container,#click-container { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1; }
+        .container { width:100%; display:flex; flex-direction:column; align-items:center; z-index:10; }
+        .card { background:var(--card-bg); backdrop-filter:blur(15px); padding:3.5rem 1.2rem 2.5rem; border-radius:40px; box-shadow:0 20px 50px rgba(0,0,0,0.2); text-align:center; max-width:var(--max-width); width:94%; border:3px solid var(--border-color); position:relative; margin:0 auto; }
+        .image-container { width:130px; height:130px; border-radius:50%; overflow:hidden; margin:-100px auto 1rem; box-shadow:0 10px 25px rgba(0,0,0,0.15); animation:float-img 3s ease-in-out infinite; border:6px solid #fff; background:white; }
+        @keyframes float-img { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-10px) rotate(2deg)} }
+        .cat-image { width:100%; height:100%; object-fit:cover; }
+        h1 { color:var(--text-main); font-size:1.5rem; margin-bottom:5px; font-weight:600; min-height:2rem; padding:0 10px; }
 
-        /* id */
-        #CAKE {
-            width: 100px;
-            height: 100px;
-            background-color: rgb(146, 10, 146);    
-            margin: 10px;
-        }
+        /* Anniversary */
+        .anniversary-box { background:linear-gradient(135deg,#ff80ab22,#ba68c822); border:2px solid var(--accent); border-radius:28px; padding:16px 12px 12px; margin:10px 0 20px; position:relative; overflow:hidden; }
+        .anniversary-box::before { content:'💞'; position:absolute; top:-10px; right:-10px; font-size:3rem; opacity:0.12; }
+        .anniv-label { font-size:0.65rem; color:var(--text-main); font-weight:700; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; display:block; }
+        .anniv-counter { display:flex; justify-content:center; gap:8px; margin-bottom:8px; }
+        .anniv-unit { display:flex; flex-direction:column; align-items:center; background:var(--card-bg); border-radius:14px; padding:8px 14px; min-width:64px; box-shadow:0 2px 8px rgba(216,27,96,0.1); border:1px solid rgba(255,64,129,0.2); }
+        .anniv-num { font-family:'Caveat',cursive; font-size:2rem; color:var(--accent); line-height:1; font-weight:700; }
+        .anniv-unit-label { font-size:0.55rem; color:var(--text-sub); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; }
+        .anniv-since { font-size:0.7rem; color:var(--text-sub); opacity:0.8; }
+
+        /* Section Header */
+        .section-header { display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:14px; }
+        .section-line { flex:1; height:2px; background:linear-gradient(90deg,transparent,#ffb3c6); }
+        .section-line.right { background:linear-gradient(90deg,#ffb3c6,transparent); }
+        .section-badge { background:var(--accent); border-radius:50px; padding:6px 16px; font-size:0.7rem; font-weight:700; color:white; white-space:nowrap; letter-spacing:1px; box-shadow:0 4px 12px rgba(255,64,129,0.3); }
+        .section-badge.outline { background:white; border:2px solid #ffb3c6; color:var(--text-main); box-shadow:none; }
+
+        /* Sync Status Bar */
+        .sync-bar { display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.5); border-radius:50px; padding:6px 14px; margin-bottom:16px; border:1px solid rgba(255,179,198,0.4); }
+        .sync-status { font-size:0.65rem; color:var(--text-sub); display:flex; align-items:center; gap:5px; }
+        .sync-dot { width:7px; height:7px; border-radius:50%; background:#4caf50; animation:syncPulse 2s infinite; flex-shrink:0; }
+        .sync-dot.syncing { background:#ffb74d; animation:syncSpin 1s linear infinite; }
+        .sync-dot.error { background:#ef5350; animation:none; }
+        @keyframes syncPulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        @keyframes syncSpin { 0%{transform:scale(0.6)} 50%{transform:scale(1)} 100%{transform:scale(0.6)} }
+        .sync-refresh-btn { background:none; border:1.5px solid rgba(255,64,129,0.3); border-radius:50px; padding:4px 10px; font-size:0.6rem; color:var(--text-main); cursor:pointer; font-family:'Anuphan',sans-serif; font-weight:600; }
+        .sync-refresh-btn:active { transform:scale(0.95); }
+
+        /* 🌙 Bedtime Check-in */
+        .checkin-box { background:linear-gradient(135deg,#1a1a2e,#16213e); border-radius:28px; padding:18px 16px; margin-bottom:20px; width:100%; position:relative; overflow:hidden; border:2px solid #3a3a6a; }
+        .checkin-box::before { content:'🌙'; position:absolute; top:-8px; right:-4px; font-size:4rem; opacity:0.08; }
+        .checkin-title { font-size:0.85rem; font-weight:700; color:#ce93d8; margin-bottom:4px; }
+        .checkin-subtitle { font-size:0.65rem; color:#9575cd; margin-bottom:12px; }
+        .checkin-streak { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px; }
+        .streak-flame { font-size:2rem; animation:flicker 1.5s ease-in-out infinite alternate; }
+        @keyframes flicker { 0%{transform:scale(1) rotate(-3deg)} 100%{transform:scale(1.1) rotate(3deg)} }
+        .streak-num { font-family:'Caveat',cursive; font-size:2.8rem; color:#ffb74d; line-height:1; font-weight:700; }
+        .streak-label { font-size:0.65rem; color:#9575cd; text-align:left; line-height:1.3; }
+        .checkin-days-row { display:flex; justify-content:center; gap:5px; margin-bottom:14px; }
+        .checkin-dot { width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,0.08); border:1.5px solid rgba(149,117,205,0.3); display:flex; align-items:center; justify-content:center; font-size:0.55rem; color:#9575cd; flex-direction:column; }
+        .checkin-dot.done { background:linear-gradient(135deg,#7b1fa2,#9c27b0); border-color:#ce93d8; }
+        .checkin-dot.today-dot { border:2px solid #ffb74d; }
+        .checkin-btn { width:100%; background:linear-gradient(135deg,#7b1fa2,#9c27b0); color:white; border:none; padding:12px; border-radius:50px; font-size:0.85rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; box-shadow:0 4px 15px rgba(123,31,162,0.4); transition:all 0.2s; }
+        .checkin-btn:active { transform:scale(0.97); }
+        .checkin-btn.checked { background:rgba(255,255,255,0.1); color:#9575cd; border:2px solid #3a3a6a; box-shadow:none; cursor:default; }
+        .checkin-msg { font-size:0.7rem; color:#b39ddb; margin-top:8px; min-height:1rem; }
+
+        /* 📊 Stats */
+        .stats-box { background:linear-gradient(135deg,#e8f5e9,#f3e5f5); border:2px solid #a5d6a7; border-radius:28px; padding:18px 14px; margin-bottom:20px; width:100%; }
+        .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+        .stat-card { background:white; border-radius:18px; padding:12px 8px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+        .stat-icon { font-size:1.4rem; margin-bottom:4px; }
+        .stat-num { font-family:'Caveat',cursive; font-size:1.6rem; color:var(--accent); line-height:1; font-weight:700; }
+        .stat-label { font-size:0.55rem; color:#888; text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; font-weight:600; }
+        .stats-mood-bar { margin-top:12px; background:rgba(255,255,255,0.6); border-radius:16px; padding:10px 12px; }
+        .mood-bar-title { font-size:0.65rem; color:var(--text-sub); font-weight:700; margin-bottom:6px; text-align:left; }
+        .mood-bar-row { display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+        .mood-bar-label { font-size:0.7rem; width:20px; }
+        .mood-bar-track { flex:1; height:8px; background:rgba(0,0,0,0.06); border-radius:4px; overflow:hidden; }
+        .mood-bar-fill { height:100%; border-radius:4px; transition:width 0.6s ease; }
+        .mood-bar-count { font-size:0.6rem; color:#999; width:16px; text-align:right; }
+
+        /* 🎮 MINI GAMES */
+        .games-box { background:linear-gradient(135deg,#0a0a1a,#1a0a2e); border-radius:28px; padding:20px 16px; margin-bottom:20px; width:100%; border:2px solid rgba(255,64,129,0.3); position:relative; overflow:hidden; }
+        .games-box::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top left, rgba(123,31,162,0.15), transparent 60%); pointer-events:none; }
+        .games-title { font-size:0.9rem; font-weight:700; color:#ff80ab; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+        .games-tabs { display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; }
+        .game-tab { padding:6px 12px; border-radius:50px; border:1.5px solid rgba(255,64,129,0.3); background:rgba(255,255,255,0.05); font-size:0.68rem; font-weight:700; cursor:pointer; color:#ff80ab; font-family:'Anuphan',sans-serif; transition:all 0.2s; white-space:nowrap; }
+        .game-tab.active { background:linear-gradient(135deg,#ff4081,#c2185b); color:white; border-color:transparent; box-shadow:0 4px 12px rgba(255,64,129,0.35); }
+        .game-panel { display:none; animation:fadeInUp 0.3s ease; }
+        .game-panel.active { display:block; }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+        /* ทายใจกัน */
+        .quiz-q { background:rgba(255,255,255,0.08); border-radius:20px; padding:18px; margin-bottom:14px; border:1.5px solid rgba(255,64,129,0.2); }
+        .quiz-q-text { font-size:0.9rem; color:#f0c0d8; font-weight:600; margin-bottom:14px; line-height:1.5; }
+        .quiz-opts { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+        .quiz-opt { background:rgba(255,255,255,0.07); border:1.5px solid rgba(255,64,129,0.25); border-radius:14px; padding:10px; font-size:0.78rem; color:#f0c0d8; cursor:pointer; font-family:'Anuphan',sans-serif; transition:all 0.2s; }
+        .quiz-opt:hover { background:rgba(255,64,129,0.15); border-color:rgba(255,64,129,0.5); }
+        .quiz-opt.correct { background:linear-gradient(135deg,#1b5e20,#2e7d32); border-color:#66bb6a; color:white; }
+        .quiz-opt.wrong { background:linear-gradient(135deg,#b71c1c,#c62828); border-color:#ef5350; color:white; }
+        .quiz-result { background:rgba(255,255,255,0.08); border-radius:16px; padding:14px; text-align:center; margin-top:8px; }
+        .quiz-score { font-family:'Caveat',cursive; font-size:2.5rem; color:#ff80ab; font-weight:700; }
+        .quiz-score-label { font-size:0.7rem; color:#9575cd; }
+        .quiz-next-btn { background:linear-gradient(135deg,#ff4081,#c2185b); color:white; border:none; border-radius:50px; padding:10px 24px; font-size:0.8rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; margin-top:10px; }
+        .quiz-progress { display:flex; justify-content:center; gap:4px; margin-bottom:12px; }
+        .quiz-pip { width:8px; height:8px; border-radius:50%; background:rgba(255,64,129,0.3); }
+        .quiz-pip.done-correct { background:#4caf50; }
+        .quiz-pip.done-wrong { background:#ef5350; }
+        .quiz-pip.current { background:#ff80ab; transform:scale(1.3); }
+
+        /* Memory Card */
+        .memory-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:14px; }
+        .mem-card { aspect-ratio:1; border-radius:12px; cursor:pointer; position:relative; transition:transform 0.4s; transform-style:preserve-3d; }
+        .mem-card.flipped { transform:rotateY(180deg); }
+        .mem-card.matched { transform:rotateY(180deg); opacity:0.7; pointer-events:none; }
+        .mem-front,.mem-back { position:absolute; inset:0; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; backface-visibility:hidden; }
+        .mem-front { background:linear-gradient(135deg,#ff4081,#c2185b); box-shadow:0 3px 10px rgba(255,64,129,0.3); }
+        .mem-back { background:rgba(255,255,255,0.1); border:1.5px solid rgba(255,64,129,0.3); transform:rotateY(180deg); }
+        .mem-info { display:flex; justify-content:space-between; align-items:center; }
+        .mem-moves { font-size:0.75rem; color:#9575cd; }
+        .mem-timer { font-family:'Caveat',cursive; font-size:1.2rem; color:#ffb74d; }
+        .mem-win { text-align:center; padding:20px; }
+        .mem-win-emoji { font-size:3rem; margin-bottom:8px; }
+        .mem-win-text { font-size:0.9rem; color:#f0c0d8; margin-bottom:12px; }
+        .game-btn { background:linear-gradient(135deg,#ff4081,#c2185b); color:white; border:none; border-radius:50px; padding:10px 20px; font-size:0.78rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; }
+
+        /* เป่ายิ้ง */
+        .rps-arena { display:flex; align-items:center; justify-content:center; gap:16px; margin:16px 0; }
+        .rps-side { text-align:center; flex:1; }
+        .rps-choice { font-size:3.5rem; width:90px; height:90px; border-radius:50%; background:rgba(255,255,255,0.08); border:2px solid rgba(255,64,129,0.3); display:flex; align-items:center; justify-content:center; margin:0 auto 8px; transition:all 0.3s; }
+        .rps-choice.winner { border-color:#4caf50; background:rgba(76,175,80,0.15); box-shadow:0 0 20px rgba(76,175,80,0.3); }
+        .rps-choice.loser { border-color:#ef5350; background:rgba(239,83,80,0.1); }
+        .rps-label { font-size:0.65rem; color:#9575cd; font-weight:700; }
+        .rps-vs { font-family:'Caveat',cursive; font-size:1.8rem; color:#ff80ab; }
+        .rps-btns { display:flex; gap:10px; justify-content:center; margin-bottom:14px; }
+        .rps-btn { width:62px; height:62px; border-radius:50%; background:rgba(255,255,255,0.08); border:2px solid rgba(255,64,129,0.3); font-size:1.8rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
+        .rps-btn:hover { background:rgba(255,64,129,0.2); transform:scale(1.1); }
+        .rps-result { background:rgba(255,255,255,0.08); border-radius:16px; padding:14px; text-align:center; margin-bottom:10px; min-height:56px; }
+        .rps-result-text { font-size:0.95rem; color:#f0c0d8; font-weight:700; }
+        .rps-score { display:flex; justify-content:center; gap:20px; }
+        .rps-score-item { text-align:center; }
+        .rps-score-num { font-family:'Caveat',cursive; font-size:1.8rem; color:#ff80ab; font-weight:700; line-height:1; }
+        .rps-score-lbl { font-size:0.55rem; color:#9575cd; text-transform:uppercase; letter-spacing:0.5px; }
+
+        /* Spin the Wheel */
+        .wheel-wrap { position:relative; width:240px; height:240px; margin:0 auto 16px; }
+        .wheel-canvas { border-radius:50%; box-shadow:0 8px 30px rgba(255,64,129,0.3); }
+        .wheel-pointer { position:absolute; top:-14px; left:50%; transform:translateX(-50%); font-size:1.6rem; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3)); z-index:10; }
+        .wheel-center { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:36px; height:36px; border-radius:50%; background:white; box-shadow:0 2px 10px rgba(0,0,0,0.3); z-index:10; display:flex; align-items:center; justify-content:center; font-size:1rem; }
+        .wheel-spin-btn { background:linear-gradient(135deg,#ff4081,#c2185b); color:white; border:none; border-radius:50px; padding:12px 32px; font-size:0.88rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; box-shadow:0 6px 20px rgba(255,64,129,0.35); display:block; margin:0 auto; transition:all 0.2s; }
+        .wheel-spin-btn:disabled { opacity:0.5; cursor:not-allowed; }
+        .wheel-result-box { background:rgba(255,255,255,0.08); border-radius:16px; padding:14px; text-align:center; margin-top:12px; min-height:56px; border:1.5px solid rgba(255,64,129,0.2); }
+        .wheel-result-text { font-size:0.9rem; color:#f0c0d8; font-weight:700; }
+        .wheel-custom-row { display:flex; gap:6px; margin-bottom:10px; }
+        .wheel-inp { flex:1; background:rgba(255,255,255,0.08); border:1.5px solid rgba(255,64,129,0.3); border-radius:10px; padding:8px 10px; font-size:0.75rem; color:#f0c0d8; outline:none; font-family:'Anuphan',sans-serif; user-select:text; }
+        .wheel-inp::placeholder { color:#6e7681; }
+        .wheel-add-btn { background:rgba(255,64,129,0.3); border:none; border-radius:10px; padding:8px 12px; color:#ff80ab; font-size:0.75rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; }
+        .wheel-items-list { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+        .wheel-item-chip { background:rgba(255,255,255,0.08); border:1px solid rgba(255,64,129,0.3); border-radius:50px; padding:4px 10px; font-size:0.65rem; color:#f0c0d8; display:flex; align-items:center; gap:4px; }
+        .wheel-item-del { background:none; border:none; color:#ff80ab; cursor:pointer; font-size:0.65rem; }
+
+        /* 💌 SPECIAL CARD SENDER */
+        .card-sender-box { background:linear-gradient(135deg,#fff9fb,#fce4ec); border:2px solid #f48fb1; border-radius:28px; padding:20px 16px; margin-bottom:20px; width:100%; }
+        .card-templates { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:16px; }
+        .card-template { border-radius:20px; padding:18px 14px; cursor:pointer; border:2px solid transparent; transition:all 0.25s; position:relative; overflow:hidden; text-align:center; }
+        .card-template:hover { transform:translateY(-3px); }
+        .card-template.selected { border-color:var(--accent); box-shadow:0 8px 24px rgba(255,64,129,0.25); }
+        .ct-romantic { background:linear-gradient(135deg,#fce4ec,#fdd8e5); }
+        .ct-birthday { background:linear-gradient(135deg,#fff9c4,#fce4ec); }
+        .ct-goodnight { background:linear-gradient(135deg,#1a0a2e,#2d1b4e); }
+        .ct-justbecause { background:linear-gradient(135deg,#e8f5e9,#e1f5fe); }
+        .ct-emoji { font-size:2rem; margin-bottom:6px; display:block; }
+        .ct-name { font-size:0.72rem; font-weight:700; }
+        .ct-romantic .ct-name { color:#c2185b; }
+        .ct-birthday .ct-name { color:#f57f17; }
+        .ct-goodnight .ct-name { color:#ce93d8; }
+        .ct-justbecause .ct-name { color:#2e7d32; }
+
+        /* Card Preview */
+        .card-preview-wrap { margin-bottom:14px; }
+        .card-preview { border-radius:20px; padding:24px 20px; text-align:center; min-height:160px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; overflow:hidden; transition:all 0.4s; }
+        .cp-romantic { background:linear-gradient(135deg,#ff80ab,#ff4081); color:white; }
+        .cp-birthday { background:linear-gradient(135deg,#ffcc02,#ff6f00); color:white; }
+        .cp-goodnight { background:linear-gradient(135deg,#1a0a2e,#2d1b4e); color:#f0c0d8; border:2px solid rgba(206,147,216,0.3); }
+        .cp-justbecause { background:linear-gradient(135deg,#e8f5e9,#f1f8e9); color:#2e7d32; border:2px solid #a5d6a7; }
+        .cp-deco { position:absolute; inset:0; pointer-events:none; }
+        .cp-main-emoji { font-size:2.5rem; margin-bottom:10px; }
+        .cp-title { font-family:'Caveat',cursive; font-size:1.6rem; font-weight:700; margin-bottom:8px; }
+        .cp-msg { font-size:0.85rem; line-height:1.6; max-width:280px; }
+        .cp-from { font-size:0.65rem; opacity:0.75; margin-top:10px; }
+        .card-msg-input { width:100%; border:2px solid #f48fb1; border-radius:16px; padding:10px 14px; font-family:'Anuphan',sans-serif; font-size:0.82rem; color:#5d4037; background:rgba(255,255,255,0.9); outline:none; resize:none; margin-bottom:10px; user-select:text; }
+        .card-msg-input:focus { border-color:var(--accent); }
+        .card-send-section { display:flex; gap:8px; }
+        .card-send-me-btn, .card-send-you-btn { flex:1; padding:10px; border-radius:50px; border:none; font-size:0.78rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; }
+        .card-send-me-btn { background:linear-gradient(135deg,#ff4081,#c2185b); color:white; }
+        .card-send-you-btn { background:linear-gradient(135deg,#7b1fa2,#9c27b0); color:white; }
+
+        /* Card received notification */
+        .card-inbox { margin-top:12px; }
+        .card-inbox-item { background:rgba(255,255,255,0.8); border-radius:16px; padding:12px 14px; margin-bottom:8px; border:1.5px solid rgba(244,143,177,0.5); display:flex; align-items:center; gap:10px; cursor:pointer; transition:all 0.2s; }
+        .card-inbox-item:hover { transform:translateX(4px); }
+        .card-inbox-emoji { font-size:1.8rem; flex-shrink:0; }
+        .card-inbox-info { flex:1; text-align:left; }
+        .card-inbox-title { font-size:0.82rem; font-weight:700; color:#c2185b; }
+        .card-inbox-meta { font-size:0.6rem; color:#888; }
+        .card-inbox-del { background:none; border:none; color:#ffcdd2; font-size:0.7rem; cursor:pointer; }
+        .card-view-modal { display:none; position:fixed; z-index:5000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px); align-items:center; justify-content:center; }
+        .card-view-modal.show { display:flex; }
+        .card-view-inner { max-width:380px; width:88%; }
+        .card-view-close { width:100%; background:rgba(255,255,255,0.15); border:1.5px solid rgba(255,255,255,0.3); color:white; padding:10px; border-radius:50px; margin-top:12px; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; font-size:0.82rem; }
+
+        /* 🎵 PLAYLIST */
+        .playlist-box { width:100%; margin-bottom:20px; }
+        .now-playing-bar { background:linear-gradient(135deg,#1a0a2e,#2d1b4e); border-radius:20px; padding:14px 16px; margin-bottom:12px; display:none; border:1.5px solid rgba(255,64,129,0.3); position:relative; overflow:hidden; }
+        .now-playing-bar::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(45deg,rgba(255,64,129,0.03) 0px,rgba(255,64,129,0.03) 1px,transparent 1px,transparent 8px); }
+        .np-top { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+        .np-disc { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#ff4081,#ba68c8); display:flex; align-items:center; justify-content:center; font-size:1.2rem; animation:npSpin 4s linear infinite; flex-shrink:0; box-shadow:0 4px 12px rgba(255,64,129,0.4); }
+        .np-disc.paused { animation-play-state:paused; }
+        @keyframes npSpin { to{transform:rotate(360deg)} }
+        .np-info { flex:1; min-width:0; }
+        .np-title { font-size:0.88rem; font-weight:700; color:#ff80ab; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .np-who { font-size:0.6rem; color:#9575cd; margin-top:2px; }
+        .np-ctrl-btn { width:36px; height:36px; border-radius:50%; background:rgba(255,64,129,0.2); border:1.5px solid rgba(255,64,129,0.4); color:#ff80ab; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .np-wave { display:flex; align-items:flex-end; gap:2px; height:20px; margin-bottom:8px; }
+        .np-bar { width:3px; background:var(--accent); border-radius:2px; opacity:0.7; animation:waveBar 0.6s ease-in-out infinite alternate; }
+        .np-bar:nth-child(1){height:6px;animation-delay:0s}.np-bar:nth-child(2){height:14px;animation-delay:0.1s}.np-bar:nth-child(3){height:10px;animation-delay:0.2s}.np-bar:nth-child(4){height:18px;animation-delay:0.05s}.np-bar:nth-child(5){height:8px;animation-delay:0.15s}.np-bar:nth-child(6){height:16px;animation-delay:0.25s}.np-bar:nth-child(7){height:12px;animation-delay:0.08s}.np-bar:nth-child(8){height:6px;animation-delay:0.18s}
+        @keyframes waveBar { from{transform:scaleY(0.3)} to{transform:scaleY(1)} }
+        .np-wave.paused .np-bar { animation-play-state:paused; }
+        .yt-embed-wrap { border-radius:14px; overflow:hidden; margin-bottom:10px; position:relative; background:#000; display:none; }
+        .yt-embed-wrap iframe { width:100%; height:200px; border:none; display:block; }
+        .yt-embed-wrap.visible { display:block; }
+        .lyrics-panel { background:rgba(26,10,46,0.85); border-radius:16px; padding:14px; margin-bottom:10px; display:none; border:1px solid rgba(255,64,129,0.2); max-height:200px; overflow-y:auto; }
+        .lyrics-panel.visible { display:block; }
+        .lyrics-panel::-webkit-scrollbar { width:4px; }
+        .lyrics-panel::-webkit-scrollbar-thumb { background:rgba(255,64,129,0.4); border-radius:2px; }
+        .lyrics-text { font-size:0.8rem; color:#f0c0d8; line-height:1.9; white-space:pre-wrap; text-align:center; }
+        .lyrics-label { font-size:0.6rem; color:#9575cd; font-weight:700; letter-spacing:1px; margin-bottom:8px; text-align:center; }
+        .lyrics-toggle-btn { background:rgba(255,64,129,0.1); border:1.5px solid rgba(255,64,129,0.3); border-radius:50px; padding:5px 14px; font-size:0.65rem; color:#ff80ab; cursor:pointer; font-family:'Anuphan',sans-serif; font-weight:700; }
+        .lyrics-toggle-btn.active { background:rgba(255,64,129,0.25); }
+        .playlist-tracks { display:flex; flex-direction:column; gap:10px; }
+        .track-card { background:white; border-radius:20px; padding:12px 14px; display:flex; align-items:center; gap:12px; box-shadow:0 4px 14px rgba(216,27,96,0.1); border:1.5px solid rgba(255,179,198,0.4); cursor:pointer; transition:all 0.25s; position:relative; overflow:hidden; }
+        .track-card:hover { transform:translateX(4px); }
+        .track-card.playing { background:linear-gradient(135deg,#fff0f5,#fce4ec); border-color:var(--accent); box-shadow:0 6px 20px rgba(255,64,129,0.25); }
+        .track-card.playing::before { content:''; position:absolute; top:0; left:0; bottom:0; width:4px; background:var(--accent); border-radius:20px 0 0 20px; }
+        .track-card.yt-track { border-color:#ff3d3d44; background:linear-gradient(135deg,#fff5f5,#fff0f0); }
+        .track-card.yt-track.playing { border-color:#ff3d3d; background:linear-gradient(135deg,#fff0f0,#fce4e4); }
+        .track-card.yt-track.playing::before { background:#ff3d3d; }
+        .track-icon-wrap { width:46px; height:46px; border-radius:14px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:1.4rem; position:relative; }
+        .track-icon-wrap.proud-color { background:linear-gradient(135deg,#ffd6e0,#ffb3c6); }
+        .track-icon-wrap.happy-color { background:linear-gradient(135deg,#fff9c4,#ffe082); }
+        .track-icon-wrap.yt-color { background:linear-gradient(135deg,#ffebee,#ffcdd2); }
+        .track-vinyl { position:absolute; inset:0; border-radius:14px; background:repeating-conic-gradient(rgba(255,255,255,0.15) 0deg,transparent 1deg,transparent 5deg); animation:spin 3s linear infinite; opacity:0; transition:opacity 0.3s; }
+        .track-card.playing .track-vinyl { opacity:1; }
+        @keyframes spin { to{transform:rotate(360deg)} }
+        .track-info { flex:1; text-align:left; min-width:0; }
+        .track-name { font-size:0.85rem; font-weight:700; color:#c2185b; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .track-sub { font-size:0.7rem; color:#888; }
+        .track-play-btn { width:36px; height:36px; border-radius:50%; border:none; background:linear-gradient(135deg,#ff80ab,#ff4081); color:white; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 10px rgba(255,64,129,0.35); transition:transform 0.15s; flex-shrink:0; }
+        .track-play-btn.yt-btn { background:linear-gradient(135deg,#ff5252,#ff1744); }
+        .track-play-btn:active { transform:scale(0.9); }
+        .track-bars { display:flex; align-items:flex-end; gap:2px; height:18px; margin-right:6px; opacity:0; transition:opacity 0.3s; }
+        .track-card.playing .track-bars { opacity:1; }
+        .track-bar { width:3px; background:var(--accent); border-radius:2px; animation:barBounce 0.6s ease-in-out infinite alternate; }
+        .track-bar:nth-child(1){height:8px;animation-delay:0s}.track-bar:nth-child(2){height:14px;animation-delay:0.15s}.track-bar:nth-child(3){height:10px;animation-delay:0.3s}.track-bar:nth-child(4){height:16px;animation-delay:0.1s}
+        @keyframes barBounce { from{transform:scaleY(0.4)} to{transform:scaleY(1)} }
+        .yt-badge { font-size:0.55rem; background:#ffebee; color:#c62828; border-radius:4px; padding:2px 5px; font-weight:700; margin-left:4px; }
+        .yt-add-box { background:linear-gradient(135deg,#fff5f5,#ffebee); border:2px dashed #ffcdd2; border-radius:20px; padding:14px; margin-top:10px; }
+        .yt-add-title { font-size:0.75rem; font-weight:700; color:#c62828; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+        .yt-add-row { display:flex; gap:8px; margin-bottom:8px; }
+        .yt-inp { flex:1; border:2px solid #ffcdd2; border-radius:50px; padding:9px 14px; font-family:'Anuphan',sans-serif; font-size:0.78rem; color:#5d4037; background:rgba(255,255,255,0.9); outline:none; user-select:text; }
+        .yt-inp:focus { border-color:#ff5252; }
+        .yt-add-btn { background:linear-gradient(135deg,#ff5252,#ff1744); color:white; border:none; border-radius:50px; padding:9px 14px; font-size:0.75rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; white-space:nowrap; }
+        .yt-lyrics-inp { width:100%; border:2px solid #ffcdd2; border-radius:12px; padding:9px 12px; font-family:'Anuphan',sans-serif; font-size:0.75rem; color:#5d4037; background:rgba(255,255,255,0.9); outline:none; resize:none; user-select:text; margin-top:6px; }
+        .yt-who-row { display:flex; gap:6px; margin-bottom:8px; }
+        .yt-who-btn { flex:1; padding:6px; border-radius:50px; border:2px solid #ffcdd2; background:white; font-size:0.7rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; color:#c62828; transition:all 0.15s; }
+        .yt-who-btn.active { background:linear-gradient(135deg,#ff5252,#ff1744); color:white; border-color:transparent; }
+
+        /* 💬 REAL-TIME CHAT */
+        .chat-box { background:linear-gradient(135deg,#0d1117,#161b22); border-radius:28px; padding:18px 14px; margin-bottom:20px; width:100%; border:2px solid #30363d; position:relative; overflow:hidden; }
+        .chat-box::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top right, rgba(255,64,129,0.06), transparent 60%); pointer-events:none; }
+        .chat-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+        .chat-title { font-size:0.85rem; font-weight:700; color:#ff80ab; display:flex; align-items:center; gap:6px; }
+        .chat-online { font-size:0.6rem; color:#3fb950; background:rgba(63,185,80,0.1); border:1px solid rgba(63,185,80,0.3); border-radius:50px; padding:3px 8px; display:flex; align-items:center; gap:4px; }
+        .chat-online-dot { width:6px; height:6px; border-radius:50%; background:#3fb950; animation:syncPulse 2s infinite; }
+        .chat-feed { height:260px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding:4px 0; margin-bottom:12px; }
+        .chat-feed::-webkit-scrollbar { width:4px; }
+        .chat-feed::-webkit-scrollbar-thumb { background:rgba(255,64,129,0.3); border-radius:2px; }
+        .chat-msg { display:flex; flex-direction:column; animation:chatPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
+        @keyframes chatPop { from{opacity:0;transform:translateY(6px) scale(0.95)} to{opacity:1;transform:translateY(0) scale(1)} }
+        .chat-msg.me { align-items:flex-end; }
+        .chat-msg.you { align-items:flex-start; }
+        .chat-bubble { max-width:80%; padding:10px 14px; border-radius:18px; font-size:0.82rem; line-height:1.5; position:relative; word-break:break-word; }
+        .chat-msg.me .chat-bubble { background:linear-gradient(135deg,#ff4081,#c2185b); color:white; border-radius:18px 18px 4px 18px; }
+        .chat-msg.you .chat-bubble { background:rgba(255,255,255,0.08); color:#f0c0d8; border:1px solid rgba(255,64,129,0.2); border-radius:18px 18px 18px 4px; }
+        .chat-meta { font-size:0.57rem; color:#6e7681; margin-top:3px; display:flex; align-items:center; gap:5px; }
+        .chat-msg.me .chat-meta { flex-direction:row-reverse; }
+        .chat-who-tag { font-weight:700; }
+        .chat-msg.me .chat-who-tag { color:#ff80ab; }
+        .chat-msg.you .chat-who-tag { color:#ce93d8; }
+        .chat-del { background:none; border:none; color:#30363d; font-size:0.65rem; cursor:pointer; padding:0 4px; }
+        .chat-del:hover { color:#ff4081; }
+        .chat-input-area { display:flex; gap:8px; align-items:flex-end; }
+        .chat-who-switch { display:flex; gap:6px; margin-bottom:8px; }
+        .chat-who-btn { flex:1; padding:7px; border-radius:50px; border:1.5px solid #30363d; background:rgba(255,255,255,0.04); font-size:0.7rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; color:#8b949e; transition:all 0.15s; }
+        .chat-who-btn.active.me-active { background:linear-gradient(135deg,#ff4081,#c2185b); color:white; border-color:transparent; }
+        .chat-who-btn.active.you-active { background:linear-gradient(135deg,#7b1fa2,#9c27b0); color:white; border-color:transparent; }
+        .chat-textarea { flex:1; background:rgba(255,255,255,0.06); border:1.5px solid #30363d; border-radius:16px; padding:10px 12px; font-family:'Anuphan',sans-serif; font-size:0.8rem; color:#f0c0d8; outline:none; resize:none; min-height:44px; max-height:100px; line-height:1.4; user-select:text; }
+        .chat-textarea:focus { border-color:rgba(255,64,129,0.5); background:rgba(255,64,129,0.06); }
+        .chat-textarea::placeholder { color:#6e7681; }
+        .chat-send-btn { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#ff4081,#c2185b); border:none; color:white; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 4px 12px rgba(255,64,129,0.4); transition:transform 0.15s; }
+        .chat-send-btn:active { transform:scale(0.9); }
+        .chat-empty { text-align:center; color:#484f58; font-size:0.8rem; padding:20px; }
+        .chat-typing { font-size:0.65rem; color:#6e7681; padding:0 4px; min-height:1.2rem; }
+        .chat-emoji-bar { display:flex; gap:8px; margin-bottom:8px; }
+        .chat-emoji-btn { background:rgba(255,255,255,0.06); border:1px solid #30363d; border-radius:50px; padding:4px 10px; font-size:0.85rem; cursor:pointer; transition:all 0.15s; }
+        .chat-emoji-btn:hover { background:rgba(255,64,129,0.15); border-color:rgba(255,64,129,0.3); transform:scale(1.1); }
+
+        /* 🎯 Wishlist */
+        .wishlist-box { background:linear-gradient(135deg,#fff3e0,#fce4ec); border:2px solid #ffcc80; border-radius:28px; padding:18px 14px; margin-bottom:20px; width:100%; }
+        .wish-input-row { display:flex; gap:8px; margin-bottom:12px; }
+        .wish-input { flex:1; border:2px solid #ffcc80; border-radius:50px; padding:9px 14px; font-family:'Anuphan',sans-serif; font-size:0.8rem; color:#5d4037; background:rgba(255,255,255,0.9); outline:none; user-select:text; }
+        .wish-input:focus { border-color:#ff7043; }
+        .wish-add-btn { background:linear-gradient(135deg,#ff7043,#ffb74d); color:white; border:none; border-radius:50px; padding:9px 16px; font-size:0.8rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; white-space:nowrap; }
+        .wish-list { display:flex; flex-direction:column; gap:8px; max-height:260px; overflow-y:auto; }
+        .wish-item { background:rgba(255,255,255,0.85); border-radius:16px; padding:10px 12px; display:flex; align-items:center; gap:10px; border:1.5px solid rgba(255,204,128,0.5); }
+        .wish-item.done { opacity:0.55; }
+        .wish-check { width:22px; height:22px; border-radius:50%; border:2px solid #ffcc80; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.75rem; flex-shrink:0; }
+        .wish-check.checked { background:linear-gradient(135deg,#ff7043,#ffb74d); border-color:transparent; }
+        .wish-text { flex:1; font-size:0.82rem; color:#5d4037; text-align:left; }
+        .wish-item.done .wish-text { text-decoration:line-through; color:#bcaaa4; }
+        .wish-who { font-size:0.6rem; background:#ffecb3; color:#e65100; border-radius:50px; padding:2px 8px; font-weight:700; flex-shrink:0; }
+        .wish-del { background:none; border:none; color:#ffcdd2; font-size:0.75rem; cursor:pointer; flex-shrink:0; }
+        .wish-who-select { display:flex; gap:6px; margin-bottom:10px; }
+        .who-btn { flex:1; padding:7px; border-radius:50px; border:2px solid #ffcc80; background:white; font-size:0.72rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; color:#e65100; }
+        .who-btn.active { background:linear-gradient(135deg,#ff7043,#ffb74d); color:white; border-color:transparent; }
+        .wish-empty { text-align:center; color:#bcaaa4; font-size:0.82rem; padding:16px; }
+
+        /* 💌 Letters */
+        .letter-card { border-radius:22px; overflow:hidden; border:2px solid; margin-bottom:10px; }
+        .letter-card.locked { border-color:#e0e0e0; background:linear-gradient(135deg,#f5f5f5,#eeeeee); }
+        .letter-card.unlocked { border-color:#f48fb1; background:linear-gradient(135deg,#fff0f5,#fce4ec); cursor:pointer; }
+        .letter-card.unlocked:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(216,27,96,0.15); }
+        .letter-card.opened { border-color:#ce93d8; background:linear-gradient(135deg,#f3e5f5,#fce4ec); cursor:pointer; }
+        .letter-header { padding:12px 14px; display:flex; align-items:center; gap:10px; }
+        .letter-num { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Caveat',cursive; font-size:1.1rem; font-weight:700; flex-shrink:0; }
+        .letter-card.locked .letter-num { background:#e0e0e0; color:#bbb; }
+        .letter-card.unlocked .letter-num,.letter-card.opened .letter-num { background:linear-gradient(135deg,#ff80ab,#ff4081); color:white; }
+        .letter-info { flex:1; text-align:left; }
+        .letter-title { font-size:0.82rem; font-weight:700; }
+        .letter-card.locked .letter-title { color:#bbb; }
+        .letter-card.unlocked .letter-title,.letter-card.opened .letter-title { color:#c2185b; }
+        .letter-date { font-size:0.6rem; }
+        .letter-card.locked .letter-date { color:#ccc; }
+        .letter-card.unlocked .letter-date,.letter-card.opened .letter-date { color:#f06292; }
+        .letter-status { font-size:1.1rem; }
+
+        /* Time Capsule */
+        .capsule-section { width:100%; margin-bottom:20px; }
+        .tc-stats-row { display:flex; gap:8px; margin-bottom:14px; }
+        .tc-stat { flex:1; background:rgba(255,255,255,0.7); border-radius:16px; padding:10px 8px; text-align:center; border:1.5px solid rgba(255,204,128,0.5); }
+        .tc-stat-num { font-family:'Caveat',cursive; font-size:1.5rem; color:#ff7043; line-height:1; font-weight:700; display:block; }
+        .tc-stat-label { font-size:0.55rem; color:#a1887f; text-transform:uppercase; letter-spacing:0.5px; font-weight:700; }
+        .tc-notify-dot { width:7px; height:7px; background:#4caf50; border-radius:50%; display:inline-block; animation:syncPulse 2s infinite; margin-right:3px; }
+        .tc-create-box { background:white; border-radius:20px; padding:16px; margin-bottom:14px; border:1.5px solid #ffcc80; box-shadow:0 2px 12px rgba(255,112,67,0.08); }
+        .tc-create-title { font-size:0.78rem; font-weight:700; color:#e65100; margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+        .tc-type-row { display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap; }
+        .tc-type-btn { padding:6px 10px; border-radius:50px; border:1.5px solid #ffcc80; background:white; font-size:0.68rem; font-weight:700; cursor:pointer; color:#e65100; transition:all 0.15s; white-space:nowrap; font-family:'Anuphan',sans-serif; }
+        .tc-type-btn.active { background:linear-gradient(135deg,#ff7043,#ffb74d); color:white; border-color:transparent; }
+        .tc-inp { width:100%; border:1.5px solid #ffcc80; border-radius:12px; padding:10px 12px; font-size:0.8rem; color:#5d4037; background:rgba(255,255,255,0.9); outline:none; resize:none; font-family:'Anuphan',sans-serif; user-select:text; }
+        .tc-inp:focus { border-color:#ff7043; }
+        .tc-inp-label { font-size:0.65rem; color:#a1887f; margin-bottom:4px; margin-top:10px; display:block; font-weight:600; }
+        .lock-option-row { display:flex; gap:8px; margin-top:10px; }
+        .lock-opt { flex:1; background:#fff8f0; border:1.5px solid #ffcc80; border-radius:12px; padding:10px 6px; cursor:pointer; text-align:center; }
+        .lock-opt.selected { background:linear-gradient(135deg,#fff3e0,#fce4ec); border-color:#ff7043; box-shadow:0 2px 8px rgba(255,112,67,0.15); }
+        .lock-opt-icon { font-size:1.2rem; display:block; margin-bottom:4px; }
+        .lock-opt-name { font-size:0.62rem; font-weight:700; color:#e65100; }
+        .lock-opt-desc { font-size:0.52rem; color:#a1887f; margin-top:2px; }
+        .lock-cfg { background:#fff8f0; border-radius:12px; padding:12px; margin-top:10px; border:1.5px dashed #ffcc80; }
+        .tc-save-btn { width:100%; background:linear-gradient(135deg,#ff7043,#ffb74d); color:white; border:none; padding:12px; border-radius:50px; font-size:0.85rem; font-weight:700; cursor:pointer; margin-top:12px; font-family:'Anuphan',sans-serif; }
+        .tc-item { background:white; border-radius:16px; padding:14px; margin-bottom:10px; border:1.5px solid; position:relative; overflow:hidden; cursor:pointer; }
+        .tc-item.tci-locked { border-color:#ffcc80; background:linear-gradient(135deg,#fff8f0,#fff3e0); }
+        .tc-item.tci-unlocked { border-color:#a5d6a7; background:linear-gradient(135deg,#f1f8e9,#e8f5e9); }
+        .tc-item.tci-pw { border-color:#ce93d8; background:linear-gradient(135deg,#f9f0ff,#f3e5f5); }
+        .tc-left-bar { position:absolute; left:0; top:0; bottom:0; width:4px; border-radius:16px 0 0 16px; }
+        .bar-dream{background:linear-gradient(180deg,#7c4dff,#b39ddb)}.bar-promise{background:linear-gradient(180deg,#ff4081,#f48fb1)}.bar-secret{background:linear-gradient(180deg,#00bcd4,#80deea)}.bar-letter{background:linear-gradient(180deg,#ff7043,#ffb74d)}
+        .tc-item-top { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+        .tc-type-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+        .icon-dream{background:#ede7f6}.icon-promise{background:#fce4ec}.icon-secret{background:#e0f7fa}.icon-letter{background:#fff3e0}
+        .tc-meta { flex:1; min-width:0; }
+        .tc-type-label { font-size:0.58rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px; }
+        .label-dream{color:#7c4dff}.label-promise{color:#e91e63}.label-secret{color:#00acc1}.label-letter{color:#f4511e}
+        .tc-preview { font-size:0.78rem; color:#5d4037; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .tc-lock-pill { padding:3px 8px; border-radius:50px; font-size:0.58rem; font-weight:700; display:inline-flex; align-items:center; gap:3px; }
+        .pill-locked{background:#fff3e0;color:#e65100;border:1px solid #ffcc80}.pill-unlocked{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7}.pill-pw{background:#f3e5f5;color:#6a1b9a;border:1px solid #ce93d8}
+        .tc-countdown { background:rgba(255,112,67,0.06); border-radius:10px; padding:8px 10px; margin-top:8px; display:flex; align-items:center; gap:8px; }
+        .tc-count-nums { display:flex; gap:4px; }
+        .tc-count-unit { background:white; border-radius:6px; padding:4px 6px; text-align:center; border:1px solid #ffcc80; min-width:34px; }
+        .tc-count-num { font-size:0.9rem; font-weight:700; color:#ff7043; line-height:1; display:block; font-family:'Caveat',cursive; }
+        .tc-count-lbl { font-size:0.45rem; color:#a1887f; display:block; text-transform:uppercase; }
+        .tc-countdown-msg { font-size:0.62rem; color:#a1887f; flex:1; }
+        .tc-content { background:rgba(255,255,255,0.6); border-radius:10px; padding:10px; margin-top:8px; font-size:0.78rem; color:#4e342e; line-height:1.5; white-space:pre-wrap; text-align:left; }
+        .tc-hidden-msg { background:rgba(255,255,255,0.5); border-radius:10px; padding:10px; margin-top:8px; font-size:0.78rem; color:#bcaaa4; text-align:center; }
+        .tc-del-btn { position:absolute; top:10px; right:10px; background:none; border:none; color:#ffcdd2; font-size:0.72rem; cursor:pointer; padding:2px 6px; border-radius:6px; }
+        .tc-filter-row { display:flex; gap:6px; margin-bottom:12px; }
+        .tc-filter-btn { padding:5px 12px; border-radius:50px; border:1.5px solid #ffcc80; background:white; font-size:0.62rem; font-weight:700; cursor:pointer; color:#a1887f; font-family:'Anuphan',sans-serif; }
+        .tc-filter-btn.active { background:#ff7043; color:white; border-color:transparent; }
+        .tc-empty { text-align:center; color:#bcaaa4; font-size:0.82rem; padding:20px; }
+
+        /* Modals */
+        .letter-modal { display:none; position:fixed; z-index:5000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.65); backdrop-filter:blur(8px); }
+        .letter-modal-content { background:linear-gradient(160deg,#fff9fb,#fce4ec); margin:8% auto; border-radius:32px; width:88%; max-width:460px; overflow:hidden; animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275); border:3px solid #f48fb1; }
+        .letter-modal-top { background:linear-gradient(135deg,#ff80ab,#ff4081); padding:20px; text-align:center; }
+        .letter-modal-envelope { font-size:2.5rem; }
+        .letter-modal-num { font-size:0.7rem; color:rgba(255,255,255,0.85); margin-top:4px; letter-spacing:2px; }
+        .letter-modal-body { padding:22px 20px; }
+        .letter-modal-title { font-family:'Caveat',cursive; font-size:1.6rem; color:#c2185b; margin-bottom:12px; }
+        .letter-modal-text { font-size:0.88rem; color:#5d4037; line-height:1.75; white-space:pre-wrap; }
+        .letter-close-btn { width:100%; background:linear-gradient(135deg,#ff80ab,#ff4081); color:white; border:none; padding:14px; font-size:0.85rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; }
+        .pw-overlay { display:none; position:fixed; z-index:6000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(6px); align-items:center; justify-content:center; }
+        .pw-overlay.show { display:flex; }
+        .pw-box { background:white; border-radius:24px; padding:28px 24px; width:300px; text-align:center; border:2px solid #ce93d8; animation:popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
+        .pw-box-title { font-size:0.95rem; font-weight:700; color:#6a1b9a; margin-bottom:6px; }
+        .pw-box-sub { font-size:0.7rem; color:#9575cd; margin-bottom:16px; }
+        .pw-box-input { width:100%; border:1.5px solid #ce93d8; border-radius:10px; padding:10px; font-size:0.9rem; text-align:center; outline:none; color:#5d4037; letter-spacing:3px; font-family:'Anuphan',sans-serif; user-select:text; }
+        .pw-box-input:focus { border-color:#7b1fa2; }
+        .pw-btn-row { display:flex; gap:8px; margin-top:12px; }
+        .pw-confirm-btn { flex:1; background:linear-gradient(135deg,#7b1fa2,#9c27b0); color:white; border:none; padding:11px; border-radius:12px; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; font-size:0.82rem; }
+        .pw-cancel-btn { background:none; border:1.5px solid #ce93d8; color:#9575cd; padding:11px 14px; border-radius:12px; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; font-size:0.82rem; }
+        .pw-err { color:#e53935; font-size:0.7rem; margin-top:8px; min-height:1.2rem; }
+        @keyframes popIn { from{transform:scale(0.7);opacity:0} to{transform:scale(1);opacity:1} }
+
+        /* Gift */
+        .gift-section { width:100%; margin-bottom:20px; display:flex; flex-direction:column; gap:10px; }
+        .gift-btn { width:100%; border:none; border-radius:22px; padding:14px 18px; cursor:pointer; font-family:'Anuphan',sans-serif; font-weight:700; font-size:0.9rem; display:flex; align-items:center; gap:10px; transition:transform 0.15s; position:relative; overflow:hidden; }
+        .gift-btn:active { transform:scale(0.97); }
+        .gift-btn-icon { font-size:1.3rem; flex-shrink:0; }
+        .gift-btn-text { text-align:left; flex:1; }
+        .gift-btn-label { display:block; font-size:0.65rem; opacity:0.75; font-weight:400; margin-top:1px; }
+        .btn-gift { background:linear-gradient(135deg,#7b1fa2,#9c27b0,#ce93d8); color:white; box-shadow:0 6px 20px rgba(123,31,162,0.35); }
+        .btn-gift::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:radial-gradient(circle,rgba(255,255,255,0.15) 0%,transparent 60%); animation:shimmer 3s infinite; }
+        @keyframes shimmer { 0%,100%{transform:translateX(-30%) translateY(-30%)} 50%{transform:translateX(10%) translateY(10%)} }
+        .btn-coupon { background:linear-gradient(135deg,#1565c0,#1976d2,#64b5f6); color:white; box-shadow:0 6px 20px rgba(21,101,192,0.35); }
+        .gift-modal { display:none; position:fixed; z-index:3000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(8px); }
+        .gift-modal-content { background:linear-gradient(160deg,#f3e5f5,#e8eaf6,#fce4ec); margin:10% auto; border-radius:32px; width:88%; max-width:460px; border:3px solid #ce93d8; overflow:hidden; animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+        .gift-modal-header { background:linear-gradient(135deg,#7b1fa2,#9c27b0); color:white; padding:20px; text-align:center; }
+        .gift-modal-header h3 { font-size:1.1rem; font-weight:700; margin-bottom:2px; }
+        .gift-modal-header p { font-size:0.7rem; opacity:0.85; }
+        .gift-modal-body { padding:20px; }
+        .gift-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+        .gift-item { background:rgba(255,255,255,0.8); border-radius:18px; padding:14px 8px; text-align:center; cursor:pointer; border:2px solid transparent; transition:all 0.2s; position:relative; }
+        .gift-item:hover { border-color:#9c27b0; transform:translateY(-3px); box-shadow:0 8px 20px rgba(123,31,162,0.2); }
+        .gift-item.locked { opacity:0.45; cursor:not-allowed; }
+        .gift-item-icon { font-size:1.8rem; margin-bottom:6px; }
+        .gift-item-name { font-size:0.65rem; font-weight:700; color:#4a148c; }
+        .gift-item-hint { font-size:0.55rem; color:#7b1fa2; margin-top:2px; opacity:0.7; }
+        .gift-unlock-badge { position:absolute; top:-6px; right:-6px; background:#ff4081; color:white; border-radius:50%; width:18px; height:18px; font-size:0.55rem; display:flex; align-items:center; justify-content:center; font-weight:700; }
+        .gift-modal-close { width:100%; background:rgba(123,31,162,0.1); border:2px solid #ce93d8; color:#7b1fa2; padding:10px; border-radius:20px; margin-top:12px; font-weight:700; font-size:0.8rem; cursor:pointer; font-family:'Anuphan',sans-serif; }
+        .gift-detail-modal { display:none; position:fixed; z-index:4000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px); }
+        .gift-detail-content { background:white; margin:15% auto; border-radius:28px; width:82%; max-width:380px; overflow:hidden; animation:popIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275); border:4px solid #ce93d8; }
+        .gift-detail-top { padding:30px 20px 20px; text-align:center; }
+        .gift-detail-emoji { font-size:4rem; margin-bottom:10px; }
+        .gift-detail-title { font-size:1.1rem; font-weight:700; color:#4a148c; margin-bottom:8px; }
+        .gift-detail-desc { font-size:0.82rem; color:#555; line-height:1.6; }
+        .gift-detail-btn { width:100%; background:linear-gradient(135deg,#7b1fa2,#9c27b0); color:white; border:none; padding:14px; font-size:0.85rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; }
+        .coupon-modal { display:none; position:fixed; z-index:3000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(8px); }
+        .coupon-card { margin:12% auto; width:82%; max-width:380px; animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+        .coupon-inner { background:white; border-radius:24px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+        .coupon-top { background:linear-gradient(135deg,#1565c0,#1976d2); color:white; padding:22px 20px; text-align:center; position:relative; }
+        .coupon-top::after { content:''; position:absolute; bottom:-12px; left:0; right:0; height:24px; background:white; border-radius:50% 50% 0 0 / 24px 24px 0 0; }
+        .coupon-stamp { font-size:0.65rem; background:rgba(255,255,255,0.2); border-radius:50px; padding:3px 10px; margin-bottom:8px; display:inline-block; letter-spacing:1px; }
+        .coupon-emoji { font-size:3rem; margin:6px 0; }
+        .coupon-title { font-size:1rem; font-weight:700; }
+        .coupon-body { padding:28px 22px 20px; text-align:center; }
+        .coupon-desc { font-size:0.85rem; color:#333; line-height:1.7; margin-bottom:14px; }
+        .coupon-expire { font-size:0.65rem; color:#999; margin-bottom:14px; }
+        .coupon-notch-row { display:flex; align-items:center; gap:0; margin-bottom:14px; }
+        .coupon-notch-line { flex:1; border-top:2px dashed #ddd; }
+        .coupon-notch-circle { width:14px; height:14px; background:#f5f5f5; border:2px dashed #ddd; border-radius:50%; flex-shrink:0; }
+        .coupon-barcode { font-size:0.55rem; letter-spacing:3px; color:#bbb; margin-bottom:14px; font-family:monospace; }
+        .coupon-use-btn { width:100%; background:linear-gradient(135deg,#1565c0,#1976d2); color:white; border:none; padding:12px; border-radius:50px; font-size:0.85rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; margin-bottom:8px; }
+        .coupon-close-btn { width:100%; background:none; border:2px solid #ddd; color:#999; padding:9px; border-radius:50px; font-size:0.75rem; cursor:pointer; font-family:'Anuphan',sans-serif; }
+        .coupon-used-note { font-size:0.7rem; color:#f44336; margin-top:6px; }
+        .modal { display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(5px); }
+        .modal-content { background:#fff; margin:15% auto; padding:30px; border-radius:30px; width:85%; max-width:440px; text-align:left; position:relative; border:5px solid var(--accent); }
+        .close { position:absolute; right:20px; top:15px; font-size:28px; font-weight:bold; color:var(--accent); cursor:pointer; }
+        .caption-modal { display:none; position:fixed; z-index:5000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(6px); }
+        .caption-modal-content { background:white; margin:30% auto; border-radius:24px; width:80%; max-width:360px; padding:24px; text-align:center; border:3px solid #ffb3c6; }
+        .caption-modal-title { font-size:0.95rem; font-weight:700; color:var(--text-main); margin-bottom:14px; }
+        .caption-input { width:100%; border:2px solid #ffb3c6; border-radius:12px; padding:10px 14px; font-family:'Anuphan',sans-serif; font-size:0.85rem; color:#555; outline:none; margin-bottom:14px; user-select:text; }
+        .caption-input:focus { border-color:var(--accent); }
+        .caption-confirm-btn { background:linear-gradient(135deg,#ff80ab,#ff4081); color:white; border:none; padding:10px 28px; border-radius:50px; font-size:0.82rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; }
+
+        /* Birthday, Mood, Calendar etc */
+        .birthday-box { background:linear-gradient(135deg,#ff80ab,#ba68c8); color:white; border-radius:20px; padding:12px; margin-bottom:20px; box-shadow:0 8px 15px rgba(216,27,96,0.2); border:2px solid white; animation:pulse 2s infinite; }
+        @keyframes pulse { 0%{transform:scale(1)} 50%{transform:scale(1.02)} 100%{transform:scale(1)} }
+        .bday-title { font-size:0.8rem; font-weight:600; display:block; margin-bottom:2px; }
+        .bday-days { font-family:'Caveat',cursive; font-size:1.5rem; letter-spacing:1px; }
+        .mood-box { background:rgba(255,255,255,0.3); padding:12px; border-radius:20px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.5); }
+        .mood-btns { display:flex; justify-content:center; gap:15px; margin-top:8px; }
+        .mood-btn { font-size:1.6rem; cursor:pointer; transition:0.2s; }
+        .mood-btn:hover { transform:scale(1.3); }
+        .calendar-box { background:rgba(255,255,255,0.4); border-radius:25px; padding:15px; margin-bottom:20px; border:2px solid var(--border-color); }
+        .calendar-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; color:var(--text-main); font-weight:600; font-size:0.85rem; }
+        .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
+        .calendar-day-label { font-size:0.6rem; color:var(--text-sub); font-weight:600; }
+        .day-cell { aspect-ratio:1; background:rgba(255,255,255,0.5); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:#888; position:relative; border:1px solid rgba(255,255,255,0.3); }
+        .day-cell.today { border:2px solid var(--accent); font-weight:bold; color:var(--text-main); }
+        .mood-dot { width:80%; height:80%; border-radius:50%; position:absolute; opacity:0.6; filter:blur(2px); z-index:0; }
+        .dot-happy{background:#ffeb3b}.dot-sad{background:#64b5f6}.dot-angry{background:#ff5252}.dot-hungry{background:#ffb74d}
+        .bio-section { background:rgba(255,255,255,0.4); border-radius:20px; padding:15px; margin-bottom:20px; text-align:left; }
+        .bio-item { font-size:0.85rem; color:var(--text-sub); margin-bottom:6px; display:flex; flex-wrap:wrap; }
+        .bio-label { font-weight:600; min-width:100px; color:var(--text-main); }
+        .daily-box { background:var(--accent); color:white; border-radius:15px; padding:12px; margin-bottom:12px; cursor:pointer; border:2px solid white; box-shadow:0 4px 10px rgba(0,0,0,0.1); width:100%; }
+        .daily-label { font-size:0.75rem; opacity:0.9; margin-bottom:4px; display:block; font-weight:600; }
+        .garden-box { background:rgba(255,255,255,0.4); border-radius:20px; padding:15px; margin-bottom:20px; border:2px dashed #81c784; width:100%; }
+        .tree-display { font-size:3rem; margin:5px 0; transition:transform 0.3s; }
+        .progress-container { background:rgba(0,0,0,0.1); border-radius:10px; height:12px; width:85%; margin:8px auto; overflow:hidden; border:1px solid rgba(255,255,255,0.5); }
+        .progress-bar { background:linear-gradient(90deg,#ff80ab,#f48fb1); width:0%; height:100%; transition:width 0.5s ease; }
+        .water-btn { background:#4caf50; color:white; border:none; padding:8px 18px; border-radius:20px; cursor:pointer; font-weight:600; font-size:0.75rem; }
+        .water-btn.disabled { background:#9e9e9e; cursor:not-allowed; }
+        fieldset { border:2px dashed var(--accent); border-radius:20px; padding:15px; background:rgba(255,255,255,0.2); margin-bottom:20px; width:100%; }
+        legend { background:var(--accent); color:white; padding:4px 18px; border-radius:50px; font-size:0.8rem; font-weight:600; margin:0 auto; }
+        table { width:100%; border-collapse:collapse; }
+        th { color:var(--text-main); border-bottom:2px solid var(--accent); padding:8px 4px; font-size:0.75rem; }
+        td { padding:8px 4px; color:var(--text-sub); border-bottom:1px solid rgba(255,193,227,0.2); font-size:0.75rem; }
+        .btn-main { background:linear-gradient(45deg,#ff4081,#ba68c8); color:white; border:none; padding:12px; border-radius:50px; width:100%; font-weight:600; cursor:pointer; margin-top:10px; font-family:'Anuphan',sans-serif; font-size:0.9rem; }
+        .memories-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+        .polaroid-card { background:white; border-radius:6px; padding:8px 8px 28px; box-shadow:0 6px 20px rgba(216,27,96,0.12); position:relative; transition:transform 0.3s; border:1px solid rgba(255,255,255,0.8); }
+        .polaroid-card:nth-child(odd){transform:rotate(-1.5deg)}.polaroid-card:nth-child(even){transform:rotate(1.5deg)}.polaroid-card:hover{transform:rotate(0deg) scale(1.04) translateY(-4px);z-index:5}
+        .polaroid-photo { width:100%; aspect-ratio:1; object-fit:cover; border-radius:3px; display:block; background:#fff0f5; }
+        .polaroid-caption { position:absolute; bottom:6px; left:0; right:0; text-align:center; font-family:'Caveat',cursive; font-size:0.95rem; color:#888; padding:0 6px; }
+        .polaroid-pin { position:absolute; top:-10px; left:50%; transform:translateX(-50%); width:18px; height:18px; background:radial-gradient(circle at 40% 35%,#ff8fab,#d81b60); border-radius:50%; box-shadow:0 2px 6px rgba(216,27,96,0.4); border:2px solid rgba(255,255,255,0.7); }
+        .photo-upload-area { margin-top:12px; text-align:center; padding:14px; border:2px dashed rgba(255,179,198,0.6); border-radius:18px; background:rgba(255,255,255,0.3); }
+        .photo-upload-btn { background:linear-gradient(135deg,#ff80ab,#ff4081); color:white; border:none; padding:9px 22px; border-radius:50px; font-size:0.78rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; }
+        .photo-upload-hint { font-size:0.65rem; color:var(--text-sub); margin-top:5px; opacity:0.8; }
+        .photo-upload-status { font-size:0.7rem; color:#e65100; margin-top:6px; min-height:1rem; }
+        .upload-progress-wrap { display:none; margin-top:8px; background:rgba(255,179,198,0.3); border-radius:10px; height:8px; overflow:hidden; }
+        .upload-progress-bar { height:100%; background:linear-gradient(90deg,#ff80ab,#ff4081); border-radius:10px; width:0%; transition:width 0.3s; }
+        .photo-delete-btn { position:absolute; top:4px; right:4px; background:rgba(255,64,129,0.85); color:white; border:none; border-radius:50%; width:22px; height:22px; font-size:0.65rem; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.2s; font-weight:700; }
+        .polaroid-card:hover .photo-delete-btn { opacity:1; }
+        .floating-item { position:absolute; animation:floatUp 5s linear forwards; pointer-events:none; z-index:0; }
+        @keyframes floatUp { 0%{transform:translateY(110vh) scale(0.5);opacity:0} 10%{opacity:0.8} 100%{transform:translateY(-10vh) scale(1.2) rotate(360deg);opacity:0} }
+        .click-heart { position:absolute; animation:clickPop 0.8s ease-out forwards; pointer-events:none; z-index:100; font-size:24px; }
+        @keyframes clickPop { 0%{transform:scale(0);opacity:1} 100%{transform:scale(1.5) translateY(-40px);opacity:0} }
+        .tc-toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#323232; color:white; padding:10px 20px; border-radius:50px; font-size:0.75rem; font-weight:600; z-index:9999; opacity:0; transition:opacity 0.3s; white-space:nowrap; pointer-events:none; }
+        .tc-toast.show { opacity:1; }
+        .board-box { background:linear-gradient(135deg,#e8eaf6,#f3e5f5); border:2px solid #9fa8da; border-radius:28px; padding:18px 14px; margin-bottom:20px; width:100%; }
+        .board-post-row { display:flex; gap:8px; margin-bottom:14px; align-items:flex-end; }
+        .board-textarea { flex:1; border:2px solid #9fa8da; border-radius:18px; padding:10px 12px; font-family:'Anuphan',sans-serif; font-size:0.8rem; color:#37474f; background:rgba(255,255,255,0.9); outline:none; resize:none; min-height:60px; user-select:text; }
+        .board-textarea:focus { border-color:#5c6bc0; }
+        .board-post-btn { background:linear-gradient(135deg,#5c6bc0,#7986cb); color:white; border:none; border-radius:18px; padding:10px 14px; font-size:0.78rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; white-space:nowrap; }
+        .board-who-row { display:flex; gap:6px; margin-bottom:10px; }
+        .board-who-btn { flex:1; padding:6px; border-radius:50px; border:2px solid #9fa8da; background:white; font-size:0.72rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; color:#3949ab; }
+        .board-who-btn.active { background:linear-gradient(135deg,#5c6bc0,#7986cb); color:white; border-color:transparent; }
+        .board-feed { display:flex; flex-direction:column; gap:10px; max-height:320px; overflow-y:auto; }
+        .board-post { border-radius:20px; padding:12px 14px; position:relative; animation:fadeInUp 0.3s ease; }
+        .board-post.me { background:linear-gradient(135deg,#e8eaf6,#c5cae9); border:1.5px solid #9fa8da; margin-left:20px; }
+        .board-post.you { background:linear-gradient(135deg,#fce4ec,#f8bbd0); border:1.5px solid #f48fb1; margin-right:20px; }
+        .board-post-who { font-size:0.6rem; font-weight:700; margin-bottom:4px; }
+        .board-post.me .board-post-who { color:#3949ab; } .board-post.you .board-post-who { color:#c2185b; }
+        .board-post-text { font-size:0.83rem; color:#37474f; line-height:1.5; white-space:pre-wrap; }
+        .board-post-time { font-size:0.58rem; color:#aaa; margin-top:5px; }
+        .board-del-btn { position:absolute; top:8px; right:8px; background:none; border:none; color:#ccc; font-size:0.72rem; cursor:pointer; }
+        .board-empty { text-align:center; color:#b0bec5; font-size:0.82rem; padding:16px; }
+        .board-char-count { font-size:0.6rem; color:#9fa8da; text-align:right; margin-top:2px; }
+        .btn-next {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #007AFF, #00C6FF); /* สีฟ้าไล่เฉด */
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-family: 'Prompt', sans-serif; /* แนะนำให้ใช้ฟอนต์ Prompt */
+    font-weight: 500;
+    font-size: 18px;
+    box-shadow: 0 10px 20px rgba(0, 122, 255, 0.3);
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1); /* แอนิเมชันแบบนุ่มนวล */
+    cursor: pointer;
+    border: none;
+  }
+
+ .btn-pastel {
+    display: inline-block;
+    padding: 15px 35px;
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    color: #444; /* สีตัวอักษรไม่ต้องเข้มมาก */
+    text-decoration: none;
+    font-family: 'Prompt', sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    border: none;
+    border-radius: 15px; /* ขอบมนกำลังดี */
+    box-shadow: 0 10px 25px rgba(248, 187, 208, 0.5); /* เงาสีพาสเทลฟุ้งๆ */
+    transition: all 0.3s ease;
+  }
+
+  .btn-pastel:hover {
+    filter: brightness(1.03); /* สว่างขึ้นเล็กน้อย */
+    transform: scale(1.05); /* ขยายใหญ่ขึ้นเล็กน้อย */
+    box-shadow: 0 15px 35px rgba(248, 187, 208, 0.7); /* เงาฟุ้งขึ้น */
+  }
+
+  .btn-pastel:active {
+    transform: scale(1);
+  }
+
     </style>
 </head>
 <body>
-    <H1> TEXT </H1>
-    <H2> TEXT </H2>
-    <H3> TEXT </H3>
-    <H4> TEXT </H4>
-    <H5> TEXT </H5>
-    <H6> TEXT </H6>
+<div id="heart-container"></div>
+<div id="click-container"></div>
+<div class="container">
+<div class="card">
 
-    <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt error ea, aut, quae odit aspernatur sit accusamus commodi optio eligendi sed laboriosam porro. Culpa totam doloribus, nesciunt explicabo aliquam excepturi.</p>
-    <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt error ea, aut, quae odit aspernatur sit accusamus commodi optio eligendi sed laboriosam porro. Culpa totam doloribus, nesciunt explicabo aliquam excepturi.</p>
-    <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt error ea, aut, quae odit aspernatur sit accusamus commodi optio eligendi sed laboriosam porro. Culpa totam doloribus, nesciunt explicabo aliquam excepturi.</p>
-    <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt error ea, aut, quae odit aspernatur sit accusamus commodi optio eligendi sed laboriosam porro. Culpa totam doloribus, nesciunt explicabo aliquam excepturi.</p>
+    <!-- Profile -->
+    <div class="image-container">
+        <img src="images.png" class="cat-image" onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSADGc854o4-04exHOD4cUdJDQPCe0-5hjSTQ&s'">
+    </div>
+    <h1 id="greeting">CAKE (ไอ้อ้วนน)</h1>
 
-    <a href="https://www.youtube.com/watch?v=leihudXxqAY" target="_blank">go to learn HTML-CSS code video</a> <br>
-    <a href="about.HTML">GO TO ABOUT PAGE</a> <br>
-    <a href="Table.HTML">Go to Table page</a> <br>
-    <a href="cake.HTML">GO to cake</a>
-    <img width="500" lenth="500" src="https://s-media-cache-ak0.pinimg.com/736x/38/25/fe/3825fee18f15bbe8084fdc8b509426dd.jpg" 
-    alt= <br><p><h4> "This pic is my type" </h4>
-    
-    <!-- Html table -->
-    <table>
-        <tr>
-            <!-- table headersale หัวตาราง -->
-            <th>ID</th> 
-            <th>NAME</th>
-            <th>AGE</th>
-            <th>Position</th>
-        </tr>
-        <tr>
-            <!-- table datasale ข้อมูลในตาราง -->
-            <td>1</td>
-            <td>A</td>
-            <td>56</td>
-            <td>Dev</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>B</td>
-            <td>55</td>
-            <td>Office</td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>C</td>
-            <td>57</td>
-            <td>CEO</td>
-        </tr>
-    </table>
+    <!-- Anniversary -->
+    <div class="anniversary-box">
+        <span class="anniv-label">💕 เราคบกันมาแล้ว</span>
+        <div><a href="page.html" class="btn-pastel">
+  Next page
+</a></div?
+        <div class="anniv-counter">
+            <div class="anniv-unit"><span class="anniv-num" id="anniv-days">0</span><span class="anniv-unit-label">วัน</span></div>
+            <div class="anniv-unit"><span class="anniv-num" id="anniv-hours">00</span><span class="anniv-unit-label">ชั่วโมง</span></div>
+            <div class="anniv-unit"><span class="anniv-num" id="anniv-mins">00</span><span class="anniv-unit-label">นาที</span></div>
+            <div class="anniv-unit"><span class="anniv-num" id="anniv-secs">00</span><span class="anniv-unit-label">วินาที</span></div>
+        </div>
+        <div class="anniv-since">ตั้งแต่ 13 กันยายน 2568 ✨</div>
+    </div>
 
-    <!-- HTML list -->
-     <!-- Unoered list จุดไข่ปลาดำ  -->
-    <ul>
-        <li>Coffee</li>
-        <li>Tea</li>
-        <li>Milk</li>
-    </ul>
+    <!-- Sync Bar -->
+    <div class="sync-bar">
+        <div class="sync-status">
+            <div class="sync-dot" id="sync-dot"></div>
+            <span id="sync-label">ซิงค์ข้อมูลทั้งคู่แล้ว ✓</span>
+        </div>
+        <button class="sync-refresh-btn" onclick="manualSync()">🔄 รีเฟรช</button>
+    </div>
 
-    <!-- Ordered list ตัวเลข -->
-     <ol>
-        <li>Bread</li>
-        <li>Peanut</li>
-        <li>Cake</li>
-     </ol>
+    <!-- 🌙 Bedtime Check-in -->
+    <div class="checkin-box">
+        <div class="checkin-title">🌙 เช็คอินก่อนนอน</div>
+        <div class="checkin-subtitle">กดทุกคืนก่อนนอนเพื่อสะสมสตรีค 🔥</div>
+        <div class="checkin-streak">
+            <span class="streak-flame">🔥</span>
+            <span class="streak-num" id="streak-num">0</span>
+            <div class="streak-label">วันติดต่อกัน<br><span style="font-size:0.55rem;opacity:0.7">consecutive nights</span></div>
+        </div>
+        <div class="checkin-days-row" id="checkin-days-row"></div>
+        <button class="checkin-btn" id="checkin-btn" onclick="doCheckin()">🌙 กดเช็คอินก่อนนอนนะ</button>
+        <div class="checkin-msg" id="checkin-msg"></div>
+    </div>
 
-     <!-- HTML Text Formatting dารกำหนดลักษณะให้ข้อความ ใช้บ่อยๆ <b> <strong> other -->
-        <b>Bold text</b> <br>
-        <strong>Important text</strong> <br>
-        <i>Italic text</i> <br>
-        <em>Emphasized text</em> <br>
-        <mark>Marked text</mark> <br>
-        <small>Smaller text</small> <br>
-        <del>Deleted text</del> <br> 
-        <ins>Inserted text</ins> <br> 
-        <sub>Subscript text</sub> <br> 
-        <sup>Superscript text</sup> <br>
+    <!-- 📊 Stats -->
+    <div class="section-header"><div class="section-line"></div><div class="section-badge">📊 OUR STATS</div><div class="section-line right"></div></div>
+    <div class="stats-box" style="margin-bottom:20px;">
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num" id="stat-days">0</div><div class="stat-label">วันด้วยกัน</div></div>
+            <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num" id="stat-streak">0</div><div class="stat-label">Streak คืน</div></div>
+            <div class="stat-card"><div class="stat-icon">📸</div><div class="stat-num" id="stat-photos">0</div><div class="stat-label">รูปความทรงจำ</div></div>
+            <div class="stat-card"><div class="stat-icon">📬</div><div class="stat-num" id="stat-capsules">0</div><div class="stat-label">Time Capsule</div></div>
+            <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num" id="stat-wishes">0</div><div class="stat-label">Wish สำเร็จ</div></div>
+            <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-num" id="stat-posts">0</div><div class="stat-label">Chat ทั้งหมด</div></div>
+        </div>
+        <div class="stats-mood-bar">
+            <div class="mood-bar-title">😊 Mood Breakdown เดือนนี้</div>
+            <div class="mood-bar-row"><span class="mood-bar-label">😊</span><div class="mood-bar-track"><div class="mood-bar-fill" id="bar-happy" style="background:#ffeb3b;width:0%"></div></div><span class="mood-bar-count" id="cnt-happy">0</span></div>
+            <div class="mood-bar-row"><span class="mood-bar-label">😔</span><div class="mood-bar-track"><div class="mood-bar-fill" id="bar-sad" style="background:#64b5f6;width:0%"></div></div><span class="mood-bar-count" id="cnt-sad">0</span></div>
+            <div class="mood-bar-row"><span class="mood-bar-label">😤</span><div class="mood-bar-track"><div class="mood-bar-fill" id="bar-angry" style="background:#ff5252;width:0%"></div></div><span class="mood-bar-count" id="cnt-angry">0</span></div>
+            <div class="mood-bar-row"><span class="mood-bar-label">😋</span><div class="mood-bar-track"><div class="mood-bar-fill" id="bar-hungry" style="background:#ffb74d;width:0%"></div></div><span class="mood-bar-count" id="cnt-hungry">0</span></div>
+        </div>
+    </div>
 
-        <!-- HTML Forms -->
-         <form action="">
-            <!-- fieldset คือกรอบ และ legend คือบอกว่ากรอบนั้นไว้ทำอะไร -->
-            <fieldset>
-                <legend> FPS info</legend>
-            <label for="First name">f name</label>
-            <input type="text" name="firstname" placeholder="mklo"> <br>
-            <label for="First name">Last name</label>
-            <input type="text" name="lastname" placeholder="enter your last name"> <br>
-            </fieldset>
-            
-            <!-- Select ไว้สำหรับเลือกตัวเลือก
-             ต้องมี option -->
-            <select name="cars" id="cars">
-                <option value="volvo">Volvo</option>
-                <option value="toyota">Toyota</option>
-                <option value="Honda" selected>Honda</option>
-                <option value="YAMAHA">Yamaha</option>
-            </select>
+    <!-- ===== 💬 REAL-TIME CHAT ===== -->
+    <div class="section-header"><div class="section-line"></div><div class="section-badge">💬 REAL-TIME CHAT</div><div class="section-line right"></div></div>
+    <div class="chat-box" style="margin-bottom:20px;">
+        <div class="chat-header">
+            <div class="chat-title">💕 ส่งข้อความถึงกัน</div>
+            <div class="chat-online"><div class="chat-online-dot"></div>ออนไลน์</div>
+        </div>
+        <div class="chat-who-switch">
+            <button class="chat-who-btn active me-active" id="chat-me-btn" onclick="setChatWho('me')">👦 เค้าพิมพ์</button>
+            <button class="chat-who-btn you-active" id="chat-you-btn" onclick="setChatWho('you')">🍰 อ้วนพิมพ์</button>
+        </div>
+        <div class="chat-emoji-bar">
+            <button class="chat-emoji-btn" onclick="insertEmoji('❤️')">❤️</button>
+            <button class="chat-emoji-btn" onclick="insertEmoji('🍰')">🍰</button>
+            <button class="chat-emoji-btn" onclick="insertEmoji('🥰')">🥰</button>
+            <button class="chat-emoji-btn" onclick="insertEmoji('😘')">😘</button>
+            <button class="chat-emoji-btn" onclick="insertEmoji('✨')">✨</button>
+            <button class="chat-emoji-btn" onclick="insertEmoji('🌸')">🌸</button>
+        </div>
+        <div class="chat-feed" id="chat-feed">
+            <div class="chat-empty">ยังไม่มีข้อความ เริ่มคุยกันเลย! 💬</div>
+        </div>
+        <div class="chat-typing" id="chat-typing"></div>
+        <div class="chat-input-area">
+            <textarea class="chat-textarea" id="chat-input" placeholder="พิมพ์ข้อความ..." maxlength="300" rows="1" oninput="autoresizeChatInput(this)"></textarea>
+            <button class="chat-send-btn" onclick="sendChatMsg()">➤</button>
+        </div>
+    </div>
 
-            <!-- Datalist ไว้สำหรับเลือกช้อยแบบ select แต่พิมพ์ได้ -->
-            <input list="browser" name="browser">
-            <datalist id="browser">
-                <option value="volvo">Volvo
-                <option value="toyota">Toyota
-                <option value="Honda" selected>Honda
-                <option value="YAMAHA">Yamaha
-            </datalist>
+    <!-- ===== 🎮 MINI GAMES ===== -->
+    <div class="section-header"><div class="section-line"></div><div class="section-badge">🎮 MINI GAMES</div><div class="section-line right"></div></div>
+    <div class="games-box" style="margin-bottom:20px;">
+        <div class="games-title">🎮 เล่นด้วยกันเลย!</div>
+        <div class="games-tabs">
+            <button class="game-tab active" onclick="switchGame('quiz')">🎲 ทายใจกัน</button>
+            <button class="game-tab" onclick="switchGame('memory')">🧩 Memory</button>
+            <button class="game-tab" onclick="switchGame('rps')">🪨 เป่ายิ้ง</button>
+            <button class="game-tab" onclick="switchGame('wheel')">🎯 Spin Wheel</button>
+        </div>
 
-            <!-- textarea คือกรอบสำหรับเขียน -->
-            <textarea name="" id=""></textarea>
-            <!-- Button ก็ปุ่มอะ -->
-            <button type="submit">SUBMIT</button>
-            <!-- <input type="button" value="Sumbit">
-            <input type="button" value="button"> <br>
-            <input type="checkbox"> Check <br>
-            <input type="color"> <br>
-            <input type="date"> <br>
-            <input type="datetime-local"> <br>
-            <input type="email"> Email <br>
-            <input type="file"> <br>
-            <input type="hidden"><br>
-            <input type="image"><br>
-            <input type="month"><br>
-            <input type="number"><br>
-            <input type="password"><br>
-            <input type="radio"><br>
-            <input type="range"><br>
-            <input type="reset"><br>
-            <input type="search"><br>
-            <input type="submit"><br>
-            <input type="tel"><br>
-            <input type="text"><br>
-            <input type="time"><br>
-            <input type="url"><br>
-            <input type="week"><br> -->
-            
-         </form>
-
-         <!-- HTML Block ELement สามารถทำเป้นกล่องไว้โครงสร้างหน้าเว็ปได้ -->
-
-         <div>
-            <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit saepe fugit, consequatur doloribus
-                 consectetur dolorem eveniet at distinctio enim magni similique? Nostrum sint pariatur animi explicabo dignissimos fugiat et quos.
-            </p>
-
-                <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit saepe fugit, consequatur doloribus consectetur dolorem eveniet at distinctio enim magni similique? Nostrum sint pariatur animi explicabo dignissimos fugiat et quos.
-            </p>
-         </div>
-
-         <!-- HTML Inline Elements จะไม่เริ่มบรรทัดใหม่ และ จะมีความกว้างตามเนื้อหาภายใน ไว้สำหรับทำเมนูได้ -->
-
-         <hr>
-         <a f=hre"#">Home</a>
-         <a href="#">Info</a>
-         <a href="#">Contact</a>
-         <a href="#">About</a>
-         <a href="#">Blog</a>
-         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae ratione eum repudiandae nulla eaque laudantium veritatis repellendus culpa, rerum quidem facere. Veritatis molestias aspernatur, laboriosam minima et nobis ea eveniet?
-         <span> Text 1</span>
-         <span> Text 2</span>
-         <span> Text 3</span>
-
-         <!-- HTML Div แท็ก div จะถูกใช้เป็นกล่องสำหรับ HTML Elements ตัวอื่นๆ แท็ก Div จะเป็น block element เราจะใข้ div สำหรับการวางโครงสร้างให้กับหน้าเว็บ-->
-       
-         <!-- Parent Element -->
-         <div>
-            <!-- Child element -->
-            <h1>Hello HTML</h1>
-            <p>Learn html and stuff</p>
-            <div>
-                <p> Lorem, ipsum dolor sit amet consectetur adipisicing elit. Velit optio ipsa aperiam, laboriosam, veniam deserunt id totam tenetur voluptatem aliquid est maxime illum in ipsam quod aut laudantium. Accusantium, tempore?</p>
+        <!-- 🎲 Quiz -->
+        <div class="game-panel active" id="game-quiz">
+            <div class="quiz-progress" id="quiz-progress"></div>
+            <div class="quiz-q" id="quiz-q-box">
+                <div class="quiz-q-text" id="quiz-q-text">กำลังโหลด...</div>
+                <div class="quiz-opts" id="quiz-opts"></div>
             </div>
-         </div>
+            <div class="quiz-result" id="quiz-result" style="display:none">
+                <div class="quiz-score" id="quiz-score-display">0/0</div>
+                <div class="quiz-score-label">คะแนน 💕</div>
+                <div id="quiz-result-msg" style="font-size:0.8rem;color:#f0c0d8;margin-top:8px;"></div>
+                <button class="quiz-next-btn" onclick="quizRestart()">🔄 เล่นอีกรอบ</button>
+            </div>
+        </div>
 
-                         <!-- HTML class class จะถูกอ้างไปที่ css 
-                 class can use again 
-                 we can class many for tag HTML-->
+        <!-- 🧩 Memory Card -->
+        <div class="game-panel" id="game-memory">
+            <div class="mem-info" style="margin-bottom:10px;">
+                <span class="mem-moves">ความพยายาม: <b id="mem-moves">0</b></span>
+                <span class="mem-timer" id="mem-timer">00:00</span>
+                <button class="game-btn" onclick="memInit()">🔄 ใหม่</button>
+            </div>
+            <div class="memory-grid" id="memory-grid"></div>
+            <div class="mem-win" id="mem-win" style="display:none">
+                <div class="mem-win-emoji">🎉</div>
+                <div class="mem-win-text" id="mem-win-text">เก่งมากเลย!</div>
+                <button class="game-btn" onclick="memInit()">🔄 เล่นอีกรอบ</button>
+            </div>
+        </div>
 
-                 <div class="cool">
-                    <h1> U Can do it</h1>
-                <div class="car"></div>
+        <!-- 🪨 Rock Paper Scissors -->
+        <div class="game-panel" id="game-rps">
+            <div class="rps-score" style="margin-bottom:16px;">
+                <div class="rps-score-item"><div class="rps-score-num" id="rps-score-me">0</div><div class="rps-score-lbl">👦 เค้า</div></div>
+                <div class="rps-score-item"><div class="rps-score-num" id="rps-score-draw">0</div><div class="rps-score-lbl">เสมอ</div></div>
+                <div class="rps-score-item"><div class="rps-score-num" id="rps-score-cpu">0</div><div class="rps-score-lbl">🍰 อ้วน</div></div>
+            </div>
+            <div class="rps-arena">
+                <div class="rps-side">
+                    <div class="rps-choice" id="rps-me-choice">❓</div>
+                    <div class="rps-label">👦 เค้า</div>
+                </div>
+                <div class="rps-vs">VS</div>
+                <div class="rps-side">
+                    <div class="rps-choice" id="rps-cpu-choice">❓</div>
+                    <div class="rps-label">🍰 อ้วน (AI)</div>
+                </div>
+            </div>
+            <div class="rps-result" id="rps-result">
+                <div class="rps-result-text">เลือกเลย! 👇</div>
+            </div>
+            <div class="rps-btns">
+                <button class="rps-btn" onclick="rpsPlay('rock')" title="หิน">🪨</button>
+                <button class="rps-btn" onclick="rpsPlay('paper')" title="กระดาษ">📄</button>
+                <button class="rps-btn" onclick="rpsPlay('scissors')" title="กรรไกร">✂️</button>
+            </div>
+            <button class="game-btn" style="display:block;margin:0 auto;" onclick="rpsReset()">🔄 รีเซ็ต</button>
+        </div>
 
-                <div class="car"></div>
-                    
+        <!-- 🎯 Spin the Wheel -->
+        <div class="game-panel" id="game-wheel">
+            <div style="margin-bottom:10px;">
+                <div class="wheel-custom-row">
+                    <input class="wheel-inp" id="wheel-new-item" placeholder="เพิ่มตัวเลือก เช่น ดูหนัง" maxlength="15">
+                    <button class="wheel-add-btn" onclick="wheelAddItem()">+ เพิ่ม</button>
+                </div>
+                <div class="wheel-items-list" id="wheel-items-list"></div>
+            </div>
+            <div class="wheel-wrap">
+                <div class="wheel-pointer">▼</div>
+                <canvas class="wheel-canvas" id="wheel-canvas" width="240" height="240"></canvas>
+                <div class="wheel-center">🎯</div>
+            </div>
+            <button class="wheel-spin-btn" id="wheel-spin-btn" onclick="wheelSpin()">🎯 หมุนเลย!</button>
+            <div class="wheel-result-box" id="wheel-result-box">
+                <div class="wheel-result-text" id="wheel-result-text">กด หมุนเลย! เพื่อสุ่ม 🎲</div>
+            </div>
+        </div>
+    </div>
 
-                 </div>
+    <!-- ===== 💌 SPECIAL CARD SENDER ===== -->
+    <div class="section-header"><div class="section-line"></div><div class="section-badge">💌 SPECIAL CARDS</div><div class="section-line right"></div></div>
+    <div class="card-sender-box" style="margin-bottom:20px;">
+        <div style="font-size:0.75rem;font-weight:700;color:#c2185b;margin-bottom:12px;">✉️ ส่งการ์ดพิเศษให้กัน <span style="font-size:0.6rem;color:#888;font-weight:400">(Real-time ซิงค์ 🔄)</span></div>
+        <div class="card-templates">
+            <div class="card-template ct-romantic selected" onclick="selectCardTemplate('romantic')" id="ct-romantic">
+                <span class="ct-emoji">🌹</span>
+                <div class="ct-name">Romantic</div>
+            </div>
+            <div class="card-template ct-birthday" onclick="selectCardTemplate('birthday')" id="ct-birthday">
+                <span class="ct-emoji">🎂</span>
+                <div class="ct-name">Birthday</div>
+            </div>
+            <div class="card-template ct-goodnight" onclick="selectCardTemplate('goodnight')" id="ct-goodnight">
+                <span class="ct-emoji">🌙</span>
+                <div class="ct-name">Good Night</div>
+            </div>
+            <div class="card-template ct-justbecause" onclick="selectCardTemplate('justbecause')" id="ct-justbecause">
+                <span class="ct-emoji">🌈</span>
+                <div class="ct-name">Just Because</div>
+            </div>
+        </div>
 
-                 <!-- HTML Id can't use again -->
+        <!-- Card Preview -->
+        <div class="card-preview-wrap">
+            <div class="card-preview cp-romantic" id="card-preview">
+                <div class="cp-main-emoji" id="cp-emoji">🌹</div>
+                <div class="cp-title" id="cp-title">Dear อ้วน,</div>
+                <div class="cp-msg" id="cp-msg">รักอ้วนมากที่สุดในโลกเลยนะ 💕</div>
+                <div class="cp-from" id="cp-from">จากเค้า 👦</div>
+            </div>
+        </div>
 
-                 <div id="CAKE">
-                 </div>
+        <textarea class="card-msg-input" id="card-msg-input" rows="3" placeholder="เขียนข้อความลงการ์ด..." maxlength="150" oninput="updateCardPreview()"></textarea>
+        <div class="card-send-section">
+            <button class="card-send-me-btn" onclick="sendCard('me')">👦 ส่งจากเค้า</button>
+            <button class="card-send-you-btn" onclick="sendCard('you')">🍰 ส่งจากอ้วน</button>
+        </div>
 
-                 <script>
-                    let CAKE = document.getElementById("CAKE")
-                    CAKE.addEventListener("click", function() {
-                        alert("Hello Cake");
-                    })
-                 </script>
+        <!-- Card Inbox -->
+        <div class="card-inbox" id="card-inbox" style="margin-top:14px;">
+            <div style="font-size:0.65rem;color:#c2185b;font-weight:700;margin-bottom:8px;">📥 การ์ดที่ได้รับ</div>
+        </div>
+    </div>
 
-                 <!-- HTML Semantic Element คือ element ที่มีความหมายในตัวมันเอง -->
-                  <header class="header=area header-sticky">
-                    <div></div>
-                  </header>
+    <!-- ===== 🎵 PLAYLIST ===== -->
+    <div class="section-header"><div class="section-line"></div><div class="section-badge">🎵 OUR PLAYLIST</div><div class="section-line right"></div></div>
+    <div class="playlist-box">
+        <div class="now-playing-bar" id="now-playing-bar">
+            <div class="np-top">
+                <div class="np-disc" id="np-disc">🎵</div>
+                <div class="np-info">
+                    <div class="np-title" id="np-title">กำลังเล่น...</div>
+                    <div class="np-who" id="np-who">🎶</div>
+                </div>
+                <button class="lyrics-toggle-btn" id="lyrics-toggle" onclick="toggleLyrics()">📝 เนื้อเพลง</button>
+            </div>
+            <div class="np-wave" id="np-wave">
+                <div class="np-bar"></div><div class="np-bar"></div><div class="np-bar"></div><div class="np-bar"></div>
+                <div class="np-bar"></div><div class="np-bar"></div><div class="np-bar"></div><div class="np-bar"></div>
+            </div>
+        </div>
+        <div class="lyrics-panel" id="lyrics-panel">
+            <div class="lyrics-label">🎵 เนื้อเพลง</div>
+            <div class="lyrics-text" id="lyrics-text">ยังไม่มีเนื้อเพลง</div>
+        </div>
+        <div class="yt-embed-wrap" id="yt-embed-wrap">
+            <iframe id="yt-iframe" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+        </div>
+        <div class="playlist-tracks" id="playlist-tracks">
+            <div class="track-card" id="track-proud" onclick="playLocalTrack('proud')">
+                <div class="track-icon-wrap proud-color"><div class="track-vinyl"></div>🌸</div>
+                <div class="track-info"><div class="track-name">Proud - fellow fellow</div><div class="track-sub">เพลงที่กำตั้งใจเปิดให้อ้วนฟัง 🌸</div></div>
+                <div class="track-bars"><div class="track-bar"></div><div class="track-bar"></div><div class="track-bar"></div><div class="track-bar"></div></div>
+                <button class="track-play-btn" id="btn-proud">▶</button>
+            </div>
+            <div class="track-card" id="track-happy" onclick="playLocalTrack('happy')">
+                <div class="track-icon-wrap happy-color"><div class="track-vinyl"></div>🌟</div>
+                <div class="track-info"><div class="track-name">เวลาเธอยิ้ม - Polycat</div><div class="track-sub">ฟังตอนอ้วนยิ้มแล้วโลกสดใส</div></div>
+                <div class="track-bars"><div class="track-bar"></div><div class="track-bar"></div><div class="track-bar"></div><div class="track-bar"></div></div>
+                <button class="track-play-btn" id="btn-happy">▶</button>
+            </div>
+        </div>
+        <div id="yt-tracks-list" style="margin-top:10px;display:flex;flex-direction:column;gap:10px;"></div>
+        <div class="yt-add-box" style="margin-top:12px;">
+            <div class="yt-add-title">▶️ เพิ่มเพลงจาก YouTube <span style="font-size:0.6rem;color:#a1887f;font-weight:400">(ซิงค์ทั้งคู่ 🔄)</span></div>
+            <div class="yt-who-row">
+                <button class="yt-who-btn active" id="yt-who-me" onclick="ytSetWho('me')">👦 เค้าเพิ่ม</button>
+                <button class="yt-who-btn" id="yt-who-you" onclick="ytSetWho('you')">🍰 อ้วนเพิ่ม</button>
+            </div>
+            <div class="yt-add-row">
+                <input class="yt-inp" id="yt-url-inp" placeholder="วาง YouTube link เช่น https://youtu.be/xxxx" maxlength="200">
+                <button class="yt-add-btn" onclick="addYtSong()">+ เพิ่ม</button>
+            </div>
+            <input class="yt-inp" id="yt-name-inp" placeholder="ชื่อเพลง - ศิลปิน" maxlength="60" style="margin-bottom:6px;">
+            <textarea class="yt-lyrics-inp" id="yt-lyrics-inp" placeholder="เนื้อเพลง (ไม่บังคับ)" rows="3"></textarea>
+        </div>
+    </div>
+
+    <!-- Birthday -->
+    <div class="birthday-box" style="margin-top:20px;"><span class="bday-title">🎂 เคาท์ดาวน์วันเกิดอ้วน (7 ก.ย.)</span><div class="bday-days" id="bday-timer">เหลืออีก -- วัน</div></div>
+
+    <audio id="mySong" loop><source src="015 Proud.mp3" type="audio/mpeg"></audio>
+    <audio id="happySong" loop><source src="เวลาเธอยิ้ม.mp3" type="audio/mpeg"></audio>
+
+    <!-- Mood -->
+    <div class="mood-box" style="margin-top:20px;">
+        <p style="font-size:0.75rem;color:var(--text-main);">วันนี้อ้วนเป็นยังไง?</p>
+        <div class="mood-btns">
+            <span class="mood-btn" onclick="mood('😊')">😊</span>
+            <span class="mood-btn" onclick="mood('😔')">😔</span>
+            <span class="mood-btn" onclick="mood('😤')">😤</span>
+            <span class="mood-btn" onclick="mood('😋')">😋</span>
+        </div>
+        <p id="mood-reply" style="font-size:0.8rem;margin-top:5px;color:var(--text-sub);min-height:1.2rem;"></p>
+    </div>
+
+    <!-- Calendar -->
+    <div class="calendar-box">
+        <div class="calendar-header"><span id="month-name">-- 2569</span><span style="font-size:0.65rem;opacity:0.7">Mood Diary ✨</span></div>
+        <div class="calendar-grid" id="calendar-grid">
+            <div class="calendar-day-label">S</div><div class="calendar-day-label">M</div><div class="calendar-day-label">T</div><div class="calendar-day-label">W</div><div class="calendar-day-label">T</div><div class="calendar-day-label">F</div><div class="calendar-day-label">S</div>
+        </div>
+    </div>
+
+    <!-- 💬 Message Board -->
+    <div class="section-header"><div class="section-line"></div><div class="section-badge">📌 MESSAGE BOARD</div><div class="section-line right"></div></div>
+    <div class="board-box" style="margin-bottom:20px;">
+        <div style="font-size:0.6rem;color:#9fa8da;margin-bottom:8px;text-align:right;">🔄 ซิงค์ทั้งคู่</div>
+        <div class="board-who-row">
+            <button class="board-who-btn active" id="board-me-btn" onclick="setBoardWho('me')">👦 เค้า</button>
+            <button class="board-who-btn" id="board-you-btn" onclick="setBoardWho('you')">🍰 อ้วน</button>
+        </div>
+        <div class="board-post-row">
+            <textarea class="board-textarea" id="board-textarea" placeholder="โพสต์ความรู้สึกสั้นๆ..." maxlength="200" rows="2" oninput="updateBoardChar()"></textarea>
+            <button class="board-post-btn" onclick="addBoardPost()">โพสต์</button>
+        </div>
+        <div class="board-char-count" id="board-char-count">0/200</div>
+        <div class="board-feed" id="board-feed"><div class="board-empty">ยังไม่มีข้อความ 💬</div></div>
+    </div>
+
+    <!-- 🎯 Wishlist -->
+    <div class="section-header"><div class="section-line"></div><div class="section-badge">🎯 COUPLE WISHLIST</div><div class="section-line right"></div></div>
+    <div class="wishlist-box" style="margin-bottom:20px;">
+        <div style="font-size:0.6rem;color:#a1887f;margin-bottom:8px;text-align:right;">🔄 ซิงค์ทั้งคู่</div>
+        <div class="wish-who-select">
+            <button class="who-btn active" id="wish-me-btn" onclick="setWishWho('me')">👦 เค้า</button>
+            <button class="who-btn" id="wish-you-btn" onclick="setWishWho('you')">🍰 อ้วน</button>
+            <button class="who-btn" id="wish-both-btn" onclick="setWishWho('both')">💕 ด้วยกัน</button>
+        </div>
+        <div class="wish-input-row">
+            <input class="wish-input" id="wish-input" placeholder="อยากทำอะไร..." maxlength="50">
+            <button class="wish-add-btn" onclick="addWish()">+ เพิ่ม</button>
+        </div>
+        <div class="wish-list" id="wish-list"><div class="wish-empty">ยังไม่มี Wishlist 🎯</div></div>
+    </div>
+
+    <!-- 💌 Letters -->
+    <div class="section-header" style="margin-bottom:14px;"><div class="section-line"></div><div class="section-badge">💌 LETTERS FOR YOU</div><div class="section-line right"></div></div>
+    <div style="width:100%;margin-bottom:20px;"><div id="letters-grid"></div></div>
+
+    <!-- 📬 Time Capsule -->
+    <div class="section-header"><div class="section-line"></div><div class="section-badge">📬 TIME CAPSULE</div><div class="section-line right"></div></div>
+    <div class="capsule-section">
+        <div class="tc-stats-row">
+            <div class="tc-stat"><span class="tc-stat-num" id="tc-stat-ready">0</span><span class="tc-stat-label"><span class="tc-notify-dot" id="tc-nd" style="display:none"></span>พร้อมเปิด</span></div>
+            <div class="tc-stat"><span class="tc-stat-num" id="tc-stat-locked">0</span><span class="tc-stat-label">ล็อกอยู่</span></div>
+            <div class="tc-stat"><span class="tc-stat-num" id="tc-stat-total">0</span><span class="tc-stat-label">ทั้งหมด</span></div>
+        </div>
+        <div class="tc-create-box">
+            <div class="tc-create-title">✏️ สร้าง Time Capsule ใหม่</div>
+            <span class="tc-inp-label" style="margin-top:0">ประเภท</span>
+            <div class="tc-type-row">
+                <button class="tc-type-btn active" onclick="tcSetType('letter')" id="tct-letter">💌 จดหมาย</button>
+                <button class="tc-type-btn" onclick="tcSetType('dream')" id="tct-dream">💜 ความฝัน</button>
+                <button class="tc-type-btn" onclick="tcSetType('promise')" id="tct-promise">🌸 คำสัญญา</button>
+                <button class="tc-type-btn" onclick="tcSetType('secret')" id="tct-secret">🔵 ความลับ</button>
+            </div>
+            <span class="tc-inp-label">บอกใครส่ง</span>
+            <div class="tc-type-row">
+                <button class="tc-type-btn active" onclick="tcSetWho('me')" id="tcw-me">👦 จากเค้า</button>
+                <button class="tc-type-btn" onclick="tcSetWho('you')" id="tcw-you">🍰 จากอ้วน</button>
+            </div>
+            <span class="tc-inp-label">ข้อความ</span>
+            <textarea class="tc-inp" id="tc-text" rows="4" placeholder="เขียนสิ่งที่อยากบอกในอนาคต... 💌"></textarea>
+            <span class="tc-inp-label">ระบบล็อก</span>
+            <div class="lock-option-row">
+                <div class="lock-opt selected" onclick="tcSelectLock('date')" id="tcl-date"><span class="lock-opt-icon">📅</span><div class="lock-opt-name">ล็อกตามวัน</div><div class="lock-opt-desc">เปิดหลังวันที่กำหนด</div></div>
+                <div class="lock-opt" onclick="tcSelectLock('password')" id="tcl-password"><span class="lock-opt-icon">🔑</span><div class="lock-opt-name">ล็อก Password</div><div class="lock-opt-desc">ต้องใส่รหัสเพื่อเปิด</div></div>
+                <div class="lock-opt" onclick="tcSelectLock('both')" id="tcl-both"><span class="lock-opt-icon">🔒</span><div class="lock-opt-name">ล็อกคู่กัน</div><div class="lock-opt-desc">วัน + รหัสผ่าน</div></div>
+            </div>
+            <div class="lock-cfg" id="tc-cfg-date"><span class="tc-inp-label" style="margin-top:0">📅 วันที่จะเปิดได้</span><input type="datetime-local" class="tc-inp" id="tc-unlock-date"></div>
+            <div class="lock-cfg" id="tc-cfg-password" style="display:none"><span class="tc-inp-label" style="margin-top:0">🔑 ตั้ง Password</span><input type="password" class="tc-inp" id="tc-set-pw" placeholder="ตั้งรหัสผ่าน"></div>
+            <div class="lock-cfg" id="tc-cfg-both" style="display:none"><span class="tc-inp-label" style="margin-top:0">📅 วันที่จะเปิดได้</span><input type="datetime-local" class="tc-inp" id="tc-unlock-date-both"><span class="tc-inp-label">🔑 ตั้ง Password</span><input type="password" class="tc-inp" id="tc-set-pw-both" placeholder="ตั้งรหัสผ่าน"></div>
+            <button class="tc-save-btn" onclick="tcSave()">📸 ล็อกแคปซูลนี้ไว้</button>
+        </div>
+        <div class="tc-filter-row">
+            <button class="tc-filter-btn active" onclick="tcSetFilter('all')" id="tcf-all">ทั้งหมด</button>
+            <button class="tc-filter-btn" onclick="tcSetFilter('ready')" id="tcf-ready">✨ พร้อมเปิด</button>
+            <button class="tc-filter-btn" onclick="tcSetFilter('locked')" id="tcf-locked">🔒 ล็อก</button>
+        </div>
+        <div id="tc-list"></div>
+    </div>
+
+    <!-- Memories -->
+    <div style="width:100%;margin-bottom:20px;">
+        <div class="section-header"><div class="section-line"></div><div class="section-badge outline">🖼 OUR MEMORIES</div><div class="section-line right"></div></div>
+        <div class="memories-grid" id="static-memories">
+            <div class="polaroid-card"><div class="polaroid-pin"></div><img class="polaroid-photo" src="แฟน.png" alt="My Cake" onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSADGc854o4-04exHOD4cUdJDQPCe0-5hjSTQ&s'"><div class="polaroid-caption">My Cake 🍰</div></div>
+            <div class="polaroid-card"><div class="polaroid-pin"></div><img class="polaroid-photo" src="แฟน2.png" alt="Happy Day" onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSADGc854o4-04exHOD4cUdJDQPCe0-5hjSTQ&s'"><div class="polaroid-caption">Happy Day 🌿</div></div>
+        </div>
+        <div class="memories-grid" id="dynamic-photos" style="margin-top:10px;"></div>
+        <div class="photo-upload-area">
+            <input type="file" id="photo-file-input" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
+            <button class="photo-upload-btn" onclick="document.getElementById('photo-file-input').click()">📷 เพิ่มรูปความทรงจำ</button>
+            <div class="photo-upload-hint">รูปจะซิงค์ให้ทั้งคู่เห็น 💕</div>
+            <div class="upload-progress-wrap" id="upload-progress-wrap"><div class="upload-progress-bar" id="upload-progress-bar"></div></div>
+            <div class="photo-upload-status" id="photo-upload-status"></div>
+        </div>
+    </div>
+
+    <!-- Bio -->
+    <div class="bio-section">
+        <div class="bio-item"><span class="bio-label">วันที่คบกัน:</span><span>25 มีนาคม 2569 ✨</span></div>
+        <div class="bio-item"><span class="bio-label">วันเกิด:</span><span>7 ก.ย. 52 (05:00-06:00 น.)</span></div>
+    </div>
+
+    <button class="btn-main" style="margin-bottom:15px;background:#ff80ab;" onclick="openLetter()">💌 อ่านจดหมายจากเค้า</button>
+
+    <div id="secret-box" class="daily-box" onclick="showSecret()">
+        <span class="daily-label">🔒 ข้อความลับเฉพาะอ้วน</span>
+        <div id="secret-text">✉️ จิ้มเพื่ออ่าน (วันละครั้ง)</div>
+    </div>
+
+    <div class="garden-box">
+        <p style="font-size:0.75rem;color:#4caf50;font-weight:600;">🪴 สวนดอกไม้ของอ้วน</p>
+        <div id="tree-icon" class="tree-display">🌱</div>
+        <div class="progress-container"><div id="growth-bar" class="progress-bar"></div></div>
+        <button id="water-btn" class="water-btn" onclick="waterTree()">💧 รดน้ำต้นไม้</button>
+    </div>
+
+    <fieldset>
+        <legend> 🎀 SHE LIKES 🎀 </legend>
+        <table>
+            <thead><tr><th>Color</th><th>Food</th><th>Flower</th><th>Hobby</th><th>Song</th><th>Animals</th></tr></thead>
+            <tbody>
+                <tr><td>ฟ้าอ่อน</td><td>ไม่กินปลา</td><td>ลาเวนเดอร์</td><td>วาดรูป</td><td>DMMA</td><td>หมา</td></tr>
+                <tr><td>ชมพูอ่อน</td><td>ขนมทุกอย่าง</td><td>ทิวลิป</td><td>ส่องป่า</td><td>ทางของฝุ่น</td><td>แมว</td></tr>
+                <tr><td>ม่วง</td><td>-</td><td>ทานตะวัน</td><td>อ่านนิยาย</td><td>ไม่รู้ทำไม</td><td>กระต่าย</td></tr>
+                <tr><td>เหลือง</td><td>-</td><td>เดซี่</td><td>นอน</td><td>baby tee</td><td>แมวน้ำ</td></tr>
+                <tr><td>เขียว</td><td>-</td><td>แดนดิไลออน</td><td>ดนตรี/ดาว</td><td>pretty girl</td><td>เพนกวิ้น</td></tr>
+                <tr><td>น้ำตาลไม้</td><td>-</td><td>-</td><td>-</td><td>Sorry</td><td>โคอาร่า</td></tr>
+            </tbody>
+        </table>
+    </fieldset>
+
+    <div class="gift-section">
+        <button class="gift-btn btn-gift" onclick="openGiftModal()"><span class="gift-btn-icon">🎁</span><span class="gift-btn-text">ของขวัญพิเศษ<span class="gift-btn-label">กดเพื่อเปิดกล่องของขวัญ ✨</span></span><span>›</span></button>
+        <button class="gift-btn btn-coupon" onclick="drawCoupon()"><span class="gift-btn-icon">🎟</span><span class="gift-btn-text">สุ่มคูปองรัก<span class="gift-btn-label">วันละครั้ง — แลกได้จริงนะ! 💙</span></span><span>›</span></button>
+    </div>
+
+    <button class="btn-main" onclick="confetti({particleCount:150,spread:70,origin:{y:0.6}})">รักอ้วนที่สุดในโลกเลยย🍰💖</button>
+</div>
+</div>
+
+<!-- MODALS -->
+<div class="pw-overlay" id="pw-overlay">
+    <div class="pw-box">
+        <div style="font-size:2rem;margin-bottom:8px">🔑</div>
+        <div class="pw-box-title">ใส่รหัสผ่าน</div>
+        <div class="pw-box-sub">แคปซูลนี้ล็อกด้วย Password</div>
+        <input type="password" class="pw-box-input" id="pw-enter" placeholder="• • • • • •" oninput="document.getElementById('pw-err').innerText=''">
+        <div class="pw-err" id="pw-err"></div>
+        <div class="pw-btn-row">
+            <button class="pw-cancel-btn" onclick="tcClosePw()">ยกเลิก</button>
+            <button class="pw-confirm-btn" onclick="tcConfirmPw()">เปิด 🔓</button>
+        </div>
+    </div>
+</div>
+<div id="letterModal" class="letter-modal" onclick="if(event.target===this)closeLetter2()">
+    <div class="letter-modal-content">
+        <div class="letter-modal-top"><div class="letter-modal-envelope">💌</div><div class="letter-modal-num" id="letter-modal-num">LETTER #1</div></div>
+        <div class="letter-modal-body"><div class="letter-modal-title" id="letter-modal-title">Dear Cake,</div><div class="letter-modal-text" id="letter-modal-text"></div></div>
+        <button class="letter-close-btn" onclick="closeLetter2()">💕 ปิด</button>
+    </div>
+</div>
+<div id="giftModal" class="gift-modal" onclick="if(event.target===this)closeGiftModal()">
+    <div class="gift-modal-content">
+        <div class="gift-modal-header"><h3>🎁 ของขวัญพิเศษสำหรับอ้วน</h3><p>เลือกกล่องที่อยากเปิด ✨</p></div>
+        <div class="gift-modal-body"><div class="gift-grid" id="gift-grid"></div><button class="gift-modal-close" onclick="closeGiftModal()">ปิด</button></div>
+    </div>
+</div>
+<div id="giftDetailModal" class="gift-detail-modal" onclick="if(event.target===this)closeGiftDetailBtn()">
+    <div class="gift-detail-content">
+        <div class="gift-detail-top"><div class="gift-detail-emoji" id="gift-detail-emoji">🎀</div><div class="gift-detail-title" id="gift-detail-title"></div><div class="gift-detail-desc" id="gift-detail-desc"></div></div>
+        <button class="gift-detail-btn" onclick="closeGiftDetailBtn()">รับของขวัญแล้ว 💜</button>
+    </div>
+</div>
+<div id="couponModal" class="coupon-modal" onclick="if(event.target===this)closeCouponModal()">
+    <div class="coupon-card">
+        <div class="coupon-inner">
+            <div class="coupon-top"><div class="coupon-stamp">LOVE COUPON</div><div class="coupon-emoji" id="coupon-emoji">💙</div><div class="coupon-title" id="coupon-title">คูปองรัก</div></div>
+            <div class="coupon-body">
+                <div class="coupon-desc" id="coupon-desc"></div>
+                <div class="coupon-notch-row"><div class="coupon-notch-circle"></div><div class="coupon-notch-line"></div><div class="coupon-notch-circle"></div></div>
+                <div class="coupon-expire" id="coupon-expire"></div>
+                <div class="coupon-barcode">| || ||| | || ||| | || ||| |</div>
+                <button class="coupon-use-btn" id="coupon-use-btn" onclick="useCoupon()">✅ ใช้คูปองนี้</button>
+                <button class="coupon-close-btn" onclick="closeCouponModal()">เก็บไว้ก่อน</button>
+                <div class="coupon-used-note" id="coupon-used-note" style="display:none"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="loveLetter" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="document.getElementById('loveLetter').style.display='none'">&times;</span>
+        <h2 style="color:var(--accent);margin-bottom:15px;font-family:'Caveat',cursive;font-size:2rem;">Dear Cake,</h2>
+        <p style="font-size:0.95rem;line-height:1.6;color:#555;">ถึงไอ้อ้วนที่รักมากที่สุด... ขอบคุณที่อยู่ด้วยกันมาตลอดนะ ดีใจมากที่มีอ้วนเข้ามาในชีวิต สัญญาว่าจะรักและดูแลอ้วนแบบนี้ไปนานๆ ยิ้มเยอะๆ นะครับคนเก่ง 🍰💖</p>
+    </div>
+</div>
+<div id="captionModal" class="caption-modal">
+    <div class="caption-modal-content">
+        <div class="caption-modal-title">📝 ใส่คำบรรยายรูปนี้</div>
+        <input type="text" class="caption-input" id="caption-input" placeholder="ความทรงจำดีๆ 🌸" maxlength="40">
+        <br><button class="caption-confirm-btn" onclick="confirmCaption()">✅ ยืนยัน</button>
+    </div>
+</div>
+
+<!-- Card View Modal -->
+<div class="card-view-modal" id="card-view-modal" onclick="if(event.target===this)closeCardViewModal()">
+    <div class="card-view-inner">
+        <div class="card-preview" id="card-view-preview" style="min-height:220px;">
+            <div class="cp-main-emoji" id="cv-emoji">🌹</div>
+            <div class="cp-title" id="cv-title">Dear...</div>
+            <div class="cp-msg" id="cv-msg"></div>
+            <div class="cp-from" id="cv-from"></div>
+        </div>
+        <button class="card-view-close" onclick="closeCardViewModal()">💕 ปิด</button>
+    </div>
+</div>
+
+<div class="tc-toast" id="tc-toast"></div>
+
+<script>
+// ===== Config =====
+const CLOUDINARY_CLOUD = 'dlb23ghyx';
+const CLOUDINARY_PRESET = 'cake_photos';
+const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`;
+const BIN_ID = '69c80a875fdde574550b19be';
+const BIN_KEY = '$2a$10$dRzV8ELTFUgtYV0SdcZeru1bd9vvyzFgW/AA2r8SCAW.vl3m/K.ze';
+const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const startDate = new Date('2026-03-25T00:00:00');
+const getTodayStr = () => new Date().toISOString().slice(0,10);
+const escapeHtml = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+let syncedData = {};
+let isSyncing = false;
+
+function setSyncStatus(state, label) {
+    const dot = document.getElementById('sync-dot');
+    const lbl = document.getElementById('sync-label');
+    dot.className = 'sync-dot' + (state==='syncing'?' syncing':state==='error'?' error':'');
+    lbl.innerText = label;
+}
+
+async function loadBin() {
+    try { const r=await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':BIN_KEY}}); const d=await r.json(); return d.record||{}; }
+    catch(e){ return syncedData||{}; }
+}
+async function saveBin(record) {
+    try { await fetch(BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':BIN_KEY},body:JSON.stringify(record)}); }
+    catch(e){}
+}
+
+async function fullSync(silent=false) {
+    if(isSyncing) return;
+    isSyncing=true;
+    if(!silent) setSyncStatus('syncing','กำลังซิงค์...');
+    try {
+        const rec=await loadBin();
+        syncedData=rec;
+        renderBoardFromData(rec.boardPosts||[]);
+        renderWishlistFromData(rec.wishlist||[]);
+        renderChatFromData(rec.chatMessages||[]);
+        renderYtTracksFromData(rec.ytSongs||[]);
+        renderCardInbox(rec.specialCards||[]);
+        tcCapsules=rec.capsules||[];
+        tcRenderList(); tcRenderStats();
+        document.getElementById('stat-capsules').innerText=tcCapsules.length;
+        photosData=rec.photos||[];
+        renderDynamicPhotos();
+        document.getElementById('stat-photos').innerText=photosData.length;
+        updateStatsFromData(rec);
+        const timeStr=new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+        setSyncStatus('ok',`ซิงค์ล่าสุด ${timeStr} ✓`);
+    } catch(e){ setSyncStatus('error','ซิงค์ไม่สำเร็จ ⚠️'); }
+    isSyncing=false;
+}
+async function manualSync(){ await fullSync(false); }
+setInterval(()=>fullSync(true),8000);
+
+// ===== Anniversary =====
+function updateAnniversary(){
+    const now=new Date(), diff=now-startDate;
+    if(diff<0) return;
+    const d=Math.floor(diff/864e5), h=Math.floor(diff/36e5)%24, m=Math.floor(diff/6e4)%60, s=Math.floor(diff/1e3)%60;
+    document.getElementById('anniv-days').innerText=d;
+    document.getElementById('anniv-hours').innerText=String(h).padStart(2,'0');
+    document.getElementById('anniv-mins').innerText=String(m).padStart(2,'0');
+    document.getElementById('anniv-secs').innerText=String(s).padStart(2,'0');
+    document.getElementById('stat-days').innerText=d;
+}
+
+// ===== Bedtime Checkin =====
+function getCheckinData(){ return JSON.parse(localStorage.getItem('checkinData')||'{"streak":0,"lastDate":"","history":[]}'); }
+function saveCheckinData(d){ localStorage.setItem('checkinData',JSON.stringify(d)); }
+function initCheckin(){
+    const data=getCheckinData();
+    if(data.lastDate&&data.lastDate!==getTodayStr()){
+        const last=new Date(data.lastDate), today=new Date(getTodayStr());
+        const diff=Math.floor((today-last)/864e5);
+        if(diff>1){data.streak=0;saveCheckinData(data);}
+    }
+    renderCheckin(data);
+}
+function renderCheckin(data){
+    document.getElementById('streak-num').innerText=data.streak;
+    document.getElementById('stat-streak').innerText=data.streak;
+    const today=getTodayStr(), isChecked=data.lastDate===today;
+    const btn=document.getElementById('checkin-btn');
+    if(isChecked){btn.innerText='✅ เช็คอินแล้วคืนนี้! ฝันดีนะ 🌙';btn.className='checkin-btn checked';document.getElementById('checkin-msg').innerText='💜 ราตรีสวัสดิ์นะอ้วน';}
+    else{btn.innerText='🌙 กดเช็คอินก่อนนอนนะ';btn.className='checkin-btn';document.getElementById('checkin-msg').innerText='';}
+    const row=document.getElementById('checkin-days-row'); row.innerHTML='';
+    const days=['อา','จ','อ','พ','พฤ','ศ','ส'];
+    for(let i=6;i>=0;i--){
+        const d=new Date(); d.setDate(d.getDate()-i);
+        const ds=d.toISOString().slice(0,10), isToday=ds===today, done=data.history&&data.history.includes(ds);
+        const div=document.createElement('div');
+        div.className='checkin-dot'+(done?' done':'')+(isToday?' today-dot':'');
+        div.innerHTML=done?'✓':days[d.getDay()];
+        row.appendChild(div);
+    }
+}
+function doCheckin(){
+    const today=getTodayStr(), data=getCheckinData();
+    if(data.lastDate===today) return;
+    const last=new Date(data.lastDate||'2000-01-01'), now=new Date(today);
+    const diff=Math.floor((now-last)/864e5);
+    data.streak=diff===1?data.streak+1:1; data.lastDate=today;
+    data.history=data.history||[]; if(!data.history.includes(today)) data.history.push(today);
+    if(data.history.length>30) data.history=data.history.slice(-30);
+    saveCheckinData(data); renderCheckin(data);
+    confetti({particleCount:80,spread:60,origin:{y:0.6},colors:['#9c27b0','#ce93d8','#ffffff']});
+}
+
+// ===== Stats =====
+function updateStats(){
+    const moodData=JSON.parse(localStorage.getItem('moodHistory')||'{}');
+    const now=new Date(), monthKey=`${now.getFullYear()}-${now.getMonth()+1}-`;
+    let counts={happy:0,sad:0,angry:0,hungry:0};
+    Object.entries(moodData).forEach(([k,v])=>{if(k.startsWith(monthKey)) counts[v]=(counts[v]||0)+1;});
+    const total=Object.values(counts).reduce((a,b)=>a+b,0)||1;
+    ['happy','sad','angry','hungry'].forEach(t=>{
+        document.getElementById('cnt-'+t).innerText=counts[t];
+        document.getElementById('bar-'+t).style.width=(counts[t]/total*100)+'%';
+    });
+}
+function updateStatsFromData(rec){
+    const wishes=rec.wishlist||[];
+    document.getElementById('stat-wishes').innerText=wishes.filter(w=>w.done).length;
+    const chatMsgs=rec.chatMessages||[];
+    document.getElementById('stat-posts').innerText=chatMsgs.length;
+    updateStats();
+}
+
+// ===== 🎮 MINI GAMES =====
+function switchGame(name){
+    document.querySelectorAll('.game-tab').forEach((t,i)=>{
+        const names=['quiz','memory','rps','wheel'];
+        t.className='game-tab'+(names[i]===name?' active':'');
+    });
+    document.querySelectorAll('.game-panel').forEach(p=>p.className='game-panel');
+    document.getElementById('game-'+name).className='game-panel active';
+    if(name==='memory'&&!memStarted) memInit();
+    if(name==='wheel') wheelDraw();
+}
+
+// --- 🎲 Quiz Game ---
+const quizQuestions = [
+    {q:'อ้วนชอบสีอะไรที่สุด?', opts:['ชมพูอ่อน','ฟ้าอ่อน','ม่วง','เขียว'], correct:1},
+    {q:'อ้วนชอบดอกไม้อะไร?', opts:['กุหลาบ','ทิวลิป','ลาเวนเดอร์','ดอกไม้ป่า'], correct:1},
+    {q:'อ้วนชอบกินอะไร?', opts:['ปลาย่าง','ขนมทุกอย่าง','ผัดกะเพรา','ข้าวต้ม'], correct:1},
+    {q:'วันเกิดอ้วนวันไหน?', opts:['7 ก.ย.','9 ก.ค.','17 ส.ค.','7 ต.ค.'], correct:0},
+    {q:'อ้วนชอบสัตว์อะไร?', opts:['แมวน้ำ','ปลาโลมา','หมูป่า','ลิง'], correct:0},
+    {q:'อ้วนชอบทำงานอดิเรกอะไร?', opts:['วิ่ง','วาดรูป','เล่นกีต้าร์','ทำอาหาร'], correct:1},
+    {q:'อ้วนไม่กินอะไร?', opts:['ไก่','ปลา','หมู','เนื้อ'], correct:1},
+    {q:'เราคบกันวันที่เท่าไหร่?', opts:['25 มี.ค. 2569','1 เม.ย. 2569','25 ก.พ. 2569','10 มี.ค. 2569'], correct:0},
+];
+let quizIdx=0, quizScore=0, quizAnswered=false, quizShuffled=[];
+
+function quizInit(){
+    quizShuffled=[...quizQuestions].sort(()=>Math.random()-0.5);
+    quizIdx=0; quizScore=0; quizAnswered=false;
+    document.getElementById('quiz-result').style.display='none';
+    document.getElementById('quiz-q-box').style.display='block';
+    quizRenderQ();
+}
+function quizRenderQ(){
+    if(quizIdx>=quizShuffled.length){quizFinish();return;}
+    const q=quizShuffled[quizIdx];
+    const prog=document.getElementById('quiz-progress');
+    prog.innerHTML=quizShuffled.map((_,i)=>`<div class="quiz-pip ${i<quizIdx?(quizShuffled[i]._correct?'done-correct':'done-wrong'):i===quizIdx?'current':''}"></div>`).join('');
+    document.getElementById('quiz-q-text').innerText=`${quizIdx+1}/${quizShuffled.length} — ${q.q}`;
+    const optsEl=document.getElementById('quiz-opts');
+    optsEl.innerHTML=q.opts.map((o,i)=>`<button class="quiz-opt" onclick="quizAnswer(${i})">${o}</button>`).join('');
+    quizAnswered=false;
+}
+function quizAnswer(i){
+    if(quizAnswered) return;
+    quizAnswered=true;
+    const q=quizShuffled[quizIdx];
+    const buttons=document.querySelectorAll('.quiz-opt');
+    buttons[i].className='quiz-opt '+(i===q.correct?'correct':'wrong');
+    buttons[q.correct].className='quiz-opt correct';
+    if(i===q.correct){quizScore++;q._correct=true;} else {q._correct=false;}
+    setTimeout(()=>{quizIdx++;quizRenderQ();},1200);
+}
+function quizFinish(){
+    document.getElementById('quiz-q-box').style.display='none';
+    document.getElementById('quiz-result').style.display='block';
+    document.getElementById('quiz-score-display').innerText=`${quizScore}/${quizShuffled.length}`;
+    const msgs=['เก่งมากเลย! รู้จักอ้วนดีมาก 💕','ดีมากเลย! ใกล้เคียงมาก 🌸','พยายามอีกนิดนะ 💪','เรียนรู้เพิ่มขึ้นเรื่อยๆ นะ 🤍'];
+    const pct=quizScore/quizShuffled.length;
+    document.getElementById('quiz-result-msg').innerText=pct>=0.9?msgs[0]:pct>=0.7?msgs[1]:pct>=0.5?msgs[2]:msgs[3];
+    if(pct>=0.8) confetti({particleCount:100,spread:70,origin:{y:0.6}});
+    const prog=document.getElementById('quiz-progress');
+    prog.innerHTML=quizShuffled.map(q=>`<div class="quiz-pip ${q._correct?'done-correct':'done-wrong'}"></div>`).join('');
+}
+function quizRestart(){ quizInit(); }
+quizInit();
+
+// --- 🧩 Memory Card ---
+const memEmojis = ['🌸','🍰','💖','🌙','✨','🌈','🎵','💜'];
+let memCards=[], memFlipped=[], memMatched=0, memMoves=0, memTimer=null, memSeconds=0, memStarted=false, memLocked=false;
+
+function memInit(){
+    memStarted=true; memMoves=0; memMatched=0; memSeconds=0; memLocked=false;
+    clearInterval(memTimer);
+    document.getElementById('mem-moves').innerText=0;
+    document.getElementById('mem-timer').innerText='00:00';
+    document.getElementById('mem-win').style.display='none';
+    const pairs=[...memEmojis,...memEmojis].sort(()=>Math.random()-0.5);
+    memCards=pairs.map((e,i)=>({id:i,emoji:e,flipped:false,matched:false}));
+    memFlipped=[];
+    renderMemGrid();
+    memTimer=setInterval(()=>{memSeconds++;const m=Math.floor(memSeconds/60),s=memSeconds%60;document.getElementById('mem-timer').innerText=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;},1000);
+}
+function renderMemGrid(){
+    const grid=document.getElementById('memory-grid');
+    grid.innerHTML=memCards.map(c=>`
+        <div class="mem-card ${c.flipped||c.matched?'flipped':''} ${c.matched?'matched':''}" onclick="memFlip(${c.id})">
+            <div class="mem-front">🎀</div>
+            <div class="mem-back">${c.emoji}</div>
+        </div>`).join('');
+}
+function memFlip(id){
+    if(memLocked) return;
+    const card=memCards[id];
+    if(card.flipped||card.matched) return;
+    card.flipped=true; memFlipped.push(id); renderMemGrid();
+    if(memFlipped.length===2){
+        memLocked=true; memMoves++;
+        document.getElementById('mem-moves').innerText=memMoves;
+        const [a,b]=memFlipped.map(i=>memCards[i]);
+        if(a.emoji===b.emoji){
+            a.matched=b.matched=true; memMatched++;
+            memFlipped=[]; memLocked=false; renderMemGrid();
+            if(memMatched===memEmojis.length){
+                clearInterval(memTimer);
+                setTimeout(()=>{
+                    document.getElementById('mem-win').style.display='block';
+                    document.getElementById('mem-win-text').innerText=`เก่งมาก! ${memMoves} ครั้ง ⏱${document.getElementById('mem-timer').innerText} 🎉`;
+                    confetti({particleCount:120,spread:80,origin:{y:0.6}});
+                },300);
+            }
+        } else {
+            setTimeout(()=>{a.flipped=b.flipped=false;memFlipped=[];memLocked=false;renderMemGrid();},900);
+        }
+    }
+}
+
+// --- 🪨 RPS ---
+const rpsEmoji={rock:'🪨',paper:'📄',scissors:'✂️'};
+const rpsLabels={rock:'หิน',paper:'กระดาษ',scissors:'กรรไกร'};
+let rpsScores={me:0,draw:0,cpu:0};
+
+function rpsPlay(choice){
+    const choices=['rock','paper','scissors'];
+    const cpu=choices[Math.floor(Math.random()*3)];
+    const meEl=document.getElementById('rps-me-choice'), cpuEl=document.getElementById('rps-cpu-choice');
+    const resultEl=document.getElementById('rps-result');
+
+    // animate
+    meEl.innerText='🤔'; cpuEl.innerText='🤔';
+    resultEl.innerHTML='<div class="rps-result-text">กำลังคิด... 🤔</div>';
+    setTimeout(()=>{
+        meEl.innerText=rpsEmoji[choice]; cpuEl.innerText=rpsEmoji[cpu];
+        let result, resultMsg;
+        if(choice===cpu){result='draw';resultMsg='🤝 เสมอกัน!';}
+        else if((choice==='rock'&&cpu==='scissors')||(choice==='paper'&&cpu==='rock')||(choice==='scissors'&&cpu==='paper')){
+            result='me';resultMsg=`🎉 เค้าชนะ! ${rpsLabels[choice]} ชนะ ${rpsLabels[cpu]}`;
+            meEl.className='rps-choice winner'; cpuEl.className='rps-choice loser';
+        } else {
+            result='cpu';resultMsg=`🍰 อ้วนชนะ! ${rpsLabels[cpu]} ชนะ ${rpsLabels[choice]}`;
+            meEl.className='rps-choice loser'; cpuEl.className='rps-choice winner';
+        }
+        if(result==='draw'){meEl.className='rps-choice';cpuEl.className='rps-choice';}
+        rpsScores[result]++;
+        document.getElementById('rps-score-me').innerText=rpsScores.me;
+        document.getElementById('rps-score-draw').innerText=rpsScores.draw;
+        document.getElementById('rps-score-cpu').innerText=rpsScores.cpu;
+        resultEl.innerHTML=`<div class="rps-result-text">${resultMsg}</div>`;
+        if(result==='me') confetti({particleCount:50,spread:60,origin:{y:0.6}});
+    },600);
+}
+function rpsReset(){
+    rpsScores={me:0,draw:0,cpu:0};
+    document.getElementById('rps-score-me').innerText=0;
+    document.getElementById('rps-score-draw').innerText=0;
+    document.getElementById('rps-score-cpu').innerText=0;
+    document.getElementById('rps-me-choice').innerText='❓';
+    document.getElementById('rps-me-choice').className='rps-choice';
+    document.getElementById('rps-cpu-choice').innerText='❓';
+    document.getElementById('rps-cpu-choice').className='rps-choice';
+    document.getElementById('rps-result').innerHTML='<div class="rps-result-text">เลือกเลย! 👇</div>';
+}
+
+// --- 🎯 Spin the Wheel ---
+let wheelItems = ['ดูหนัง','กินไอติม','อ่านนิยาย','เดินเล่น','ร้องเพลง','สั่งของหวาน','ดูดาว','นอนกอดกัน'];
+let wheelAngle = 0, wheelSpinning = false;
+
+function wheelDraw(){
+    const canvas=document.getElementById('wheel-canvas');
+    if(!canvas) return;
+    const ctx=canvas.getContext('2d');
+    const cx=120,cy=120,r=112;
+    const n=wheelItems.length; if(n===0) return;
+    const colors=['#ff80ab','#ff4081','#c2185b','#f48fb1','#ba68c8','#9c27b0','#ce93d8','#7b1fa2','#ff7043','#ffb74d'];
+    ctx.clearRect(0,0,240,240);
+    for(let i=0;i<n;i++){
+        const start=wheelAngle+i*(2*Math.PI/n), end=wheelAngle+(i+1)*(2*Math.PI/n);
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,end); ctx.closePath();
+        ctx.fillStyle=colors[i%colors.length]; ctx.fill();
+        ctx.strokeStyle='rgba(255,255,255,0.3)'; ctx.lineWidth=2; ctx.stroke();
+        ctx.save(); ctx.translate(cx,cy); ctx.rotate(start+(end-start)/2);
+        ctx.fillStyle='white'; ctx.font='bold 11px Anuphan,sans-serif';
+        ctx.shadowColor='rgba(0,0,0,0.3)'; ctx.shadowBlur=4;
+        ctx.fillText(wheelItems[i].slice(0,8),r*0.35,-4);
+        ctx.restore();
+    }
+    renderWheelChips();
+}
+
+function renderWheelChips(){
+    const list=document.getElementById('wheel-items-list');
+    list.innerHTML=wheelItems.map((item,i)=>`<div class="wheel-item-chip">${item}<button class="wheel-item-del" onclick="wheelDeleteItem(${i})">✕</button></div>`).join('');
+}
+
+function wheelAddItem(){
+    const inp=document.getElementById('wheel-new-item');
+    const val=inp.value.trim();
+    if(!val) return;
+    wheelItems.push(val); inp.value=''; wheelDraw();
+}
+function wheelDeleteItem(i){
+    wheelItems.splice(i,1); wheelDraw();
+}
+
+function wheelSpin(){
+    if(wheelSpinning||wheelItems.length===0) return;
+    wheelSpinning=true;
+    document.getElementById('wheel-spin-btn').disabled=true;
+    document.getElementById('wheel-result-text').innerText='กำลังหมุน... 🎲';
+    const totalRot=(Math.random()*4+6)*2*Math.PI; // 6-10 rounds
+    const duration=3500;
+    const start=performance.now();
+    const startAngle=wheelAngle;
+    function animate(now){
+        const elapsed=now-start, t=Math.min(elapsed/duration,1);
+        // Ease out cubic
+        const eased=1-Math.pow(1-t,3);
+        wheelAngle=startAngle+totalRot*eased;
+        wheelDraw();
+        if(t<1){requestAnimationFrame(animate);}
+        else{
+            wheelSpinning=false;
+            document.getElementById('wheel-spin-btn').disabled=false;
+            // Determine result: pointer is at top (270°), so find which segment is there
+            const n=wheelItems.length;
+            const segAngle=2*Math.PI/n;
+            const pointer=(3*Math.PI/2); // top = 270deg
+            let normalized=((pointer-wheelAngle)%(2*Math.PI)+2*Math.PI)%(2*Math.PI);
+            const idx=Math.floor(normalized/segAngle)%n;
+            const winner=wheelItems[idx];
+            document.getElementById('wheel-result-text').innerText=`🎉 ได้เลย: "${winner}"!`;
+            confetti({particleCount:80,spread:70,origin:{y:0.6},colors:['#ff4081','#ffb74d','#ffffff','#ce93d8']});
+        }
+    }
+    requestAnimationFrame(animate);
+}
+document.getElementById('wheel-new-item').addEventListener('keydown',e=>{if(e.key==='Enter')wheelAddItem();});
+
+// ===== 💌 SPECIAL CARD SENDER =====
+const cardTemplates = {
+    romantic: {emoji:'🌹',title:'Dear อ้วน,',defaultMsg:'รักอ้วนมากที่สุดในโลกเลยนะ 💕',previewClass:'cp-romantic'},
+    birthday: {emoji:'🎂',title:'สุขสันต์วันเกิด! 🎉',defaultMsg:'ขอให้วันเกิดอ้วนมีแต่ความสุขนะ 🥳🎂',previewClass:'cp-birthday'},
+    goodnight: {emoji:'🌙',title:'ราตรีสวัสดิ์ 🌙',defaultMsg:'ฝันดีนะอ้วน คืนนี้นอนหลับพักผ่อนให้เต็มอิ่มเลย ✨',previewClass:'cp-goodnight'},
+    justbecause: {emoji:'🌈',title:'แค่อยากบอกว่า...',defaultMsg:'แค่อยากให้อ้วนรู้ว่า เค้าคิดถึงอ้วนตลอดเลยนะ 🌈',previewClass:'cp-justbecause'}
+};
+let selectedCardTemplate = 'romantic';
+let cardSender = 'me';
+
+function selectCardTemplate(name){
+    selectedCardTemplate=name;
+    document.querySelectorAll('.card-template').forEach(el=>el.classList.remove('selected'));
+    document.getElementById('ct-'+name).classList.add('selected');
+    updateCardPreview();
+}
+
+function updateCardPreview(){
+    const t=cardTemplates[selectedCardTemplate];
+    const preview=document.getElementById('card-preview');
+    preview.className='card-preview '+t.previewClass;
+    document.getElementById('cp-emoji').innerText=t.emoji;
+    document.getElementById('cp-title').innerText=t.title;
+    const msg=document.getElementById('card-msg-input').value.trim()||t.defaultMsg;
+    document.getElementById('cp-msg').innerText=msg;
+    document.getElementById('cp-from').innerText=cardSender==='me'?'จากเค้า 👦':'จากอ้วน 🍰';
+}
+
+async function sendCard(who){
+    cardSender=who;
+    updateCardPreview();
+    const t=cardTemplates[selectedCardTemplate];
+    const msg=document.getElementById('card-msg-input').value.trim()||t.defaultMsg;
+    setSyncStatus('syncing','กำลังส่งการ์ด...');
+    const rec=await loadBin();
+    const cards=rec.specialCards||[];
+    const now=new Date();
+    cards.unshift({
+        id:Date.now(), template:selectedCardTemplate, who, msg,
+        emoji:t.emoji, title:t.title,
+        time:now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})+' '+now.toLocaleDateString('th-TH',{day:'numeric',month:'short'})
+    });
+    if(cards.length>20) cards.splice(20);
+    rec.specialCards=cards;
+    await saveBin(rec); syncedData=rec;
+    renderCardInbox(cards);
+    document.getElementById('card-msg-input').value='';
+    setSyncStatus('ok','ส่งการ์ดแล้ว ✓');
+    tcToast('💌 ส่งการ์ดแล้ว! ทั้งคู่จะเห็นพร้อมกัน 🔄');
+    confetti({particleCount:60,spread:70,origin:{y:0.6},colors:['#ff80ab','#ffd6e0','#ffffff']});
+}
+
+function renderCardInbox(cards){
+    const inbox=document.getElementById('card-inbox');
+    let html='<div style="font-size:0.65rem;color:#c2185b;font-weight:700;margin-bottom:8px;">📥 การ์ดที่ได้รับ</div>';
+    if(!cards.length){html+='<div style="font-size:0.78rem;color:#bcaaa4;text-align:center;padding:12px;">ยังไม่มีการ์ด ส่งให้กันเลย! 💌</div>';inbox.innerHTML=html;return;}
+    html+=cards.map((c,i)=>`
+        <div class="card-inbox-item" onclick="viewCard(${i})">
+            <div class="card-inbox-emoji">${c.emoji}</div>
+            <div class="card-inbox-info">
+                <div class="card-inbox-title">${c.title}</div>
+                <div class="card-inbox-meta">${c.who==='me'?'👦 จากเค้า':'🍰 จากอ้วน'} · ${c.time}</div>
+            </div>
+            <button class="card-inbox-del" onclick="event.stopPropagation();deleteCard(${c.id})">✕</button>
+        </div>`).join('');
+    inbox.innerHTML=html;
+}
+
+let currentCardInbox=[];
+function viewCard(i){
+    const rec=syncedData;
+    const cards=rec.specialCards||[];
+    currentCardInbox=cards;
+    const c=cards[i]; if(!c) return;
+    const t=cardTemplates[c.template]||cardTemplates.romantic;
+    const preview=document.getElementById('card-view-preview');
+    preview.className='card-preview '+t.previewClass;
+    document.getElementById('cv-emoji').innerText=c.emoji;
+    document.getElementById('cv-title').innerText=c.title;
+    document.getElementById('cv-msg').innerText=c.msg;
+    document.getElementById('cv-from').innerText=c.who==='me'?'จากเค้า 👦 · '+c.time:'จากอ้วน 🍰 · '+c.time;
+    document.getElementById('card-view-modal').classList.add('show');
+    confetti({particleCount:40,spread:60,origin:{y:0.5},colors:['#ff80ab','#ffd6e0','#ffffff']});
+}
+function closeCardViewModal(){ document.getElementById('card-view-modal').classList.remove('show'); }
+async function deleteCard(id){
+    const rec=await loadBin(); rec.specialCards=(rec.specialCards||[]).filter(c=>c.id!==id);
+    await saveBin(rec); syncedData=rec; renderCardInbox(rec.specialCards);
+}
+
+// ===== 💬 REAL-TIME CHAT =====
+let chatWho = 'me';
+function setChatWho(w){
+    chatWho=w;
+    document.getElementById('chat-me-btn').className='chat-who-btn'+(w==='me'?' active me-active':'');
+    document.getElementById('chat-you-btn').className='chat-who-btn'+(w==='you'?' active you-active':'');
+}
+function insertEmoji(e){
+    const inp=document.getElementById('chat-input');
+    inp.value+=e; inp.focus(); autoresizeChatInput(inp);
+}
+function autoresizeChatInput(el){
+    el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,100)+'px';
+}
+function renderChatFromData(msgs){
+    const feed=document.getElementById('chat-feed');
+    if(!msgs.length){feed.innerHTML='<div class="chat-empty">ยังไม่มีข้อความ เริ่มคุยกันเลย! 💬</div>';return;}
+    feed.innerHTML=msgs.map((m,i)=>`
+        <div class="chat-msg ${m.who}">
+            <div class="chat-bubble">${escapeHtml(m.text)}</div>
+            <div class="chat-meta">
+                <span class="chat-who-tag">${m.who==='me'?'👦 เค้า':'🍰 อ้วน'}</span>
+                <span>${m.time}</span>
+                <button class="chat-del" onclick="deleteChatMsg(${i})">✕</button>
+            </div>
+        </div>`).join('');
+    feed.scrollTop=feed.scrollHeight;
+    document.getElementById('stat-posts').innerText=msgs.length;
+}
+async function sendChatMsg(){
+    const inp=document.getElementById('chat-input'), text=inp.value.trim();
+    if(!text) return;
+    setSyncStatus('syncing','กำลังส่ง...');
+    const rec=await loadBin();
+    const msgs=rec.chatMessages||[];
+    const now=new Date();
+    msgs.push({who:chatWho,text,time:now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})});
+    if(msgs.length>100) msgs.splice(0,msgs.length-100);
+    rec.chatMessages=msgs;
+    await saveBin(rec); syncedData=rec;
+    inp.value=''; inp.style.height='auto';
+    renderChatFromData(msgs);
+    setSyncStatus('ok','ส่งแล้ว ✓');
+    confetti({particleCount:20,spread:40,origin:{y:0.8},colors:['#ff4081','#ffffff','#fce4ec']});
+}
+async function deleteChatMsg(i){
+    const rec=await loadBin(); const msgs=rec.chatMessages||[];
+    msgs.splice(i,1); rec.chatMessages=msgs;
+    await saveBin(rec); syncedData=rec; renderChatFromData(msgs);
+}
+document.getElementById('chat-input').addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChatMsg();}
+});
+
+// ===== 🎵 PLAYLIST =====
+let currentTrack=null, currentYtId=null, ytWho='me', lyricsVisible=false;
+let ytSongsData=[];
+
+function extractYtId(url){
+    if(!url) return null;
+    let m=url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+    if(m) return m[1];
+    m=url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+    if(m) return m[1];
+    m=url.match(/embed\/([a-zA-Z0-9_-]{11})/);
+    if(m) return m[1];
+    return null;
+}
+function ytSetWho(w){
+    ytWho=w;
+    document.getElementById('yt-who-me').className='yt-who-btn'+(w==='me'?' active':'');
+    document.getElementById('yt-who-you').className='yt-who-btn'+(w==='you'?' active':'');
+}
+async function addYtSong(){
+    const url=document.getElementById('yt-url-inp').value.trim();
+    const name=document.getElementById('yt-name-inp').value.trim();
+    const lyrics=document.getElementById('yt-lyrics-inp').value.trim();
+    if(!url){tcToast('กรุณาวาง YouTube link ก่อนนะ 🎵');return;}
+    const ytId=extractYtId(url);
+    if(!ytId){tcToast('⚠️ Link ไม่ถูกต้อง ลองใหม่นะ');return;}
+    if(!name){tcToast('กรุณาใส่ชื่อเพลงด้วยนะ 🎵');return;}
+    setSyncStatus('syncing','กำลังเพิ่มเพลง...');
+    const rec=await loadBin();
+    const songs=rec.ytSongs||[];
+    songs.push({id:Date.now(),ytId,name,who:ytWho,lyrics,added:new Date().toISOString()});
+    rec.ytSongs=songs; await saveBin(rec); syncedData=rec; ytSongsData=songs;
+    document.getElementById('yt-url-inp').value='';
+    document.getElementById('yt-name-inp').value='';
+    document.getElementById('yt-lyrics-inp').value='';
+    renderYtTracksFromData(songs);
+    setSyncStatus('ok','เพิ่มเพลงแล้ว ✓');
+    tcToast('🎵 เพิ่มเพลงแล้ว!');
+    confetti({particleCount:50,spread:60,origin:{y:0.6},colors:['#ff5252','#ffffff','#ffcdd2']});
+}
+function renderYtTracksFromData(songs){
+    ytSongsData=songs;
+    const container=document.getElementById('yt-tracks-list');
+    if(!songs.length){container.innerHTML='';return;}
+    container.innerHTML=songs.map((s,i)=>`
+        <div class="track-card yt-track ${currentYtId===s.id?'playing':''}" onclick="playYtTrack(${s.id})" id="yttrack-${s.id}">
+            <div class="track-icon-wrap yt-color"><div class="track-vinyl"></div>▶️</div>
+            <div class="track-info">
+                <div class="track-name">${escapeHtml(s.name)} <span class="yt-badge">YT</span></div>
+                <div class="track-sub">${s.who==='me'?'👦 เค้าเพิ่ม':'🍰 อ้วนเพิ่ม'}${s.lyrics?' · 📝 มีเนื้อเพลง':''}</div>
+            </div>
+            <div class="track-bars"><div class="track-bar"></div><div class="track-bar"></div><div class="track-bar"></div><div class="track-bar"></div></div>
+            <button class="track-play-btn yt-btn" id="ytbtn-${s.id}">${currentYtId===s.id?'⏸':'▶'}</button>
+            <button onclick="event.stopPropagation();deleteYtSong(${s.id})" style="background:none;border:none;color:#ffcdd2;font-size:0.75rem;cursor:pointer;padding:2px 4px;margin-left:2px;">✕</button>
+        </div>`).join('');
+}
+function playYtTrack(id){
+    const song=ytSongsData.find(s=>s.id===id);
+    if(!song) return;
+    document.getElementById('mySong').pause();
+    document.getElementById('happySong').pause();
+    ['proud','happy'].forEach(t=>{
+        const c=document.getElementById('track-'+t); if(c) c.classList.remove('playing');
+        const b=document.getElementById('btn-'+t); if(b) b.innerHTML='▶';
+    });
+    currentTrack=null;
+    if(currentYtId===id){
+        currentYtId=null;
+        document.getElementById('yt-embed-wrap').classList.remove('visible');
+        document.getElementById('now-playing-bar').style.display='none';
+        document.getElementById('yt-iframe').src='';
+        updateNpDisc(false);
+        renderYtTracksFromData(ytSongsData); return;
+    }
+    currentYtId=id;
+    const embedUrl=`https://www.youtube.com/embed/${song.ytId}?autoplay=1&rel=0&modestbranding=1`;
+    document.getElementById('yt-iframe').src=embedUrl;
+    document.getElementById('yt-embed-wrap').classList.add('visible');
+    const bar=document.getElementById('now-playing-bar');
+    bar.style.display='block';
+    document.getElementById('np-title').innerText=song.name;
+    document.getElementById('np-who').innerText=song.who==='me'?'👦 เค้าเลือก':'🍰 อ้วนเลือก';
+    document.getElementById('np-disc').innerText='🎵';
+    updateNpDisc(true);
+    if(song.lyrics){document.getElementById('lyrics-text').innerText=song.lyrics;document.getElementById('lyrics-toggle').style.display='block';}
+    else{document.getElementById('lyrics-text').innerText='ไม่มีเนื้อเพลงสำหรับเพลงนี้';document.getElementById('lyrics-toggle').style.display='none';if(lyricsVisible){document.getElementById('lyrics-panel').classList.remove('visible');lyricsVisible=false;}}
+    renderYtTracksFromData(ytSongsData);
+    confetti({particleCount:30,spread:50,origin:{y:0.7},colors:['#ff5252','#ffffff']});
+}
+function updateNpDisc(playing){
+    const disc=document.getElementById('np-disc'), wave=document.getElementById('np-wave');
+    if(playing){disc.classList.remove('paused');wave.classList.remove('paused');}
+    else{disc.classList.add('paused');wave.classList.add('paused');}
+}
+function toggleLyrics(){
+    lyricsVisible=!lyricsVisible;
+    const panel=document.getElementById('lyrics-panel'), btn=document.getElementById('lyrics-toggle');
+    if(lyricsVisible){panel.classList.add('visible');btn.classList.add('active');btn.innerText='🙈 ซ่อน';}
+    else{panel.classList.remove('visible');btn.classList.remove('active');btn.innerText='📝 เนื้อเพลง';}
+}
+async function deleteYtSong(id){
+    if(!confirm('ลบเพลงนี้เลยนะ?')) return;
+    if(currentYtId===id){currentYtId=null;document.getElementById('yt-embed-wrap').classList.remove('visible');document.getElementById('now-playing-bar').style.display='none';document.getElementById('yt-iframe').src='';}
+    const rec=await loadBin(); rec.ytSongs=(rec.ytSongs||[]).filter(s=>s.id!==id);
+    await saveBin(rec); syncedData=rec; ytSongsData=rec.ytSongs; renderYtTracksFromData(ytSongsData);
+}
+const localLyrics={proud:'เพลง Proud - fellow fellow\n\nภูมิใจที่ได้รักเธอ\nภูมิใจที่ได้อยู่ข้างๆ เธอ\nทุกวันที่มีเธอมันงดงาม\nรักเธอมากที่สุดในโลก 🌸',happy:'เวลาเธอยิ้ม - Polycat\n\nเวลาเธอยิ้ม โลกทั้งใบก็สดใส\nเวลาเธอยิ้ม ใจฉันก็พลอยสุขไปด้วย\nเธอคือแสงสว่างในชีวิตฉัน ✨'};
+function playLocalTrack(track){
+    const mySong=document.getElementById('mySong'), happySong=document.getElementById('happySong');
+    const pc=document.getElementById('track-proud'), hc=document.getElementById('track-happy');
+    const bp=document.getElementById('btn-proud'), bh=document.getElementById('btn-happy');
+    if(currentYtId!==null){currentYtId=null;document.getElementById('yt-embed-wrap').classList.remove('visible');document.getElementById('yt-iframe').src='';renderYtTracksFromData(ytSongsData);}
+    if(currentTrack===track){mySong.pause();happySong.pause();pc.classList.remove('playing');hc.classList.remove('playing');bp.innerHTML='▶';bh.innerHTML='▶';currentTrack=null;document.getElementById('now-playing-bar').style.display='none';return;}
+    mySong.pause();happySong.pause();pc.classList.remove('playing');hc.classList.remove('playing');bp.innerHTML='▶';bh.innerHTML='▶';
+    const song=track==='proud'?mySong:happySong;
+    const card2=track==='proud'?pc:hc, btn=track==='proud'?bp:bh;
+    song.play().then(()=>{
+        card2.classList.add('playing'); btn.innerHTML='⏸'; currentTrack=track;
+        const names={proud:'Proud - fellow fellow',happy:'เวลาเธอยิ้ม - Polycat'};
+        document.getElementById('now-playing-bar').style.display='block';
+        document.getElementById('np-title').innerText=names[track];
+        document.getElementById('np-who').innerText='🌸 เพลงในใจ';
+        document.getElementById('np-disc').innerText=track==='proud'?'🌸':'🌟';
+        updateNpDisc(true);
+        document.getElementById('lyrics-text').innerText=localLyrics[track]||'ยังไม่มีเนื้อเพลง';
+        document.getElementById('lyrics-toggle').style.display='block';
+    }).catch(()=>{});
+}
+
+// ===== Time Capsule =====
+const TC_TYPES={letter:{icon:'💌',label:'จดหมาย',bar:'bar-letter',iconBg:'icon-letter',labelClass:'label-letter'},dream:{icon:'💜',label:'ความฝัน',bar:'bar-dream',iconBg:'icon-dream',labelClass:'label-dream'},promise:{icon:'🌸',label:'คำสัญญา',bar:'bar-promise',iconBg:'icon-promise',labelClass:'label-promise'},secret:{icon:'🔵',label:'ความลับ',bar:'bar-secret',iconBg:'icon-secret',labelClass:'label-secret'}};
+let tcCapsules=[], tcType='letter', tcWho='me', tcLock='date', tcFilter='all', tcPwTargetId=null;
+function tcSetType(t){tcType=t;['letter','dream','promise','secret'].forEach(x=>document.getElementById('tct-'+x).className='tc-type-btn'+(x===t?' active':''));}
+function tcSetWho(w){tcWho=w;['me','you'].forEach(x=>document.getElementById('tcw-'+x).className='tc-type-btn'+(x===w?' active':''));}
+function tcSelectLock(l){tcLock=l;['date','password','both'].forEach(x=>{document.getElementById('tcl-'+x).className='lock-opt'+(x===l?' selected':'');document.getElementById('tc-cfg-'+x).style.display=(x===l?'block':'none');});}
+function tcSetFilter(f){tcFilter=f;['all','ready','locked'].forEach(x=>document.getElementById('tcf-'+x).className='tc-filter-btn'+(x===f?' active':''));tcRenderList();}
+function tcIsDateReady(c){if(!c.unlockTime) return true; return Date.now()>=c.unlockTime;}
+function tcIsUnlockable(c){if(c.lockMode==='date') return tcIsDateReady(c); if(c.lockMode==='password') return true; if(c.lockMode==='both') return tcIsDateReady(c); return true;}
+function tcFormatCountdown(ts){const diff=ts-Date.now();if(diff<=0) return null;const d=Math.floor(diff/864e5),h=Math.floor(diff/36e5)%24,m=Math.floor(diff/6e4)%60;return{d,h,m};}
+function tcFmtDate(ts){return new Date(ts).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+async function tcSave(){
+    const text=document.getElementById('tc-text').value.trim();
+    if(!text){tcToast('กรุณาใส่ข้อความก่อนนะ 💌');return;}
+    let unlockTime=null,password=null;
+    if(tcLock==='date'||tcLock==='both'){const v=document.getElementById(tcLock==='date'?'tc-unlock-date':'tc-unlock-date-both').value;if(!v){tcToast('กรุณาเลือกวันที่ก่อนนะ 📅');return;}unlockTime=new Date(v).getTime();if(unlockTime<=Date.now()){tcToast('ต้องเลือกวันในอนาคตนะ ⏳');return;}}
+    if(tcLock==='password'||tcLock==='both'){password=document.getElementById(tcLock==='password'?'tc-set-pw':'tc-set-pw-both').value;if(!password){tcToast('กรุณาตั้ง Password ก่อนนะ 🔑');return;}}
+    setSyncStatus('syncing','กำลังบันทึก...');
+    const rec=await loadBin(); rec.capsules=[{id:Date.now(),type:tcType,who:tcWho,text,lockMode:tcLock,unlockTime,password,created:new Date().toISOString(),opened:false},...(rec.capsules||[])];
+    await saveBin(rec); syncedData=rec; tcCapsules=rec.capsules;
+    document.getElementById('tc-text').value='';
+    tcRenderList(); tcRenderStats(); document.getElementById('stat-capsules').innerText=tcCapsules.length;
+    setSyncStatus('ok','บันทึกแล้ว ✓'); tcToast('🔒 ล็อกแคปซูลแล้ว!');
+    confetti({particleCount:60,spread:60,origin:{y:0.6},colors:['#ff7043','#ffb74d','#ffffff']});
+}
+function tcRenderStats(){
+    const ready=tcCapsules.filter(c=>tcIsUnlockable(c)&&!c.opened).length;
+    const lockedCount=tcCapsules.filter(c=>!tcIsDateReady(c)).length;
+    document.getElementById('tc-stat-ready').innerText=ready;
+    document.getElementById('tc-stat-locked').innerText=lockedCount;
+    document.getElementById('tc-stat-total').innerText=tcCapsules.length;
+    document.getElementById('tc-nd').style.display=ready>0?'inline-block':'none';
+}
+function tcRenderList(){
+    const list=document.getElementById('tc-list');
+    let filtered=[...tcCapsules];
+    if(tcFilter==='ready') filtered=tcCapsules.filter(c=>tcIsUnlockable(c));
+    if(tcFilter==='locked') filtered=tcCapsules.filter(c=>!tcIsUnlockable(c)||(!c.opened&&c.lockMode==='password'));
+    if(!filtered.length){list.innerHTML='<div class="tc-empty">ยังไม่มีแคปซูล สร้างอันแรกกันเลย! 📬</div>';return;}
+    list.innerHTML=filtered.map(c=>{
+        const t=TC_TYPES[c.type]||TC_TYPES.letter;
+        const dateOk=tcIsDateReady(c),canUnlock=tcIsUnlockable(c);
+        const cd=c.unlockTime&&!dateOk?tcFormatCountdown(c.unlockTime):null;
+        const whoLabel=c.who==='me'?'👦 จากเค้า':'🍰 จากอ้วน';
+        let itemClass='tc-item ';
+        if(!dateOk) itemClass+='tci-locked'; else if(c.lockMode==='password'&&!c.opened) itemClass+='tci-pw'; else itemClass+='tci-unlocked';
+        let lockPill='';
+        if(!dateOk) lockPill=`<span class="tc-lock-pill pill-locked">🔒 ยังเปิดไม่ได้</span>`;
+        else if(c.lockMode==='password'&&!c.opened) lockPill=`<span class="tc-lock-pill pill-pw">🔑 ต้องใส่รหัส</span>`;
+        else if(c.opened) lockPill=`<span class="tc-lock-pill pill-unlocked">✅ เปิดแล้ว</span>`;
+        else lockPill=`<span class="tc-lock-pill pill-unlocked">✨ แตะเพื่อเปิด</span>`;
+        let cdHtml='';
+        if(cd) cdHtml=`<div class="tc-countdown"><div class="tc-count-nums"><div class="tc-count-unit"><span class="tc-count-num">${cd.d}</span><span class="tc-count-lbl">วัน</span></div><div class="tc-count-unit"><span class="tc-count-num">${String(cd.h).padStart(2,'0')}</span><span class="tc-count-lbl">ชม</span></div><div class="tc-count-unit"><span class="tc-count-num">${String(cd.m).padStart(2,'0')}</span><span class="tc-count-lbl">นาที</span></div></div><div class="tc-countdown-msg">เหลืออีก ${cd.d} วัน 💌<br><span style="font-size:0.55rem;opacity:0.7">${tcFmtDate(c.unlockTime)}</span></div></div>`;
+        let contentArea='';
+        if(c.opened||(canUnlock&&c.lockMode==='date')) contentArea=`<div class="tc-content">${escapeHtml(c.text)}</div>`;
+        else contentArea=`<div class="tc-hidden-msg">${!dateOk?'⏳ เนื้อหาถูกซ่อนจนกว่าจะถึงวัน':'🔑 แตะเพื่อใส่รหัสผ่าน'}</div>`;
+        const previewText=(!dateOk&&c.lockMode!=='password')?'🔒 ซ่อนอยู่จนกว่าจะถึงเวลา':escapeHtml(c.text);
+        return `<div class="${itemClass}" onclick="tcOpenItem(${c.id})" id="tci-${c.id}"><div class="tc-left-bar ${t.bar}"></div><button class="tc-del-btn" onclick="event.stopPropagation();tcDelete(${c.id})">✕</button><div class="tc-item-top"><div class="tc-type-icon ${t.iconBg}">${t.icon}</div><div class="tc-meta"><div class="tc-type-label ${t.labelClass}">${t.label} · ${whoLabel}</div><div class="tc-preview">${previewText}</div></div><div style="text-align:right;flex-shrink:0">${lockPill}</div></div>${cdHtml}${contentArea}<div style="font-size:0.58rem;color:#bcaaa4;margin-top:8px;text-align:right">สร้างเมื่อ ${tcFmtDate(new Date(c.created).getTime())}</div></div>`;
+    }).join('');
+}
+function tcOpenItem(id){
+    const c=tcCapsules.find(x=>x.id===id);if(!c) return;
+    if(!tcIsDateReady(c)){const cd=tcFormatCountdown(c.unlockTime);tcToast(`⏳ รออีก ${cd?cd.d:0} วันนะ`);return;}
+    if(c.opened||(c.lockMode==='date')) return;
+    if(c.lockMode==='password'||c.lockMode==='both'){
+        tcPwTargetId=id;
+        document.getElementById('pw-enter').value='';document.getElementById('pw-err').innerText='';
+        document.getElementById('pw-overlay').classList.add('show');
+        setTimeout(()=>document.getElementById('pw-enter').focus(),100);
+    }
+}
+function tcClosePw(){document.getElementById('pw-overlay').classList.remove('show');tcPwTargetId=null;}
+async function tcConfirmPw(){
+    const c=tcCapsules.find(x=>x.id===tcPwTargetId);if(!c) return tcClosePw();
+    const entered=document.getElementById('pw-enter').value;
+    if(entered===c.password){
+        c.opened=true; setSyncStatus('syncing','กำลังบันทึก...');
+        const rec=await loadBin(); const idx=(rec.capsules||[]).findIndex(x=>x.id===c.id);
+        if(idx>=0) rec.capsules[idx].opened=true;
+        await saveBin(rec); syncedData=rec; tcCapsules=rec.capsules;
+        tcClosePw(); tcRenderList(); tcToast('🔓 เปิดแล้ว! ✨'); setSyncStatus('ok','บันทึกแล้ว ✓');
+        confetti({particleCount:60,spread:60,origin:{y:0.6},colors:['#ce93d8','#ff80ab','#ffffff']});
+    } else { document.getElementById('pw-err').innerText='รหัสไม่ถูกต้อง'; document.getElementById('pw-enter').value=''; }
+}
+async function tcDelete(id){
+    if(!confirm('ลบแคปซูลนี้เลยนะ?')) return;
+    const rec=await loadBin(); rec.capsules=(rec.capsules||[]).filter(x=>x.id!==id);
+    await saveBin(rec); syncedData=rec; tcCapsules=rec.capsules;
+    tcRenderList(); tcRenderStats(); document.getElementById('stat-capsules').innerText=tcCapsules.length;
+}
+setInterval(()=>{tcRenderList();tcRenderStats();},60000);
+const minDt=new Date(Date.now()+60000).toISOString().slice(0,16);
+document.getElementById('tc-unlock-date').min=minDt;
+document.getElementById('tc-unlock-date-both').min=minDt;
+
+// ===== Letters =====
+const letters=[
+    {num:1,title:'จดหมายฉบับแรก 💕',unlockDays:0,content:'ถึงไอ้อ้วนที่รักมากที่สุด\n\nตั้งแต่วันแรกที่เราคบกัน เค้ารู้สึกว่าชีวิตมันสดใสขึ้นมากเลยนะ ขอบคุณที่ยอมรับเค้าในทุกรูปแบบ\n\nสัญญาว่าจะทำให้อ้วนยิ้มทุกวัน รักอ้วนนะ 🍰💖'},
+    {num:2,title:'จดหมาย 7 วัน 🌸',unlockDays:7,content:'อ้วน 🍰\n\nผ่านมา 1 สัปดาห์แล้วนะ เวลาผ่านไปเร็วมาก แต่ทุกวันที่มีอ้วนมันพิเศษทุกวัน\n\nขอบคุณที่อยู่ข้างๆ กันนะ 💕'},
+    {num:3,title:'จดหมาย 1 เดือน 🌙',unlockDays:30,content:'ครบ 1 เดือนแล้วนะอ้วน! 🎉\n\nทุกช่วงเวลาที่ผ่านมาทำให้เค้ายิ่งรักอ้วนมากขึ้น รักอ้วนที่สุดในโลก 🌍💖'},
+    {num:4,title:'จดหมาย 3 เดือน ⭐',unlockDays:90,content:'3 เดือนแล้วน้า! 🥰\n\nอ้วนเป็นส่วนหนึ่งของชีวิตที่ขาดไม่ได้เลย ยังอยากอยู่ด้วยกันไปอีกนานๆ เลยนะ 💕✨'},
+    {num:5,title:'จดหมาย 6 เดือน 🌺',unlockDays:180,content:'ครึ่งปีแล้วนะอ้วน! 🎊\n\nมองย้อนกลับไป ทุกความทรงจำที่เรามีด้วยกันล้วนแต่สวยงาม รักอ้วนมากเท่าท้องฟ้า ☁️💙'},
+];
+function initLetters(){
+    const now=new Date(), daysTogether=Math.floor((now-startDate)/864e5);
+    const openedLetters=JSON.parse(localStorage.getItem('openedLetters')||'[]');
+    const grid=document.getElementById('letters-grid');
+    grid.innerHTML=letters.map(l=>{
+        const isLocked=daysTogether<l.unlockDays, isOpened=openedLetters.includes(l.num);
+        const unlockDate=new Date(startDate.getTime()+l.unlockDays*864e5);
+        const dateStr=unlockDate.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});
+        return `<div class="letter-card ${isLocked?'locked':isOpened?'opened':'unlocked'}" onclick="${isLocked?'':` readLetter(${l.num})`}">
+            <div class="letter-header"><div class="letter-num">${l.num}</div><div class="letter-info"><div class="letter-title">${isLocked?'🔒 ยังเปิดไม่ได้...':l.title}</div><div class="letter-date">${isLocked?`เปิดได้ ${dateStr}`:isOpened?'อ่านแล้ว ✓':'✨ เปิดจดหมายได้แล้ว!'}</div></div><div class="letter-status">${isLocked?'🔒':isOpened?'💜':'💌'}</div></div></div>`;
+    }).join('');
+}
+function readLetter(num){
+    const l=letters.find(x=>x.num===num);if(!l) return;
+    document.getElementById('letter-modal-num').innerText=`LETTER #${l.num}`;
+    document.getElementById('letter-modal-title').innerText=l.title;
+    document.getElementById('letter-modal-text').innerText=l.content;
+    document.getElementById('letterModal').style.display='block';
+    const opened=JSON.parse(localStorage.getItem('openedLetters')||'[]');
+    if(!opened.includes(num)){opened.push(num);localStorage.setItem('openedLetters',JSON.stringify(opened));initLetters();}
+    confetti({particleCount:60,spread:60,origin:{y:0.6},colors:['#ff80ab','#ffffff','#ffd6e0']});
+}
+function closeLetter2(){document.getElementById('letterModal').style.display='none';}
+
+// ===== Board =====
+let boardWho='me';
+function setBoardWho(w){boardWho=w;document.getElementById('board-me-btn').className='board-who-btn'+(w==='me'?' active':'');document.getElementById('board-you-btn').className='board-who-btn'+(w==='you'?' active':'');}
+function updateBoardChar(){const v=document.getElementById('board-textarea').value;document.getElementById('board-char-count').innerText=`${v.length}/200`;}
+function renderBoardFromData(posts){
+    const feed=document.getElementById('board-feed');
+    if(!posts.length){feed.innerHTML='<div class="board-empty">ยังไม่มีข้อความ 💬</div>';return;}
+    feed.innerHTML=[...posts].reverse().map((p,ri)=>{const i=posts.length-1-ri;return `<div class="board-post ${p.who}"><button class="board-del-btn" onclick="deleteBoardPost(${i})">✕</button><div class="board-post-who">${p.who==='me'?'👦 เค้า':'🍰 อ้วน'}</div><div class="board-post-text">${escapeHtml(p.text)}</div><div class="board-post-time">${p.time}</div></div>`;}).join('');
+}
+async function addBoardPost(){
+    const ta=document.getElementById('board-textarea'), text=ta.value.trim();if(!text) return;
+    const rec=await loadBin(); const posts=rec.boardPosts||[];
+    const now=new Date(); posts.push({who:boardWho,text,time:now.toLocaleDateString('th-TH',{day:'numeric',month:'short'})+' '+now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})});
+    rec.boardPosts=posts; await saveBin(rec); syncedData=rec; ta.value=''; updateBoardChar(); renderBoardFromData(posts);
+}
+async function deleteBoardPost(i){const rec=await loadBin();const posts=rec.boardPosts||[];posts.splice(i,1);rec.boardPosts=posts;await saveBin(rec);syncedData=rec;renderBoardFromData(posts);}
+
+// ===== Wishlist =====
+let wishWho='both';
+function setWishWho(w){wishWho=w;['me','you','both'].forEach(x=>document.getElementById('wish-'+x+'-btn').className='who-btn'+(x===w?' active':''));}
+function renderWishlistFromData(wishes){
+    const list=document.getElementById('wish-list');
+    if(!wishes.length){list.innerHTML='<div class="wish-empty">ยังไม่มี Wishlist 🎯</div>';return;}
+    list.innerHTML=wishes.map((w,i)=>`<div class="wish-item${w.done?' done':''}"><div class="wish-check${w.done?' checked':''}" onclick="toggleWish(${i})">${w.done?'✓':''}</div><span class="wish-text">${escapeHtml(w.text)}</span><span class="wish-who">${w.who==='me'?'👦':w.who==='you'?'🍰':'💕'}</span><button class="wish-del" onclick="deleteWish(${i})">✕</button></div>`).join('');
+    document.getElementById('stat-wishes').innerText=wishes.filter(w=>w.done).length;
+}
+async function addWish(){const inp=document.getElementById('wish-input'),text=inp.value.trim();if(!text) return;const rec=await loadBin();const wishes=rec.wishlist||[];wishes.push({text,who:wishWho,done:false});rec.wishlist=wishes;await saveBin(rec);syncedData=rec;inp.value='';renderWishlistFromData(wishes);}
+async function toggleWish(i){const rec=await loadBin();const wishes=rec.wishlist||[];if(!wishes[i]) return;wishes[i].done=!wishes[i].done;rec.wishlist=wishes;await saveBin(rec);syncedData=rec;renderWishlistFromData(wishes);if(wishes[i].done) confetti({particleCount:60,spread:60,origin:{y:0.6},colors:['#ff7043','#ffb74d','#ffffff']});}
+async function deleteWish(i){const rec=await loadBin();const wishes=rec.wishlist||[];wishes.splice(i,1);rec.wishlist=wishes;await saveBin(rec);syncedData=rec;renderWishlistFromData(wishes);}
+
+// ===== Photos =====
+let photosData=[],pendingUploadFile=null;
+function renderDynamicPhotos(){
+    const grid=document.getElementById('dynamic-photos');
+    if(!photosData.length){grid.innerHTML='';return;}
+    grid.innerHTML=photosData.map((p,i)=>`<div class="polaroid-card"><div class="polaroid-pin"></div><img class="polaroid-photo" src="${escapeHtml(p.url)}" loading="lazy"><div class="polaroid-caption">${escapeHtml(p.caption)}</div><button class="photo-delete-btn" onclick="deletePhoto(${i})">✕</button></div>`).join('');
+    document.getElementById('stat-photos').innerText=photosData.length;
+}
+function handlePhotoUpload(e){const file=e.target.files[0];if(!file) return;if(file.size>10*1024*1024){setPhotoStatus('⚠️ รูปใหญ่เกินไป');return;}pendingUploadFile=file;document.getElementById('caption-input').value='';document.getElementById('captionModal').style.display='block';setTimeout(()=>document.getElementById('caption-input').focus(),100);e.target.value='';}
+async function confirmCaption(){const caption=document.getElementById('caption-input').value.trim()||'ความทรงจำดีๆ 🌸';document.getElementById('captionModal').style.display='none';if(!pendingUploadFile) return;await uploadToCloudinary(pendingUploadFile,caption);pendingUploadFile=null;}
+function setPhotoStatus(msg){document.getElementById('photo-upload-status').innerText=msg;}
+async function uploadToCloudinary(file,caption){
+    setPhotoStatus('⏳ กำลังอัปโหลด...');
+    const pw=document.getElementById('upload-progress-wrap'),pb=document.getElementById('upload-progress-bar');
+    pw.style.display='block';pb.style.width='0%';
+    const fd=new FormData();fd.append('file',file);fd.append('upload_preset',CLOUDINARY_PRESET);
+    return new Promise(resolve=>{
+        const xhr=new XMLHttpRequest();xhr.open('POST',CLOUDINARY_UPLOAD_URL);
+        xhr.upload.onprogress=e=>{if(e.lengthComputable) pb.style.width=Math.round(e.loaded/e.total*80)+'%';};
+        xhr.onload=async()=>{pb.style.width='90%';try{const r=JSON.parse(xhr.responseText);if(r.secure_url){const rec=await loadBin();rec.photos=[{id:Date.now(),url:r.secure_url,caption},...(rec.photos||[])];await saveBin(rec);syncedData=rec;photosData=rec.photos;renderDynamicPhotos();pb.style.width='100%';setPhotoStatus('✅ เพิ่มรูปแล้ว!');setTimeout(()=>{setPhotoStatus('');pw.style.display='none';pb.style.width='0%';},2500);confetti({particleCount:60,spread:70,origin:{y:0.6}});}else{setPhotoStatus('❌ อัปโหลดไม่สำเร็จ');pw.style.display='none';}}catch(e){setPhotoStatus('❌ เกิดข้อผิดพลาด');pw.style.display='none';}resolve();};
+        xhr.onerror=()=>{setPhotoStatus('❌ อินเทอร์เน็ตมีปัญหา');pw.style.display='none';resolve();};
+        xhr.send(fd);
+    });
+}
+async function deletePhoto(i){if(!confirm('ลบรูปนี้เลยนะ?')) return;const rec=await loadBin();rec.photos=(rec.photos||[]).filter((_,j)=>j!==i);await saveBin(rec);syncedData=rec;photosData=rec.photos;renderDynamicPhotos();}
+
+// ===== Mood/Calendar =====
+let moodData=JSON.parse(localStorage.getItem('moodHistory')||'{}');
+function initCalendar(){
+    const grid=document.getElementById('calendar-grid'),mn=document.getElementById('month-name');
+    const now=new Date();
+    mn.innerText=new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric'}).format(now);
+    const labels=Array.from(grid.querySelectorAll('.calendar-day-label'));
+    grid.innerHTML='';labels.forEach(l=>grid.appendChild(l));
+    const firstDay=new Date(now.getFullYear(),now.getMonth(),1).getDay();
+    const daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+    for(let i=0;i<firstDay;i++) grid.appendChild(document.createElement('div'));
+    for(let d=1;d<=daysInMonth;d++){
+        const cell=document.createElement('div');cell.className='day-cell';
+        if(d===now.getDate()) cell.classList.add('today');
+        cell.innerText=d;
+        const dk=`${now.getFullYear()}-${now.getMonth()+1}-${d}`;
+        if(moodData[dk]){const dot=document.createElement('div');dot.className=`mood-dot dot-${moodData[dk]}`;cell.appendChild(dot);}
+        grid.appendChild(cell);
+    }
+}
+function mood(type){
+    const replies={'😊':'ดีมาก! ยิ้มเยอะๆ นะ 🎶','😔':'โอ๋ๆ เดี๋ยวเค้ากอดนะ','😤':'ใจเย็นๆ เดี๋ยวพาไปกินขนม','😋':'หิวหรอ? ไปกินของอร่อยกัน!'};
+    document.getElementById('mood-reply').innerText=replies[type];
+    const now=new Date(),dk=`${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+    const tm={'😊':'happy','😔':'sad','😤':'angry','😋':'hungry'};
+    moodData[dk]=tm[type];localStorage.setItem('moodHistory',JSON.stringify(moodData));
+    initCalendar();updateStats();
+    if(type==='😊'){confetti({particleCount:100,spread:70,origin:{y:0.6}});}
+}
+
+// ===== Greeting / Birthday =====
+function updateGreeting(){
+    const h=new Date().getHours(),el=document.getElementById('greeting');
+    if(h>=5&&h<12) el.innerText='อรุณสวัสดิ์นะไอ้อ้วน ☀️';
+    else if(h>=12&&h<18) el.innerText='เที่ยงแล้ว หาไรกินยัง? 🍰';
+    else if(h>=18&&h<22) el.innerText='เย็นแล้ว พักผ่อนนะอ้วน 🌸';
+    else el.innerText='ดึกแล้ว ฝันดีนะไอ้อ้วน 🌙';
+    if(h<6||h>=18) document.body.classList.add('night-mode'); else document.body.classList.remove('night-mode');
+}
+function updateBirthday(){
+    const today=new Date();let bday=new Date(today.getFullYear(),8,7);
+    if(today>bday&&!(today.getDate()===7&&today.getMonth()===8)) bday.setFullYear(today.getFullYear()+1);
+    const days=Math.ceil((bday-today)/864e5);
+    document.getElementById('bday-timer').innerText=(today.getMonth()===8&&today.getDate()===7)?'🎉 สุขสันต์วันเกิดนะอ้วน! 🎂':`เหลืออีก ${days} วัน 🎈`;
+}
+
+// ===== Garden/Secret =====
+let treeProgress=parseInt(localStorage.getItem('treeProgress'))||0;
+let lastWaterDate=localStorage.getItem('lastWaterDate');
+function updateTreeUI(){
+    const bar=document.getElementById('growth-bar'),icon=document.getElementById('tree-icon'),btn=document.getElementById('water-btn');
+    bar.style.width=treeProgress+'%';
+    if(treeProgress>=100) icon.innerText='🌻'; else if(treeProgress>=50) icon.innerText='🌿'; else icon.innerText='🌱';
+    if(lastWaterDate===getTodayStr()||treeProgress>=100) btn.classList.add('disabled'); else btn.classList.remove('disabled');
+}
+function waterTree(){
+    if(lastWaterDate===getTodayStr()||treeProgress>=100) return;
+    treeProgress=Math.min(treeProgress+10,100);lastWaterDate=getTodayStr();
+    localStorage.setItem('treeProgress',treeProgress);localStorage.setItem('lastWaterDate',lastWaterDate);
+    updateTreeUI();confetti({particleCount:30,colors:['#2196f3'],origin:{y:0.8}});
+}
+function showSecret(){
+    if(localStorage.getItem('lastSecret')===getTodayStr()){alert('วันนี้อ่านไปแล้วน้า ❤️');return;}
+    const q=['วันนี้อ้วนน่ารักจัง','รักอ้วนที่สุดเลย','ดีใจที่มีอ้วนนะ'];
+    document.getElementById('secret-text').innerText='💌 '+q[Math.floor(Math.random()*q.length)];
+    localStorage.setItem('lastSecret',getTodayStr());
+}
+function openLetter(){document.getElementById('loveLetter').style.display='block';}
+
+// ===== Gift System =====
+const gifts=[
+    {id:'g1',icon:'🎀',name:'โบว์สีชมพู',desc:'สัญญาว่าจะผูกผมให้อ้วนทุกครั้งที่อยู่ด้วยกัน 🎀',unlockDay:0},
+    {id:'g2',icon:'🍰',name:'เค้กพิเศษ',desc:'เค้กวันเกิดที่เค้าจะทำให้อ้วนด้วยตัวเอง 🍰',unlockDay:0},
+    {id:'g3',icon:'🌷',name:'ช่อดอกไม้',desc:'ดอกทิวลิปสีชมพูที่อ้วนชอบ 🌷',unlockDay:0},
+    {id:'g4',icon:'🎬',name:'มูวี่ไนท์',desc:'ดูหนังด้วยกันทั้งคืน อ้วนเลือกเองเลย 🎬🍿',unlockDay:7},
+    {id:'g5',icon:'🍜',name:'คุกกิ้งเดต',desc:'เค้าจะทำอาหารให้อ้วนกินเองเลย 🍜',unlockDay:7},
+    {id:'g6',icon:'⭐',name:'ดูดาวด้วยกัน',desc:'พาอ้วนไปดูดาวยามค่ำคืน ✨🌙',unlockDay:14},
+    {id:'g7',icon:'🎵',name:'เพลงพิเศษ',desc:'จะร้องเพลงให้อ้วนฟังสักเพลง 🎵',unlockDay:14},
+    {id:'g8',icon:'📸',name:'โฟโต้เดต',desc:'พาอ้วนไปถ่ายรูปด้วยกัน 📸',unlockDay:30},
+    {id:'g9',icon:'🌍',name:'ทริปพิเศษ',desc:'วันหนึ่งจะพาอ้วนไปเที่ยวที่อ้วนอยากไป 🌍✈️',unlockDay:30},
+];
+let openedGifts=JSON.parse(localStorage.getItem('openedGifts')||'[]');
+function renderGifts(){
+    const d=Math.floor((new Date()-startDate)/864e5);
+    document.getElementById('gift-grid').innerHTML=gifts.map(g=>{
+        const lk=d<g.unlockDay,op=openedGifts.includes(g.id);
+        return `<div class="gift-item${lk?' locked':''}" onclick="${lk?'':` openGift('${g.id}')`}">
+            ${!lk&&!op?'<div class="gift-unlock-badge">!</div>':''}
+            <div class="gift-item-icon">${op?'✅':lk?'🔒':g.icon}</div>
+            <div class="gift-item-name">${g.name}</div>
+            <div class="gift-item-hint">${lk?`ปลดล็อกวันที่ ${g.unlockDay}`:op?'รับแล้ว!':'แตะเพื่อเปิด'}</div>
+        </div>`;
+    }).join('');
+}
+function openGiftModal(){renderGifts();document.getElementById('giftModal').style.display='block';}
+function closeGiftModal(){document.getElementById('giftModal').style.display='none';}
+function openGift(id){
+    const g=gifts.find(x=>x.id===id);if(!g) return;
+    document.getElementById('gift-detail-emoji').innerText=g.icon;
+    document.getElementById('gift-detail-title').innerText=g.name;
+    document.getElementById('gift-detail-desc').innerText=g.desc;
+    document.getElementById('giftDetailModal').style.display='block';
+    document.getElementById('giftDetailModal').dataset.currentId=id;
+    confetti({particleCount:80,spread:70,origin:{y:0.5},colors:['#ce93d8','#ff80ab','#ffffff']});
+}
+function closeGiftDetailBtn(){
+    const id=document.getElementById('giftDetailModal').dataset.currentId;
+    if(id&&!openedGifts.includes(id)){openedGifts.push(id);localStorage.setItem('openedGifts',JSON.stringify(openedGifts));}
+    document.getElementById('giftDetailModal').style.display='none';renderGifts();
+}
+
+// ===== Coupon =====
+const coupons=[
+    {emoji:'🤗',title:'คูปองกอด',desc:'สามารถขอกอดเค้าได้ 1 ครั้ง ไม่มีเงื่อนไข 🤗'},
+    {emoji:'🍡',title:'คูปองของหวาน',desc:'เค้าจะพาอ้วนไปกินของหวานที่อ้วนอยากกิน! 🍡🍰'},
+    {emoji:'🎮',title:'คูปองเกมส์',desc:'เล่นเกมอะไรก็ได้ด้วยกัน 🎮'},
+    {emoji:'💆',title:'คูปองนวด',desc:'นวดไหล่ให้อ้วน 15 นาที! 💆'},
+    {emoji:'🌙',title:'คูปองคุยทั้งคืน',desc:'คืนนี้คุยด้วยกันยันเช้า 🌙✨'},
+    {emoji:'🎁',title:'คูปองซื้อของ',desc:'อ้วนอยากได้อะไร บอกมาได้เลย! 🎁'},
+    {emoji:'📷',title:'คูปองถ่ายรูป',desc:'เค้าจะถ่ายรูปให้อ้วนสวยๆ ไม่จำกัดจำนวน 📷💕'},
+    {emoji:'🍳',title:'คูปองอาหาร',desc:'เค้าจะทำอาหารให้อ้วนกิน 1 มื้อ 🍳'},
+    {emoji:'🌈',title:'คูปองซัพไพรส์',desc:'เค้าจะทำสิ่งพิเศษให้อ้วน 1 อย่าง...ต้องแลกถึงจะรู้! 🌈✨'},
+];
+let currentCoupon=null;
+function drawCoupon(){
+    const today=getTodayStr(),saved=JSON.parse(localStorage.getItem('todayCoupon')||'null');
+    if(saved&&saved.date===today) currentCoupon=saved;
+    else{const c=coupons[Math.floor(Math.random()*coupons.length)];currentCoupon={...c,date:today,used:false};localStorage.setItem('todayCoupon',JSON.stringify(currentCoupon));}
+    document.getElementById('coupon-emoji').innerText=currentCoupon.emoji;
+    document.getElementById('coupon-title').innerText=currentCoupon.title;
+    document.getElementById('coupon-desc').innerText=currentCoupon.desc;
+    document.getElementById('coupon-expire').innerText=`หมดอายุ: วันนี้ ${today} เท่านั้น!`;
+    const un=document.getElementById('coupon-used-note'),ub=document.getElementById('coupon-use-btn');
+    if(currentCoupon.used){un.style.display='block';un.innerText='✅ ใช้คูปองนี้ไปแล้ววันนี้';ub.style.opacity='0.4';ub.style.pointerEvents='none';}
+    else{un.style.display='none';ub.style.opacity='1';ub.style.pointerEvents='auto';}
+    document.getElementById('couponModal').style.display='block';
+}
+function useCoupon(){
+    if(!currentCoupon||currentCoupon.used) return;
+    currentCoupon.used=true;localStorage.setItem('todayCoupon',JSON.stringify(currentCoupon));
+    document.getElementById('coupon-used-note').style.display='block';
+    document.getElementById('coupon-used-note').innerText='✅ ใช้คูปองนี้ไปแล้ววันนี้ — อย่าลืมทวงนะ! 💙';
+    document.getElementById('coupon-use-btn').style.opacity='0.4';
+    document.getElementById('coupon-use-btn').style.pointerEvents='none';
+    confetti({particleCount:60,spread:60,origin:{y:0.6},colors:['#1565c0','#64b5f6','#ffffff']});
+}
+function closeCouponModal(){document.getElementById('couponModal').style.display='none';}
+
+// ===== Click hearts =====
+document.addEventListener('click',e=>{
+    const skip=['.pw-overlay','.tc-create-box','.gift-modal-content','.gift-detail-content','.coupon-card','.photo-upload-area','.caption-modal-content','.board-box','.wishlist-box','.yt-add-box','.chat-box','.letter-modal-content','.games-box','.card-sender-box','.card-view-modal'];
+    if(skip.some(s=>e.target.closest(s))) return;
+    const h=document.createElement('div');
+    h.innerHTML=['❤️','🌸','💖','✨'][Math.floor(Math.random()*4)];
+    h.className='click-heart';h.style.left=(e.clientX-10)+'px';h.style.top=(e.clientY-10)+'px';
+    document.getElementById('click-container').appendChild(h);
+    setTimeout(()=>h.remove(),800);
+});
+setInterval(()=>{
+    const item=document.createElement('div');
+    item.innerHTML=['❤️','🌸','💖','✨'][Math.floor(Math.random()*4)];
+    item.className='floating-item';item.style.left=Math.random()*100+'vw';
+    document.getElementById('heart-container').appendChild(item);
+    setTimeout(()=>item.remove(),5000);
+},800);
+
+// Fix inputs
+['tc-text','tc-set-pw','tc-set-pw-both','pw-enter','board-textarea','wish-input','caption-input','yt-url-inp','yt-name-inp','yt-lyrics-inp','chat-input','card-msg-input','wheel-new-item'].forEach(id=>{
+    const el=document.getElementById(id);if(!el) return;
+    el.addEventListener('click',e=>e.stopPropagation());
+    el.style.userSelect='text';
+    el.addEventListener('mousedown',e=>e.stopPropagation());
+});
+document.getElementById('pw-enter').addEventListener('keydown',e=>{if(e.key==='Enter')tcConfirmPw();});
+document.getElementById('wish-input').addEventListener('keydown',e=>{if(e.key==='Enter')addWish();});
+document.getElementById('pw-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('pw-overlay'))tcClosePw();});
+
+function tcToast(msg){const t=document.getElementById('tc-toast');t.innerText=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+setInterval(()=>{updateAnniversary();updateGreeting();updateBirthday();},1000);
+updateAnniversary();updateGreeting();updateBirthday();
+initCalendar();updateTreeUI();updateStats();
+initCheckin();initLetters();
+wheelDraw();
+fullSync(false);
+</script>
+  
 </body>
 </html>

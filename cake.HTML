@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For My Fat Cat 🐱🍰</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;600&family=Caveat:wght@700&display=swap');
+        :root {
+            --bg-gradient: radial-gradient(circle, #fff5f8 0%, #fbc2eb 100%);
+            --card-bg: rgba(255,255,255,0.75);
+            --text-main: #d81b60; --text-sub: #880e4f;
+            --accent: #ff4081; --border-color: #ffffff;
+        }
+        body.night-mode {
+            --bg-gradient: radial-gradient(circle, #2c3e50 0%, #000000 100%);
+            --card-bg: rgba(30,30,50,0.85);
+            --text-main: #f48fb1; --text-sub: #ce93d8;
+            --accent: #ba68c8; --border-color: #4a4a6a;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; transition:background 0.4s,color 0.4s; user-select:none; -webkit-tap-highlight-color:transparent; }
+        body { min-height:100vh; display:flex; justify-content:center; align-items:center; background:var(--bg-gradient); font-family:'Anuphan',sans-serif; overflow-x:hidden; padding:60px 0; cursor:crosshair; position:relative; }
+        #heart-container,#click-container { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1; }
+        .container { width:100%; display:flex; flex-direction:column; align-items:center; z-index:10; }
+        .card { background:var(--card-bg); backdrop-filter:blur(15px); padding:3.5rem 1rem 2.5rem; border-radius:40px; box-shadow:0 20px 50px rgba(0,0,0,0.2); text-align:center; max-width:500px; width:92%; border:3px solid var(--border-color); position:relative; margin:0 auto; }
+        .image-container { width:130px; height:130px; border-radius:50%; overflow:hidden; margin:-100px auto 1rem; box-shadow:0 10px 25px rgba(0,0,0,0.15); animation:float-img 3s ease-in-out infinite; border:6px solid #fff; background:white; }
+        @keyframes float-img { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-10px) rotate(2deg)} }
+        .cat-image { width:100%; height:100%; object-fit:cover; }
+        h1 { color:var(--text-main); font-size:1.5rem; margin-bottom:5px; font-weight:600; min-height:2rem; padding:0 10px; }
+
+        /* Anniversary */
+        .anniversary-box { background:linear-gradient(135deg,#ff80ab22,#ba68c822); border:2px solid var(--accent); border-radius:28px; padding:16px 12px 12px; margin:10px 0 20px; position:relative; overflow:hidden; }
+        .anniversary-box::before { content:'💞'; position:absolute; top:-10px; right:-10px; font-size:3rem; opacity:0.12; }
+        .anniv-label { font-size:0.65rem; color:var(--text-main); font-weight:700; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; display:block; }
+        .anniv-counter { display:flex; justify-content:center; gap:8px; margin-bottom:8px; }
+        .anniv-unit { display:flex; flex-direction:column; align-items:center; background:var(--card-bg); border-radius:14px; padding:8px 10px; min-width:54px; box-shadow:0 2px 8px rgba(216,27,96,0.1); border:1px solid rgba(255,64,129,0.2); }
+        .anniv-num { font-family:'Caveat',cursive; font-size:1.8rem; color:var(--accent); line-height:1; font-weight:700; }
+        .anniv-unit-label { font-size:0.55rem; color:var(--text-sub); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; }
+        .anniv-since { font-size:0.7rem; color:var(--text-sub); opacity:0.8; }
+
+        /* Section Header */
+        .section-header { display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:14px; }
+        .section-line { flex:1; height:2px; background:linear-gradient(90deg,transparent,#ffb3c6); }
+        .section-line.right { background:linear-gradient(90deg,#ffb3c6,transparent); }
+        .section-badge { background:var(--accent); border-radius:50px; padding:6px 16px; font-size:0.7rem; font-weight:700; color:white; white-space:nowrap; letter-spacing:1px; box-shadow:0 4px 12px rgba(255,64,129,0.3); }
+        .section-badge.outline { background:white; border:2px solid #ffb3c6; color:var(--text-main); box-shadow:none; }
+
+        /* Sync Status Bar */
+        .sync-bar { display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.5); border-radius:50px; padding:6px 14px; margin-bottom:16px; border:1px solid rgba(255,179,198,0.4); }
+        .sync-status { font-size:0.65rem; color:var(--text-sub); display:flex; align-items:center; gap:5px; }
+        .sync-dot { width:7px; height:7px; border-radius:50%; background:#4caf50; animation:syncPulse 2s infinite; flex-shrink:0; }
+        .sync-dot.syncing { background:#ffb74d; animation:syncSpin 1s linear infinite; }
+        .sync-dot.error { background:#ef5350; animation:none; }
+        @keyframes syncPulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        @keyframes syncSpin { 0%{transform:scale(0.6)} 50%{transform:scale(1)} 100%{transform:scale(0.6)} }
+        .sync-refresh-btn { background:none; border:1.5px solid rgba(255,64,129,0.3); border-radius:50px; padding:4px 10px; font-size:0.6rem; color:var(--text-main); cursor:pointer; font-family:'Anuphan',sans-serif; font-weight:600; }
+        .sync-refresh-btn:active { transform:scale(0.95); }
+
+        /* ===== 🌙 Bedtime Check-in ===== */
+        .checkin-box { background:linear-gradient(135deg,#1a1a2e,#16213e); border-radius:28px; padding:18px 16px; margin-bottom:20px; width:100%; position:relative; overflow:hidden; border:2px solid #3a3a6a; }
+        .checkin-box::before { content:'🌙'; position:absolute; top:-8px; right:-4px; font-size:4rem; opacity:0.08; }
+        .checkin-title { font-size:0.85rem; font-weight:700; color:#ce93d8; margin-bottom:4px; }
+        .checkin-subtitle { font-size:0.65rem; color:#9575cd; margin-bottom:12px; }
+        .checkin-streak { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px; }
+        .streak-flame { font-size:2rem; animation:flicker 1.5s ease-in-out infinite alternate; }
+        @keyframes flicker { 0%{transform:scale(1) rotate(-3deg)} 100%{transform:scale(1.1) rotate(3deg)} }
+        .streak-num { font-family:'Caveat',cursive; font-size:2.8rem; color:#ffb74d; line-height:1; font-weight:700; }
+        .streak-label { font-size:0.65rem; color:#9575cd; text-align:left; line-height:1.3; }
+        .checkin-days-row { display:flex; justify-content:center; gap:5px; margin-bottom:14px; }
+        .checkin-dot { width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,0.08); border:1.5px solid rgba(149,117,205,0.3); display:flex; align-items:center; justify-content:center; font-size:0.55rem; color:#9575cd; flex-direction:column; }
+        .checkin-dot.done { background:linear-gradient(135deg,#7b1fa2,#9c27b0); border-color:#ce93d8; }
+        .checkin-dot.today-dot { border:2px solid #ffb74d; }
+        .checkin-dot-label { font-size:0.42rem; color:#9575cd; margin-top:1px; }
+        .checkin-btn { width:100%; background:linear-gradient(135deg,#7b1fa2,#9c27b0); color:white; border:none; padding:12px; border-radius:50px; font-size:0.85rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; box-shadow:0 4px 15px rgba(123,31,162,0.4); transition:all 0.2s; }
+        .checkin-btn:active { transform:scale(0.97); }
+        .checkin-btn.checked { background:rgba(255,255,255,0.1); color:#9575cd; border:2px solid #3a3a6a; box-shadow:none; cursor:default; }
+        .checkin-msg { font-size:0.7rem; color:#b39ddb; margin-top:8px; min-height:1rem; }
+
+        /* ===== 📊 Relationship Stats ===== */
+        .stats-box { background:linear-gradient(135deg,#e8f5e9,#f3e5f5); border:2px solid #a5d6a7; border-radius:28px; padding:18px 14px; margin-bottom:20px; width:100%; }
+        .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+        .stat-card { background:white; border-radius:18px; padding:12px 8px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+        .stat-icon { font-size:1.4rem; margin-bottom:4px; }
+        .stat-num { font-family:'Caveat',cursive; font-size:1.6rem; color:var(--accent); line-height:1; font-weight:700; }
+        .stat-label { font-size:0.55rem; color:#888; text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; font-weight:600; }
+        .stats-mood-bar { margin-top:12px; background:rgba(255,255,255,0.6); border-radius:16px; padding:10px 12px; }
+        .mood-bar-title { font-size:0.65rem; color:var(--text-sub); font-weight:700; margin-bottom:6px; text-align:left; }
+        .mood-bar-row { display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+        .mood-bar-label { font-size:0.7rem; width:20px; }
+        .mood-bar-track { flex:1; height:8px; background:rgba(0,0,0,0.06); border-radius:4px; overflow:hidden; }
+        .mood-bar-fill { height:100%; border-radius:4px; transition:width 0.6s ease; }
+        .mood-bar-count { font-size:0.6rem; color:#999; width:16px; text-align:right; }
+
+        /* ===== 🎯 Wishlist ===== */
+        .wishlist-box { background:linear-gradient(135deg,#fff3e0,#fce4ec); border:2px solid #ffcc80; border-radius:28px; padding:18px 14px; margin-bottom:20px; width:100%; }
+        .wish-input-row { display:flex; gap:8px; margin-bottom:12px; }
+        .wish-input { flex:1; border:2px solid #ffcc80; border-radius:50px; padding:9px 14px; font-family:'Anuphan',sans-serif; font-size:0.8rem; color:#5d4037; background:rgba(255,255,255,0.9); outline:none; user-select:text; }
+        .wish-input:focus { border-color:#ff7043; }
+        .wish-add-btn { background:linear-gradient(135deg,#ff7043,#ffb74d); color:white; border:none; border-radius:50px; padding:9px 16px; font-size:0.8rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; white-space:nowrap; }
+        .wish-list { display:flex; flex-direction:column; gap:8px; max-height:260px; overflow-y:auto; }
+        .wish-item { background:rgba(255,255,255,0.85); border-radius:16px; padding:10px 12px; display:flex; align-items:center; gap:10px; border:1.5px solid rgba(255,204,128,0.5); transition:all 0.2s; }
+        .wish-item.done { opacity:0.55; }
+        .wish-check { width:22px; height:22px; border-radius:50%; border:2px solid #ffcc80; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.75rem; flex-shrink:0; transition:all 0.2s; }
+        .wish-check.checked { background:linear-gradient(135deg,#ff7043,#ffb74d); border-color:transparent; }
+        .wish-text { flex:1; font-size:0.82rem; color:#5d4037; text-align:left; }
+        .wish-item.done .wish-text { text-decoration:line-through; color:#bcaaa4; }
+        .wish-who { font-size:0.6rem; background:#ffecb3; color:#e65100; border-radius:50px; padding:2px 8px; font-weight:700; flex-shrink:0; }
+        .wish-del { background:none; border:none; color:#ffcdd2; font-size:0.75rem; cursor:pointer; flex-shrink:0; }
+        .wish-who-select { display:flex; gap:6px; margin-bottom:10px; }
+        .who-btn { flex:1; padding:7px; border-radius:50px; border:2px solid #ffcc80; background:white; font-size:0.72rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; color:#e65100; transition:all 0.15s; }
+        .who-btn.active { background:linear-gradient(135deg,#ff7043,#ffb74d); color:white; border-color:transparent; }
+        .wish-empty { text-align:center; color:#bcaaa4; font-size:0.82rem; padding:16px; }
+
+        /* ===== 💌 Countdown Letters ===== */
+        .letters-section { width:100%; margin-bottom:20px; }
+        .letters-grid { display:flex; flex-direction:column; gap:10px; }
+        .letter-card { border-radius:22px; overflow:hidden; border:2px solid; transition:all 0.2s; }
+        .letter-card.locked { border-color:#e0e0e0; background:linear-gradient(135deg,#f5f5f5,#eeeeee); }
+        .letter-card.unlocked { border-color:#f48fb1; background:linear-gradient(135deg,#fff0f5,#fce4ec); cursor:pointer; }
+        .letter-card.unlocked:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(216,27,96,0.15); }
+        .letter-card.opened { border-color:#ce93d8; background:linear-gradient(135deg,#f3e5f5,#fce4ec); cursor:pointer; }
+        .letter-header { padding:12px 14px; display:flex; align-items:center; gap:10px; }
+        .letter-num { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Caveat',cursive; font-size:1.1rem; font-weight:700; flex-shrink:0; }
+        .letter-card.locked .letter-num { background:#e0e0e0; color:#bbb; }
+        .letter-card.unlocked .letter-num,.letter-card.opened .letter-num { background:linear-gradient(135deg,#ff80ab,#ff4081); color:white; }
+        .letter-info { flex:1; text-align:left; }
+        .letter-title { font-size:0.82rem; font-weight:700; }
+        .letter-card.locked .letter-title { color:#bbb; }
+        .letter-card.unlocked .letter-title,.letter-card.opened .letter-title { color:#c2185b; }
+        .letter-date { font-size:0.6rem; }
+        .letter-card.locked .letter-date { color:#ccc; }
+        .letter-card.unlocked .letter-date,.letter-card.opened .letter-date { color:#f06292; }
+        .letter-status { font-size:1.1rem; }
+
+        /* Letter Read Modal */
+        .letter-modal { display:none; position:fixed; z-index:5000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.65); backdrop-filter:blur(8px); }
+        .letter-modal-content { background:linear-gradient(160deg,#fff9fb,#fce4ec); margin:8% auto; border-radius:32px; width:88%; max-width:420px; overflow:hidden; animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275); border:3px solid #f48fb1; }
+        .letter-modal-top { background:linear-gradient(135deg,#ff80ab,#ff4081); padding:20px; text-align:center; }
+        .letter-modal-envelope { font-size:2.5rem; animation:bounceIcon 0.6s ease; }
+        @keyframes bounceIcon { 0%,100%{transform:scale(1)} 50%{transform:scale(1.25)} }
+        .letter-modal-num { font-size:0.7rem; color:rgba(255,255,255,0.85); margin-top:4px; letter-spacing:2px; }
+        .letter-modal-body { padding:22px 20px; }
+        .letter-modal-title { font-family:'Caveat',cursive; font-size:1.6rem; color:#c2185b; margin-bottom:12px; }
+        .letter-modal-text { font-size:0.88rem; color:#5d4037; line-height:1.75; white-space:pre-wrap; }
+        .letter-close-btn { width:100%; background:linear-gradient(135deg,#ff80ab,#ff4081); color:white; border:none; padding:14px; font-size:0.85rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; }
+
+        /* ===== 🎵 Song Request (Playlist) ===== */
+        .playlist-section { width:100%; margin-bottom:20px; }
+        .playlist-tracks { display:flex; flex-direction:column; gap:10px; }
+        .track-card { background:white; border-radius:20px; padding:12px 14px; display:flex; align-items:center; gap:12px; box-shadow:0 4px 14px rgba(216,27,96,0.1); border:1.5px solid rgba(255,179,198,0.4); cursor:pointer; transition:all 0.25s; position:relative; overflow:hidden; }
+        .track-card:hover { transform:translateX(4px); }
+        .track-card.playing { background:linear-gradient(135deg,#fff0f5,#fce4ec); border-color:var(--accent); box-shadow:0 6px 20px rgba(255,64,129,0.25); }
+        .track-card.playing::before { content:''; position:absolute; top:0; left:0; bottom:0; width:4px; background:var(--accent); border-radius:20px 0 0 20px; }
+        .track-card.requested { border-color:#ffcc80; background:linear-gradient(135deg,#fff8e1,#fff3e0); }
+        .track-card.requested::before { content:''; position:absolute; top:0; left:0; bottom:0; width:4px; background:#ffb74d; border-radius:20px 0 0 20px; }
+        .track-icon-wrap { width:46px; height:46px; border-radius:14px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:1.4rem; position:relative; }
+        .track-icon-wrap.proud-color { background:linear-gradient(135deg,#ffd6e0,#ffb3c6); }
+        .track-icon-wrap.happy-color { background:linear-gradient(135deg,#fff9c4,#ffe082); }
+        .track-icon-wrap.request-color { background:linear-gradient(135deg,#fff3e0,#ffe0b2); }
+        .track-vinyl { position:absolute; inset:0; border-radius:14px; background:repeating-conic-gradient(rgba(255,255,255,0.15) 0deg,transparent 1deg,transparent 5deg); animation:spin 3s linear infinite; opacity:0; transition:opacity 0.3s; }
+        .track-card.playing .track-vinyl { opacity:1; }
+        @keyframes spin { to{transform:rotate(360deg)} }
+        .track-info { flex:1; text-align:left; }
+        .track-name { font-size:0.85rem; font-weight:700; color:#c2185b; margin-bottom:2px; }
+        .track-sub { font-size:0.7rem; color:#888; }
+        .track-play-btn { width:36px; height:36px; border-radius:50%; border:none; background:linear-gradient(135deg,#ff80ab,#ff4081); color:white; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 10px rgba(255,64,129,0.35); transition:transform 0.15s; flex-shrink:0; }
+        .track-play-btn:active { transform:scale(0.9); }
+        .track-bars { display:flex; align-items:flex-end; gap:2px; height:18px; margin-right:6px; opacity:0; transition:opacity 0.3s; }
+        .track-card.playing .track-bars { opacity:1; }
+        .track-bar { width:3px; background:var(--accent); border-radius:2px; animation:barBounce 0.6s ease-in-out infinite alternate; }
+        .track-bar:nth-child(1){height:8px;animation-delay:0s}
+        .track-bar:nth-child(2){height:14px;animation-delay:0.15s}
+        .track-bar:nth-child(3){height:10px;animation-delay:0.3s}
+        .track-bar:nth-child(4){height:16px;animation-delay:0.1s}
+        @keyframes barBounce { from{transform:scaleY(0.4)} to{transform:scaleY(1)} }
+        .request-tag { font-size:0.55rem; background:#fff3e0; color:#e65100; border-radius:50px; padding:2px 7px; font-weight:700; margin-top:3px; display:inline-block; }
+        /* Song request input */
+        .song-request-box { background:linear-gradient(135deg,#fff8e1,#fff3e0); border:2px dashed #ffcc80; border-radius:20px; padding:12px 14px; margin-top:10px; }
+        .song-req-title { font-size:0.75rem; font-weight:700; color:#e65100; margin-bottom:8px; }
+        .song-req-row { display:flex; gap:8px; }
+        .song-req-input { flex:1; border:2px solid #ffcc80; border-radius:50px; padding:8px 12px; font-family:'Anuphan',sans-serif; font-size:0.78rem; color:#5d4037; background:rgba(255,255,255,0.9); outline:none; user-select:text; }
+        .song-req-input:focus { border-color:#ff7043; }
+        .song-req-btn { background:linear-gradient(135deg,#ff7043,#ffb74d); color:white; border:none; border-radius:50px; padding:8px 14px; font-size:0.75rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; }
+
+        /* ===== 💬 Message Board ===== */
+        .board-box { background:linear-gradient(135deg,#e8eaf6,#f3e5f5); border:2px solid #9fa8da; border-radius:28px; padding:18px 14px; margin-bottom:20px; width:100%; }
+        .board-post-row { display:flex; gap:8px; margin-bottom:14px; align-items:flex-end; }
+        .board-textarea { flex:1; border:2px solid #9fa8da; border-radius:18px; padding:10px 12px; font-family:'Anuphan',sans-serif; font-size:0.8rem; color:#37474f; background:rgba(255,255,255,0.9); outline:none; resize:none; min-height:60px; user-select:text; }
+        .board-textarea:focus { border-color:#5c6bc0; }
+        .board-post-btn { background:linear-gradient(135deg,#5c6bc0,#7986cb); color:white; border:none; border-radius:18px; padding:10px 14px; font-size:0.78rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; white-space:nowrap; align-self:flex-end; }
+        .board-who-row { display:flex; gap:6px; margin-bottom:10px; }
+        .board-who-btn { flex:1; padding:6px; border-radius:50px; border:2px solid #9fa8da; background:white; font-size:0.72rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; color:#3949ab; transition:all 0.15s; }
+        .board-who-btn.active { background:linear-gradient(135deg,#5c6bc0,#7986cb); color:white; border-color:transparent; }
+        .board-feed { display:flex; flex-direction:column; gap:10px; max-height:320px; overflow-y:auto; }
+        .board-post { border-radius:20px; padding:12px 14px; position:relative; animation:fadeInUp 0.3s ease; }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        .board-post.me { background:linear-gradient(135deg,#e8eaf6,#c5cae9); border:1.5px solid #9fa8da; margin-left:20px; }
+        .board-post.you { background:linear-gradient(135deg,#fce4ec,#f8bbd0); border:1.5px solid #f48fb1; margin-right:20px; }
+        .board-post-who { font-size:0.6rem; font-weight:700; margin-bottom:4px; }
+        .board-post.me .board-post-who { color:#3949ab; }
+        .board-post.you .board-post-who { color:#c2185b; }
+        .board-post-text { font-size:0.83rem; color:#37474f; line-height:1.5; white-space:pre-wrap; }
+        .board-post-time { font-size:0.58rem; color:#aaa; margin-top:5px; }
+        .board-del-btn { position:absolute; top:8px; right:8px; background:none; border:none; color:#ccc; font-size:0.72rem; cursor:pointer; }
+        .board-empty { text-align:center; color:#b0bec5; font-size:0.82rem; padding:16px; }
+        .board-char-count { font-size:0.6rem; color:#9fa8da; text-align:right; margin-top:2px; }
+
+        /* ===== Time Capsule ===== */
+        .capsule-box { background:linear-gradient(135deg,#fff8e1,#fce4ec); border:2px dashed #ffb74d; border-radius:28px; padding:16px 14px; margin-bottom:20px; width:100%; }
+        .capsule-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+        .capsule-icon { font-size:1.4rem; }
+        .capsule-title { font-size:0.85rem; font-weight:700; color:#e65100; text-align:left; }
+        .capsule-subtitle { font-size:0.65rem; color:#bf360c; opacity:0.8; text-align:left; }
+        .capsule-textarea { width:100%; border:2px solid #ffcc80; border-radius:16px; padding:10px 12px; font-family:'Anuphan',sans-serif; font-size:0.8rem; color:#5d4037; background:rgba(255,255,255,0.85); resize:none; outline:none; min-height:80px; user-select:text; transition:border-color 0.3s; }
+        .capsule-textarea:focus { border-color:#ff7043; }
+        .capsule-meta { font-size:0.65rem; color:#bf360c; text-align:right; margin-top:4px; opacity:0.7; }
+        .capsule-btn-row { display:flex; gap:8px; margin-top:10px; }
+        .capsule-save-btn { flex:1; background:linear-gradient(135deg,#ff7043,#ffb74d); color:white; border:none; padding:9px; border-radius:50px; font-size:0.75rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; }
+        .capsule-view-btn { background:rgba(255,255,255,0.7); color:#e65100; border:2px solid #ffcc80; padding:9px 14px; border-radius:50px; font-size:0.75rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; }
+        .capsule-count-badge { background:#ff7043; color:white; border-radius:50px; font-size:0.6rem; padding:2px 7px; font-weight:700; margin-left:4px; }
+
+        /* Capsule Modal */
+        .capsule-modal { display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.55); backdrop-filter:blur(6px); }
+        .capsule-modal-content { background:linear-gradient(160deg,#fff8e1,#fce4ec); margin:8% auto; padding:0; border-radius:30px; width:90%; max-width:440px; border:3px solid #ffb74d; overflow:hidden; max-height:80vh; display:flex; flex-direction:column; }
+        .capsule-modal-header { background:linear-gradient(135deg,#ff7043,#ffb74d); color:white; padding:18px 20px; display:flex; justify-content:space-between; align-items:center; }
+        .capsule-modal-header h3 { font-size:1rem; font-weight:700; }
+        .capsule-close { font-size:1.5rem; cursor:pointer; background:none; border:none; color:white; }
+        .capsule-list { overflow-y:auto; padding:12px; flex:1; }
+        .capsule-entry { background:rgba(255,255,255,0.8); border-radius:18px; padding:14px; margin-bottom:10px; border-left:4px solid #ff7043; position:relative; text-align:left; animation:fadeInUp 0.3s ease; }
+        .capsule-entry-msg { font-size:0.85rem; color:#4e342e; line-height:1.5; margin-bottom:6px; white-space:pre-wrap; }
+        .capsule-entry-time { font-size:0.6rem; color:#a1887f; }
+        .capsule-entry-days { font-size:0.65rem; color:#ff7043; font-weight:700; margin-top:2px; }
+        .capsule-delete-btn { position:absolute; top:10px; right:10px; background:none; border:none; color:#ef9a9a; font-size:0.8rem; cursor:pointer; }
+        .capsule-empty { text-align:center; color:#bcaaa4; padding:30px; font-size:0.85rem; }
+
+        /* Birthday */
+        .birthday-box { background:linear-gradient(135deg,#ff80ab,#ba68c8); color:white; border-radius:20px; padding:12px; margin-bottom:20px; box-shadow:0 8px 15px rgba(216,27,96,0.2); border:2px solid white; animation:pulse 2s infinite; }
+        @keyframes pulse { 0%{transform:scale(1)} 50%{transform:scale(1.02)} 100%{transform:scale(1)} }
+        .bday-title { font-size:0.8rem; font-weight:600; display:block; margin-bottom:2px; }
+        .bday-days { font-family:'Caveat',cursive; font-size:1.5rem; letter-spacing:1px; }
+
+        /* Mood */
+        .mood-box { background:rgba(255,255,255,0.3); padding:12px; border-radius:20px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.5); }
+        .mood-btns { display:flex; justify-content:center; gap:15px; margin-top:8px; }
+        .mood-btn { font-size:1.6rem; cursor:pointer; transition:0.2s; }
+        .mood-btn:hover { transform:scale(1.3); }
+
+        /* Calendar */
+        .calendar-box { background:rgba(255,255,255,0.4); border-radius:25px; padding:15px; margin-bottom:20px; border:2px solid var(--border-color); }
+        .calendar-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; color:var(--text-main); font-weight:600; font-size:0.85rem; }
+        .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
+        .calendar-day-label { font-size:0.6rem; color:var(--text-sub); font-weight:600; }
+        .day-cell { aspect-ratio:1; background:rgba(255,255,255,0.5); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:#888; position:relative; border:1px solid rgba(255,255,255,0.3); }
+        .day-cell.today { border:2px solid var(--accent); font-weight:bold; color:var(--text-main); }
+        .mood-dot { width:80%; height:80%; border-radius:50%; position:absolute; opacity:0.6; filter:blur(2px); z-index:0; }
+        .dot-happy{background:#ffeb3b}.dot-sad{background:#64b5f6}.dot-angry{background:#ff5252}.dot-hungry{background:#ffb74d}
+
+        /* Memories */
+        .memories-section { width:100%; margin-bottom:20px; }
+        .memories-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+        .polaroid-card { background:white; border-radius:6px; padding:8px 8px 28px; box-shadow:0 6px 20px rgba(216,27,96,0.12),0 2px 6px rgba(0,0,0,0.08); position:relative; transition:transform 0.3s; border:1px solid rgba(255,255,255,0.8); }
+        .polaroid-card:nth-child(odd){transform:rotate(-1.5deg)}
+        .polaroid-card:nth-child(even){transform:rotate(1.5deg)}
+        .polaroid-card:hover{transform:rotate(0deg) scale(1.04) translateY(-4px);z-index:5;box-shadow:0 14px 35px rgba(216,27,96,0.2)}
+        .polaroid-photo { width:100%; aspect-ratio:1; object-fit:cover; border-radius:3px; display:block; background:#fff0f5; }
+        .polaroid-caption { position:absolute; bottom:6px; left:0; right:0; text-align:center; font-family:'Caveat',cursive; font-size:0.95rem; color:#888; padding:0 6px; }
+        .polaroid-pin { position:absolute; top:-10px; left:50%; transform:translateX(-50%); width:18px; height:18px; background:radial-gradient(circle at 40% 35%,#ff8fab,#d81b60); border-radius:50%; box-shadow:0 2px 6px rgba(216,27,96,0.4); border:2px solid rgba(255,255,255,0.7); }
+        .photo-upload-area { margin-top:12px; text-align:center; padding:14px; border:2px dashed rgba(255,179,198,0.6); border-radius:18px; background:rgba(255,255,255,0.3); }
+        .photo-upload-btn { background:linear-gradient(135deg,#ff80ab,#ff4081); color:white; border:none; padding:9px 22px; border-radius:50px; font-size:0.78rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; box-shadow:0 4px 12px rgba(255,64,129,0.3); }
+        .photo-upload-hint { font-size:0.65rem; color:var(--text-sub); margin-top:5px; opacity:0.8; }
+        .photo-upload-status { font-size:0.7rem; color:#e65100; margin-top:6px; min-height:1rem; }
+        .upload-progress-wrap { display:none; margin-top:8px; background:rgba(255,179,198,0.3); border-radius:10px; height:8px; overflow:hidden; }
+        .upload-progress-bar { height:100%; background:linear-gradient(90deg,#ff80ab,#ff4081); border-radius:10px; width:0%; transition:width 0.3s; }
+        .photo-delete-btn { position:absolute; top:4px; right:4px; background:rgba(255,64,129,0.85); color:white; border:none; border-radius:50%; width:22px; height:22px; font-size:0.65rem; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.2s; font-weight:700; }
+        .polaroid-card:hover .photo-delete-btn { opacity:1; }
+
+        /* Bio */
+        .bio-section { background:rgba(255,255,255,0.4); border-radius:20px; padding:15px; margin-bottom:20px; text-align:left; }
+        .bio-item { font-size:0.85rem; color:var(--text-sub); margin-bottom:6px; display:flex; flex-wrap:wrap; }
+        .bio-label { font-weight:600; min-width:100px; color:var(--text-main); }
+
+        /* Secret / Garden / Gifts */
+        .daily-box { background:var(--accent); color:white; border-radius:15px; padding:12px; margin-bottom:12px; cursor:pointer; border:2px solid white; box-shadow:0 4px 10px rgba(0,0,0,0.1); width:100%; }
+        .daily-label { font-size:0.75rem; opacity:0.9; margin-bottom:4px; display:block; font-weight:600; }
+        .garden-box { background:rgba(255,255,255,0.4); border-radius:20px; padding:15px; margin-bottom:20px; border:2px dashed #81c784; width:100%; }
+        .tree-display { font-size:3rem; margin:5px 0; transition:transform 0.3s; }
+        .progress-container { background:rgba(0,0,0,0.1); border-radius:10px; height:12px; width:85%; margin:8px auto; overflow:hidden; border:1px solid rgba(255,255,255,0.5); }
+        .progress-bar { background:linear-gradient(90deg,#ff80ab,#f48fb1); width:0%; height:100%; transition:width 0.5s ease; }
+        .water-btn { background:#4caf50; color:white; border:none; padding:8px 18px; border-radius:20px; cursor:pointer; font-weight:600; font-size:0.75rem; }
+        .water-btn.disabled { background:#9e9e9e; cursor:not-allowed; }
+
+        /* Fieldset */
+        fieldset { border:2px dashed var(--accent); border-radius:20px; padding:15px; background:rgba(255,255,255,0.2); margin-bottom:20px; width:100%; }
+        legend { background:var(--accent); color:white; padding:4px 18px; border-radius:50px; font-size:0.8rem; font-weight:600; margin:0 auto; }
+        table { width:100%; border-collapse:collapse; }
+        th { color:var(--text-main); border-bottom:2px solid var(--accent); padding:8px 4px; font-size:0.75rem; }
+        td { padding:8px 4px; color:var(--text-sub); border-bottom:1px solid rgba(255,193,227,0.2); font-size:0.75rem; }
+
+        /* Gift */
+        .gift-section { width:100%; margin-bottom:20px; display:flex; flex-direction:column; gap:10px; }
+        .gift-btn { width:100%; border:none; border-radius:22px; padding:14px 18px; cursor:pointer; font-family:'Anuphan',sans-serif; font-weight:700; font-size:0.9rem; display:flex; align-items:center; gap:10px; transition:transform 0.15s,box-shadow 0.15s; position:relative; overflow:hidden; }
+        .gift-btn:active { transform:scale(0.97); }
+        .gift-btn-icon { font-size:1.3rem; flex-shrink:0; }
+        .gift-btn-text { text-align:left; flex:1; }
+        .gift-btn-label { display:block; font-size:0.65rem; opacity:0.75; font-weight:400; margin-top:1px; }
+        .btn-gift { background:linear-gradient(135deg,#7b1fa2,#9c27b0,#ce93d8); color:white; box-shadow:0 6px 20px rgba(123,31,162,0.35); }
+        .btn-gift::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:radial-gradient(circle,rgba(255,255,255,0.15) 0%,transparent 60%); animation:shimmer 3s infinite; }
+        @keyframes shimmer { 0%,100%{transform:translateX(-30%) translateY(-30%)} 50%{transform:translateX(10%) translateY(10%)} }
+        .btn-coupon { background:linear-gradient(135deg,#1565c0,#1976d2,#64b5f6); color:white; box-shadow:0 6px 20px rgba(21,101,192,0.35); }
+
+        /* Gift Modal */
+        .gift-modal { display:none; position:fixed; z-index:3000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(8px); }
+        .gift-modal-content { background:linear-gradient(160deg,#f3e5f5,#e8eaf6,#fce4ec); margin:10% auto; padding:0; border-radius:32px; width:88%; max-width:420px; border:3px solid #ce93d8; overflow:hidden; animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+        @keyframes popIn { from{transform:scale(0.7);opacity:0} to{transform:scale(1);opacity:1} }
+        .gift-modal-header { background:linear-gradient(135deg,#7b1fa2,#9c27b0); color:white; padding:20px; text-align:center; }
+        .gift-modal-header h3 { font-size:1.1rem; font-weight:700; margin-bottom:2px; }
+        .gift-modal-header p { font-size:0.7rem; opacity:0.85; }
+        .gift-modal-body { padding:20px; }
+        .gift-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+        .gift-item { background:rgba(255,255,255,0.8); border-radius:18px; padding:14px 8px; text-align:center; cursor:pointer; border:2px solid transparent; transition:all 0.2s; position:relative; }
+        .gift-item:hover { border-color:#9c27b0; transform:translateY(-3px); box-shadow:0 8px 20px rgba(123,31,162,0.2); }
+        .gift-item.locked { opacity:0.45; cursor:not-allowed; }
+        .gift-item-icon { font-size:1.8rem; margin-bottom:6px; }
+        .gift-item-name { font-size:0.65rem; font-weight:700; color:#4a148c; }
+        .gift-item-hint { font-size:0.55rem; color:#7b1fa2; margin-top:2px; opacity:0.7; }
+        .gift-unlock-badge { position:absolute; top:-6px; right:-6px; background:#ff4081; color:white; border-radius:50%; width:18px; height:18px; font-size:0.55rem; display:flex; align-items:center; justify-content:center; font-weight:700; }
+        .gift-modal-close { width:100%; background:rgba(123,31,162,0.1); border:2px solid #ce93d8; color:#7b1fa2; padding:10px; border-radius:20px; margin-top:12px; font-weight:700; font-size:0.8rem; cursor:pointer; font-family:'Anuphan',sans-serif; }
+        .gift-detail-modal { display:none; position:fixed; z-index:4000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px); }
+        .gift-detail-content { background:white; margin:15% auto; border-radius:28px; width:82%; max-width:360px; overflow:hidden; animation:popIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275); border:4px solid #ce93d8; }
+        .gift-detail-top { padding:30px 20px 20px; text-align:center; }
+        .gift-detail-emoji { font-size:4rem; margin-bottom:10px; animation:bounceIcon 0.6s ease; }
+        .gift-detail-title { font-size:1.1rem; font-weight:700; color:#4a148c; margin-bottom:8px; }
+        .gift-detail-desc { font-size:0.82rem; color:#555; line-height:1.6; }
+        .gift-detail-btn { width:100%; background:linear-gradient(135deg,#7b1fa2,#9c27b0); color:white; border:none; padding:14px; font-size:0.85rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; }
+
+        /* Coupon */
+        .coupon-modal { display:none; position:fixed; z-index:3000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(8px); }
+        .coupon-card { margin:12% auto; width:82%; max-width:380px; animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+        .coupon-inner { background:white; border-radius:24px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+        .coupon-top { background:linear-gradient(135deg,#1565c0,#1976d2); color:white; padding:22px 20px; text-align:center; position:relative; }
+        .coupon-top::after { content:''; position:absolute; bottom:-12px; left:0; right:0; height:24px; background:white; border-radius:50% 50% 0 0 / 24px 24px 0 0; }
+        .coupon-stamp { font-size:0.65rem; background:rgba(255,255,255,0.2); border-radius:50px; padding:3px 10px; margin-bottom:8px; display:inline-block; letter-spacing:1px; }
+        .coupon-emoji { font-size:3rem; margin:6px 0; }
+        .coupon-title { font-size:1rem; font-weight:700; }
+        .coupon-body { padding:28px 22px 20px; text-align:center; }
+        .coupon-desc { font-size:0.85rem; color:#333; line-height:1.7; margin-bottom:14px; }
+        .coupon-expire { font-size:0.65rem; color:#999; margin-bottom:14px; }
+        .coupon-notch-row { display:flex; align-items:center; gap:0; margin-bottom:14px; }
+        .coupon-notch-line { flex:1; border-top:2px dashed #ddd; }
+        .coupon-notch-circle { width:14px; height:14px; background:#f5f5f5; border:2px dashed #ddd; border-radius:50%; flex-shrink:0; }
+        .coupon-barcode { font-size:0.55rem; letter-spacing:3px; color:#bbb; margin-bottom:14px; font-family:monospace; }
+        .coupon-use-btn { width:100%; background:linear-gradient(135deg,#1565c0,#1976d2); color:white; border:none; padding:12px; border-radius:50px; font-size:0.85rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; margin-bottom:8px; }
+        .coupon-close-btn { width:100%; background:none; border:2px solid #ddd; color:#999; padding:9px; border-radius:50px; font-size:0.75rem; cursor:pointer; font-family:'Anuphan',sans-serif; }
+        .coupon-used-note { font-size:0.7rem; color:#f44336; margin-top:6px; }
+
+        /* Love Letter Modal */
+        .modal { display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(5px); }
+        .modal-content { background:#fff; margin:15% auto; padding:30px; border-radius:30px; width:85%; max-width:400px; text-align:left; position:relative; border:5px solid var(--accent); }
+        .close { position:absolute; right:20px; top:15px; font-size:28px; font-weight:bold; color:var(--accent); cursor:pointer; }
+
+        /* Caption Modal */
+        .caption-modal { display:none; position:fixed; z-index:5000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(6px); }
+        .caption-modal-content { background:white; margin:30% auto; border-radius:24px; width:80%; max-width:340px; padding:24px; text-align:center; border:3px solid #ffb3c6; }
+        .caption-modal-title { font-size:0.95rem; font-weight:700; color:var(--text-main); margin-bottom:14px; }
+        .caption-input { width:100%; border:2px solid #ffb3c6; border-radius:12px; padding:10px 14px; font-family:'Anuphan',sans-serif; font-size:0.85rem; color:#555; outline:none; margin-bottom:14px; user-select:text; }
+        .caption-input:focus { border-color:var(--accent); }
+        .caption-confirm-btn { background:linear-gradient(135deg,#ff80ab,#ff4081); color:white; border:none; padding:10px 28px; border-radius:50px; font-size:0.82rem; font-weight:700; cursor:pointer; font-family:'Anuphan',sans-serif; }
+
+        /* Floating / click effects */
+        .btn-main { background:linear-gradient(45deg,#ff4081,#ba68c8); color:white; border:none; padding:12px; border-radius:50px; width:100%; font-weight:600; cursor:pointer; margin-top:10px; font-family:'Anuphan',sans-serif; font-size:0.9rem; }
+        .floating-item { position:absolute; animation:floatUp 5s linear forwards; pointer-events:none; z-index:0; }
+        @keyframes floatUp { 0%{transform:translateY(110vh) scale(0.5);opacity:0} 10%{opacity:0.8} 100%{transform:translateY(-10vh) scale(1.2) rotate(360deg);opacity:0} }
+        .click-heart { position:absolute; animation:clickPop 0.8s ease-out forwards; pointer-events:none; z-index:100; font-size:24px; }
+        @keyframes clickPop { 0%{transform:scale(0);opacity:1} 100%{transform:scale(1.5) translateY(-40px);opacity:0} }
+    </style>
+</head>
+<body>
+<div id="heart-container"></div>
+<div id="click-container"></div>
+<div class="container">
+<div class="card">
+
+    <!-- Profile -->
+    <div class="image-container">
+        <img src="images.png" class="cat-image" onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSADGc854o4-04exHOD4cUdJDQPCe0-5hjSTQ&s'">
+    </div>
+    <h1 id="greeting">CAKE (ไอ้อ้วนน)</h1>
+
+    <!-- Anniversary -->
+    <div class="anniversary-box">
+        <span class="anniv-label">💕 เราคบกันมาแล้ว</span>
+        <div class="anniv-counter">
+            <div class="anniv-unit"><span class="anniv-num" id="anniv-days">0</span><span class="anniv-unit-label">วัน</span></div>
+            <div class="anniv-unit"><span class="anniv-num" id="anniv-hours">00</span><span class="anniv-unit-label">ชั่วโมง</span></div>
+            <div class="anniv-unit"><span class="anniv-num" id="anniv-mins">00</span><span class="anniv-unit-label">นาที</span></div>
+            <div class="anniv-unit"><span class="anniv-num" id="anniv-secs">00</span><span class="anniv-unit-label">วินาที</span></div>
+        </div>
+        <div class="anniv-since">ตั้งแต่ 25 มีนาคม 2569 ✨</div>
+    </div>
+
+    <!-- 🔄 Sync Status Bar -->
+    <div class="sync-bar">
+        <div class="sync-status">
+            <div class="sync-dot" id="sync-dot"></div>
+            <span id="sync-label">ซิงค์ข้อมูลทั้งคู่แล้ว ✓</span>
+        </div>
+        <button class="sync-refresh-btn" onclick="manualSync()">🔄 รีเฟรช</button>
+    </div>
+
+    <!-- 🌙 Bedtime Check-in -->
+    <div class="checkin-box">
+        <div class="checkin-title">🌙 เช็คอินก่อนนอน</div>
+        <div class="checkin-subtitle">กดทุกคืนก่อนนอนเพื่อสะสมสตรีค 🔥</div>
+        <div class="checkin-streak">
+            <span class="streak-flame">🔥</span>
+            <span class="streak-num" id="streak-num">0</span>
+            <div class="streak-label">วันติดต่อกัน<br><span style="font-size:0.55rem;opacity:0.7">consecutive nights</span></div>
+        </div>
+        <div class="checkin-days-row" id="checkin-days-row"></div>
+        <button class="checkin-btn" id="checkin-btn" onclick="doCheckin()">🌙 กดเช็คอินก่อนนอนนะ</button>
+        <div class="checkin-msg" id="checkin-msg"></div>
+    </div>
+
+    <!-- 📊 Relationship Stats -->
+    <div class="section-header"><div class="section-line"></div><div class="section-badge">📊 OUR STATS</div><div class="section-line right"></div></div>
+    <div class="stats-box" style="margin-bottom:20px;">
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num" id="stat-days">0</div><div class="stat-label">วันด้วยกัน</div></div>
+            <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num" id="stat-streak">0</div><div class="stat-label">Streak คืน</div></div>
+            <div class="stat-card"><div class="stat-icon">📸</div><div class="stat-num" id="stat-photos">0</div><div class="stat-label">รูปความทรงจำ</div></div>
+            <div class="stat-card"><div class="stat-icon">💌</div><div class="stat-num" id="stat-capsules">0</div><div class="stat-label">Time Capsule</div></div>
+            <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num" id="stat-wishes">0</div><div class="stat-label">Wish สำเร็จ</div></div>
+            <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-num" id="stat-posts">0</div><div class="stat-label">ข้อความ</div></div>
+        </div>
+        <div class="stats-mood-bar">
+            <div class="mood-bar-title">😊 Mood Breakdown เดือนนี้</div>
+            <div class="mood-bar-row"><span class="mood-bar-label">😊</span><div class="mood-bar-track"><div class="mood-bar-fill" id="bar-happy" style="background:#ffeb3b;width:0%"></div></div><span class="mood-bar-count" id="cnt-happy">0</span></div>
+            <div class="mood-bar-row"><span class="mood-bar-label">😔</span><div class="mood-bar-track"><div class="mood-bar-fill" id="bar-sad" style="background:#64b5f6;width:0%"></div></div><span class="mood-bar-count" id="cnt-sad">0</span></div>
+            <div class="mood-bar-row"><span class="mood-bar-label">😤</span><div class="mood-bar-track"><div class="mood-bar-fill" id="bar-angry" style="background:#ff5252;width:0%"></div></div><span class="mood-bar-count" id="cnt-angry">0</span></div>
+            <div class="mood-bar-row"><span class="mood-bar-label">😋</span><div class="mood-bar-track"><div class="mood-bar-fill" id="bar-hungry" style="background:#ffb74d;width:0%"></div></div><span class="mood-bar-count" id="cnt-hungry">0</span></div>
+        </div>
+    </div>
+
+    <!-- Time Capsule -->
+    <div class="capsule-box">
+        <div class="capsule-header"><span class="capsule-icon">📬</span><div><div class="capsule-title">Time Capsule Message</div><div class="capsule-subtitle">บันทึกความรู้สึก ณ ตอนนี้ไว้อ่านในอนาคต</div></div></div>
+        <textarea class="capsule-textarea" id="capsule-input" placeholder="พิมสิ่งที่อยากบันทึกไว้... 💌" rows="3"></textarea>
+        <div class="capsule-meta" id="capsule-meta-info">วันที่ + เวลาจะถูกบันทึกอัตโนมัติ</div>
+        <div class="capsule-btn-row">
+            <button class="capsule-save-btn" onclick="saveCapsuleMessage()">📸 บันทึกช่วงเวลานี้</button>
+            <button class="capsule-view-btn" onclick="openCapsuleModal()">📖 อ่านทั้งหมด<span class="capsule-count-badge" id="capsule-count">0</span></button>
+        </div>
+    </div>
+
+    <!-- Birthday -->
+    <div class="birthday-box"><span class="bday-title">🎂 เคาท์ดาวน์วันเกิดอ้วน (7 ก.ย.)</span><div class="bday-days" id="bday-timer">เหลืออีก -- วัน</div></div>
+
+    <!-- Audio -->
+    <audio id="mySong" loop><source src="015 Proud.mp3" type="audio/mpeg"></audio>
+    <audio id="happySong" loop><source src="เวลาเธอยิ้ม.mp3" type="audio/mpeg"></audio>
+
+    <!-- 🎵 Playlist + Song Request -->
+    <div class="playlist-section">
+        <div class="section-header"><div class="section-line"></div><div class="section-badge">🎵 OUR PLAYLIST</div><div class="section-line right"></div></div>
+        <div class="playlist-tracks" id="playlist-tracks">
+            <div class="track-card" id="track-proud" onclick="playTrack('proud')">
+                <div class="track-icon-wrap proud-color"><div class="track-vinyl"></div>🌸</div>
+                <div class="track-info"><div class="track-name">Proud - fellow fellow</div><div class="track-sub">เพลงที่กำตั้งใจเปิดให้อ้วนฟัง 🌸</div></div>
+                <div class="track-bars"><div class="track-bar"></div><div class="track-bar"></div><div class="track-bar"></div><div class="track-bar"></div></div>
+                <button class="track-play-btn" id="btn-proud">▶</button>
+            </div>
+            <div class="track-card" id="track-happy" onclick="playTrack('happy')">
+                <div class="track-icon-wrap happy-color"><div class="track-vinyl"></div>🌟</div>
+                <div class="track-info"><div class="track-name">เวลาเธอยิ้ม - Polycat</div><div class="track-sub">ฟังตอนอ้วนยิ้มแล้วโลกสดใส</div></div>
+                <div class="track-bars"><div class="track-bar"></div><div class="track-bar"></div><div class="track-bar"></div><div class="track-bar"></div></div>
+                <button class="track-play-btn" id="btn-happy">▶</button>
+            </div>
+        </div>
+        <!-- Song Request (SYNCED) -->
+        <div class="song-request-box" style="margin-top:10px;">
+            <div class="song-req-title">🎶 อ้วนอยากเพิ่มเพลงอะไร? <span style="font-size:0.6rem;color:#a1887f;">(ซิงค์ทั้งคู่ 🔄)</span></div>
+            <div class="song-req-row">
+                <input class="song-req-input" id="song-req-input" placeholder="ชื่อเพลง - ศิลปิน..." maxlength="60">
+                <button class="song-req-btn" onclick="addSongRequest()">+ เพิ่ม</button>
+            </div>
+        </div>
+        <div id="requested-songs" style="margin-top:8px;display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
+    <!-- Mood -->
+    <div class="mood-box">
+        <p style="font-size:0.75rem;color:var(--text-main);">วันนี้อ้วนเป็นยังไง?</p>
+        <div class="mood-btns">
+            <span class="mood-btn" onclick="mood('😊')">😊</span>
+            <span class="mood-btn" onclick="mood('😔')">😔</span>
+            <span class="mood-btn" onclick="mood('😤')">😤</span>
+            <span class="mood-btn" onclick="mood('😋')">😋</span>
+        </div>
+        <p id="mood-reply" style="font-size:0.8rem;margin-top:5px;color:var(--text-sub);min-height:1.2rem;"></p>
+    </div>
+
+    <!-- Calendar -->
+    <div class="calendar-box">
+        <div class="calendar-header"><span id="month-name">-- 2569</span><span style="font-size:0.65rem;opacity:0.7">Mood Diary ✨</span></div>
+        <div class="calendar-grid" id="calendar-grid">
+            <div class="calendar-day-label">S</div><div class="calendar-day-label">M</div><div class="calendar-day-label">T</div><div class="calendar-day-label">W</div><div class="calendar-day-label">T</div><div class="calendar-day-label">F</div><div class="calendar-day-label">S</div>
+        </div>
+    </div>
+
+    <!-- 💬 Message Board (SYNCED) -->
+    <div class="section-header"><div class="section-line"></div><div class="section-badge">💬 MESSAGE BOARD</div><div class="section-line right"></div></div>
+    <div class="board-box" style="margin-bottom:20px;">
+        <div style="font-size:0.6rem;color:#9fa8da;margin-bottom:8px;text-align:right;">🔄 ซิงค์ทั้งคู่แบบ real-time</div>
+        <div class="board-who-row">
+            <button class="board-who-btn active" id="board-me-btn" onclick="setBoardWho('me')">👦 เค้า</button>
+            <button class="board-who-btn" id="board-you-btn" onclick="setBoardWho('you')">🍰 อ้วน</button>
+        </div>
+        <div class="board-post-row">
+            <textarea class="board-textarea" id="board-textarea" placeholder="โพสต์ความรู้สึกสั้นๆ..." maxlength="200" rows="2" oninput="updateBoardChar()"></textarea>
+            <button class="board-post-btn" onclick="addBoardPost()">โพสต์</button>
+        </div>
+        <div class="board-char-count" id="board-char-count">0/200</div>
+        <div class="board-feed" id="board-feed"><div class="board-empty">ยังไม่มีข้อความ เริ่มโพสต์กันเลย! 💬</div></div>
+    </div>
+
+    <!-- 🎯 Wishlist (SYNCED) -->
+    <div class="section-header"><div class="section-line"></div><div class="section-badge">🎯 COUPLE WISHLIST</div><div class="section-line right"></div></div>
+    <div class="wishlist-box" style="margin-bottom:20px;">
+        <div style="font-size:0.6rem;color:#a1887f;margin-bottom:8px;text-align:right;">🔄 ซิงค์ทั้งคู่แบบ real-time</div>
+        <div class="wish-who-select">
+            <button class="who-btn active" id="wish-me-btn" onclick="setWishWho('me')">👦 เค้าอยากทำ</button>
+            <button class="who-btn" id="wish-you-btn" onclick="setWishWho('you')">🍰 อ้วนอยากทำ</button>
+            <button class="who-btn" id="wish-both-btn" onclick="setWishWho('both')">💕 ทำด้วยกัน</button>
+        </div>
+        <div class="wish-input-row">
+            <input class="wish-input" id="wish-input" placeholder="อยากทำอะไร..." maxlength="50">
+            <button class="wish-add-btn" onclick="addWish()">+ เพิ่ม</button>
+        </div>
+        <div class="wish-list" id="wish-list"><div class="wish-empty">ยังไม่มี Wishlist เพิ่มเข้ามาเลย! 🎯</div></div>
+    </div>
+
+    <!-- 💌 Countdown Letters -->
+    <div class="section-header" style="margin-bottom:14px;"><div class="section-line"></div><div class="section-badge">💌 LETTERS FOR YOU</div><div class="section-line right"></div></div>
+    <div class="letters-section" style="margin-bottom:20px;">
+        <div class="letters-grid" id="letters-grid"></div>
+    </div>
+
+    <!-- Memories -->
+    <div class="memories-section">
+        <div class="section-header"><div class="section-line"></div><div class="section-badge outline">🖼 OUR MEMORIES</div><div class="section-line right"></div></div>
+        <div class="memories-grid" id="static-memories">
+            <div class="polaroid-card">
+                <div class="polaroid-pin"></div>
+                <img class="polaroid-photo" src="แฟน.png" alt="My Cake" onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSADGc854o4-04exHOD4cUdJDQPCe0-5hjSTQ&s'">
+                <div class="polaroid-caption">My Cake 🍰</div>
+            </div>
+            <div class="polaroid-card">
+                <div class="polaroid-pin"></div>
+                <img class="polaroid-photo" src="แฟน2.png" alt="Happy Day" onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSADGc854o4-04exHOD4cUdJDQPCe0-5hjSTQ&s'">
+                <div class="polaroid-caption">Happy Day 🌿</div>
+            </div>
+        </div>
+        <div class="memories-grid" id="dynamic-photos" style="margin-top:10px;"></div>
+        <div class="photo-upload-area">
+            <input type="file" id="photo-file-input" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
+            <button class="photo-upload-btn" onclick="document.getElementById('photo-file-input').click()">📷 เพิ่มรูปความทรงจำ</button>
+            <div class="photo-upload-hint">รูปจะซิงค์ให้ทั้งคู่เห็นพร้อมกัน 💕</div>
+            <div class="upload-progress-wrap" id="upload-progress-wrap"><div class="upload-progress-bar" id="upload-progress-bar"></div></div>
+            <div class="photo-upload-status" id="photo-upload-status"></div>
+        </div>
+    </div>
+
+    <!-- Bio -->
+    <div class="bio-section">
+        <div class="bio-item"><span class="bio-label">วันที่คบกัน:</span><span>25 มีนาคม 2569 ✨</span></div>
+        <div class="bio-item"><span class="bio-label">วันเกิด:</span><span>7 ก.ย. 52 (05:00-06:00 น.)</span></div>
+    </div>
+
+    <button class="btn-main" style="margin-bottom:15px;background:#ff80ab;" onclick="openLetter()">💌 อ่านจดหมายจากเค้า</button>
+
+    <div id="secret-box" class="daily-box" onclick="showSecret()">
+        <span class="daily-label">🔒 ข้อความลับเฉพาะอ้วน</span>
+        <div id="secret-text">✉️ จิ้มเพื่ออ่าน (วันละครั้ง)</div>
+    </div>
+
+    <div class="garden-box">
+        <p style="font-size:0.75rem;color:#4caf50;font-weight:600;">🪴 สวนดอกไม้ของอ้วน</p>
+        <div id="tree-icon" class="tree-display">🌱</div>
+        <div class="progress-container"><div id="growth-bar" class="progress-bar"></div></div>
+        <button id="water-btn" class="water-btn" onclick="waterTree()">💧 รดน้ำต้นไม้</button>
+    </div>
+
+    <fieldset>
+        <legend> 🎀 SHE LIKES 🎀 </legend>
+        <table>
+            <thead><tr><th>Color</th><th>Flower</th><th>Hobby</th><th>Song</th><th>animals</th></tr></thead>
+            <tbody>
+                <tr><td>ฟ้าอ่อน</td><td>ไม่กินปลา</td><td>ลาเวนเดอร์</td><td>วาดรูป</td><td>DMMA</td><td>หมา</td></tr>
+                <tr><td>ชมพูอ่อน</td><td>ขนมทุกอย่าง</td><td>ทิวลิป</td><td>ส่องป่า</td><td>ทางของฝุ่น</td><td>แมว</td></tr>
+                <tr><td>ม่วง</td><td>-</td><td>ทานตะวัน</td><td>อ่านนิยาย</td><td>ไม่รู้ทำไม</td><td>กระต่าย</td></tr>
+                <tr><td>เหลือง</td><td>-</td><td>เดซี่</td><td>นอน</td><td>baby tee</td><td>แมวน้ำ</td></tr>
+                <tr><td>เขียว</td><td>-</td><td>แดนดิไลออน</td><td>ดนตรี/ดาว</td><td>pretty girl</td><td>เพนกวิ้น</td></tr>
+                <tr><td>น้ำตาลไม้</td><td>-</td><td>-</td><td>-</td><td>Sorry</td><td>โคอาร่า</td></tr>
+            </tbody>
+        </table>
+    </fieldset>
+
+    <div class="gift-section">
+        <button class="gift-btn btn-gift" onclick="openGiftModal()">
+            <span class="gift-btn-icon">🎁</span>
+            <span class="gift-btn-text">ของขวัญพิเศษ<span class="gift-btn-label">กดเพื่อเปิดกล่องของขวัญสำหรับอ้วน ✨</span></span>
+            <span>›</span>
+        </button>
+        <button class="gift-btn btn-coupon" onclick="drawCoupon()">
+            <span class="gift-btn-icon">🎟</span>
+            <span class="gift-btn-text">สุ่มคูปองรัก<span class="gift-btn-label">วันละครั้ง — แลกได้จริงนะ! 💙</span></span>
+            <span>›</span>
+        </button>
+    </div>
+
+    <button class="btn-main" onclick="confetti({particleCount:150,spread:70,origin:{y:0.6}})">รักอ้วนที่สุดในโลกเลยย🍰💖</button>
+</div>
+</div>
+
+<!-- Modals -->
+<div id="giftModal" class="gift-modal" onclick="if(event.target===this)closeGiftModal()">
+    <div class="gift-modal-content">
+        <div class="gift-modal-header"><h3>🎁 ของขวัญพิเศษสำหรับอ้วน</h3><p>เลือกกล่องที่อยากเปิด ✨</p></div>
+        <div class="gift-modal-body"><div class="gift-grid" id="gift-grid"></div><button class="gift-modal-close" onclick="closeGiftModal()">ปิด</button></div>
+    </div>
+</div>
+<div id="giftDetailModal" class="gift-detail-modal" onclick="if(event.target===this)closeGiftDetailBtn()">
+    <div class="gift-detail-content">
+        <div class="gift-detail-top">
+            <div class="gift-detail-emoji" id="gift-detail-emoji">🎀</div>
+            <div class="gift-detail-title" id="gift-detail-title"></div>
+            <div class="gift-detail-desc" id="gift-detail-desc"></div>
+        </div>
+        <button class="gift-detail-btn" onclick="closeGiftDetailBtn()">รับของขวัญแล้ว 💜</button>
+    </div>
+</div>
+<div id="couponModal" class="coupon-modal" onclick="if(event.target===this)closeCouponModal()">
+    <div class="coupon-card">
+        <div class="coupon-inner">
+            <div class="coupon-top">
+                <div class="coupon-stamp">LOVE COUPON</div>
+                <div class="coupon-emoji" id="coupon-emoji">💙</div>
+                <div class="coupon-title" id="coupon-title">คูปองรัก</div>
+            </div>
+            <div class="coupon-body">
+                <div class="coupon-desc" id="coupon-desc"></div>
+                <div class="coupon-notch-row"><div class="coupon-notch-circle"></div><div class="coupon-notch-line"></div><div class="coupon-notch-circle"></div></div>
+                <div class="coupon-expire" id="coupon-expire"></div>
+                <div class="coupon-barcode">| || ||| | || ||| | || ||| |</div>
+                <button class="coupon-use-btn" id="coupon-use-btn" onclick="useCoupon()">✅ ใช้คูปองนี้</button>
+                <button class="coupon-close-btn" onclick="closeCouponModal()">เก็บไว้ก่อน</button>
+                <div class="coupon-used-note" id="coupon-used-note" style="display:none"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="loveLetter" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="document.getElementById('loveLetter').style.display='none'">&times;</span>
+        <h2 style="color:var(--accent);margin-bottom:15px;font-family:'Caveat',cursive;font-size:2rem;">Dear Cake,</h2>
+        <p style="font-size:0.95rem;line-height:1.6;color:#555;">ถึงไอ้อ้วนที่รักมากที่สุด... ขอบคุณที่อยู่ด้วยกันมาตลอดนะ ดีใจมากที่มีอ้วนเข้ามาในชีวิต สัญญาว่าจะรักและดูแลอ้วนแบบนี้ไปนานๆ ยิ้มเยอะๆ นะครับคนเก่ง 🍰💖</p>
+    </div>
+</div>
+<div id="capsuleModal" class="capsule-modal" onclick="if(event.target===this)closeCapsuleModal()">
+    <div class="capsule-modal-content">
+        <div class="capsule-modal-header"><h3>📬 Time Capsule Messages</h3><button class="capsule-close" onclick="closeCapsuleModal()">×</button></div>
+        <div class="capsule-list" id="capsule-list"></div>
+    </div>
+</div>
+<div id="captionModal" class="caption-modal">
+    <div class="caption-modal-content">
+        <div class="caption-modal-title">📝 ใส่คำบรรยายรูปนี้</div>
+        <input type="text" class="caption-input" id="caption-input" placeholder="ความทรงจำดีๆ 🌸" maxlength="40">
+        <br><button class="caption-confirm-btn" onclick="confirmCaption()">✅ ยืนยัน</button>
+    </div>
+</div>
+<!-- Letter Read Modal -->
+<div id="letterModal" class="letter-modal" onclick="if(event.target===this)closeLetter2()">
+    <div class="letter-modal-content">
+        <div class="letter-modal-top">
+            <div class="letter-modal-envelope">💌</div>
+            <div class="letter-modal-num" id="letter-modal-num">LETTER #1</div>
+        </div>
+        <div class="letter-modal-body">
+            <div class="letter-modal-title" id="letter-modal-title">Dear Cake,</div>
+            <div class="letter-modal-text" id="letter-modal-text"></div>
+        </div>
+        <button class="letter-close-btn" onclick="closeLetter2()">💕 ปิด</button>
+    </div>
+</div>
+
+<script>
+// ===== Config =====
+const CLOUDINARY_CLOUD = 'dlb23ghyx';
+const CLOUDINARY_PRESET = 'cake_photos';
+const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`;
+const BIN_ID = '69c80a875fdde574550b19be';
+const BIN_KEY = '$2a$10$dRzV8ELTFUgtYV0SdcZeru1bd9vvyzFgW/AA2r8SCAW.vl3m/K.ze';
+const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const startDate = new Date('2026-03-25T00:00:00');
+const getTodayStr = () => new Date().toISOString().slice(0,10);
+const escapeHtml = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+// ===== Sync State =====
+let syncedData = {}; // in-memory cache of bin data
+let isSyncing = false;
+let lastSyncTime = null;
+
+function setSyncStatus(state, label) {
+    const dot = document.getElementById('sync-dot');
+    const lbl = document.getElementById('sync-label');
+    dot.className = 'sync-dot' + (state === 'syncing' ? ' syncing' : state === 'error' ? ' error' : '');
+    lbl.innerText = label;
+}
+
+// ===== JSONBin =====
+async function loadBin() {
+    try {
+        const r = await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':BIN_KEY}});
+        const d = await r.json();
+        return d.record || {};
+    } catch(e){ return syncedData || {}; }
+}
+async function saveBin(record) {
+    try {
+        await fetch(BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':BIN_KEY},body:JSON.stringify(record)});
+    } catch(e){}
+}
+
+// ===== Full Sync (pull all synced sections) =====
+async function fullSync(silent=false) {
+    if(isSyncing) return;
+    isSyncing = true;
+    if(!silent) setSyncStatus('syncing','กำลังซิงค์...');
+    try {
+        const rec = await loadBin();
+        syncedData = rec;
+
+        // Update each section if data changed
+        renderBoardFromData(rec.boardPosts || []);
+        renderWishlistFromData(rec.wishlist || []);
+        renderRequestedSongsFromData(rec.songRequests || []);
+
+        capsuleMessages = rec.messages || [];
+        updateCapsuleCount();
+        document.getElementById('stat-capsules').innerText = capsuleMessages.length;
+
+        photosData = rec.photos || [];
+        renderDynamicPhotos();
+        document.getElementById('stat-photos').innerText = photosData.length;
+
+        updateStatsFromData(rec);
+
+        lastSyncTime = new Date();
+        const timeStr = lastSyncTime.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+        setSyncStatus('ok', `ซิงค์ล่าสุด ${timeStr} ✓`);
+    } catch(e) {
+        setSyncStatus('error','ซิงค์ไม่สำเร็จ ⚠️');
+    }
+    isSyncing = false;
+}
+
+async function manualSync() {
+    await fullSync(false);
+}
+
+// Auto-sync every 10 seconds
+setInterval(() => fullSync(true), 10000);
+
+// ===== Anniversary =====
+function updateAnniversary() {
+    const now = new Date(), diff = now - startDate;
+    if(diff<0) return;
+    const d=Math.floor(diff/(864e5)), h=Math.floor(diff/36e5)%24, m=Math.floor(diff/6e4)%60, s=Math.floor(diff/1e3)%60;
+    document.getElementById('anniv-days').innerText=d;
+    document.getElementById('anniv-hours').innerText=String(h).padStart(2,'0');
+    document.getElementById('anniv-mins').innerText=String(m).padStart(2,'0');
+    document.getElementById('anniv-secs').innerText=String(s).padStart(2,'0');
+    document.getElementById('stat-days').innerText=d;
+}
+
+// ===== 🌙 Bedtime Check-in =====
+function getCheckinData() { return JSON.parse(localStorage.getItem('checkinData')||'{"streak":0,"lastDate":"","history":[]}'); }
+function saveCheckinData(d) { localStorage.setItem('checkinData',JSON.stringify(d)); }
+
+function initCheckin() {
+    const data = getCheckinData();
+    if(data.lastDate && data.lastDate !== getTodayStr()) {
+        const last = new Date(data.lastDate), today = new Date(getTodayStr());
+        const diff = Math.floor((today-last)/864e5);
+        if(diff > 1) { data.streak=0; saveCheckinData(data); }
+    }
+    renderCheckin(data);
+}
+
+function renderCheckin(data) {
+    document.getElementById('streak-num').innerText = data.streak;
+    document.getElementById('stat-streak').innerText = data.streak;
+    const today = getTodayStr();
+    const isChecked = data.lastDate === today;
+    const btn = document.getElementById('checkin-btn');
+    if(isChecked) {
+        btn.innerText = '✅ เช็คอินแล้วคืนนี้! ฝันดีนะ 🌙';
+        btn.className = 'checkin-btn checked';
+        document.getElementById('checkin-msg').innerText = '💜 ราตรีสวัสดิ์นะอ้วน นอนหลับฝันดีเลยน้า';
+    } else {
+        btn.innerText = '🌙 กดเช็คอินก่อนนอนนะ';
+        btn.className = 'checkin-btn';
+        document.getElementById('checkin-msg').innerText = '';
+    }
+    const row = document.getElementById('checkin-days-row');
+    row.innerHTML = '';
+    const days = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+    for(let i=6;i>=0;i--) {
+        const d = new Date(); d.setDate(d.getDate()-i);
+        const ds = d.toISOString().slice(0,10);
+        const isToday = ds === today;
+        const done = data.history && data.history.includes(ds);
+        const div = document.createElement('div');
+        div.className = 'checkin-dot'+(done?' done':'')+(isToday?' today-dot':'');
+        div.innerHTML = done ? '✓' : days[d.getDay()];
+        row.appendChild(div);
+    }
+}
+
+function doCheckin() {
+    const today = getTodayStr();
+    const data = getCheckinData();
+    if(data.lastDate === today) return;
+    const last = new Date(data.lastDate||'2000-01-01'), now = new Date(today);
+    const diff = Math.floor((now-last)/864e5);
+    data.streak = diff===1 ? data.streak+1 : 1;
+    data.lastDate = today;
+    data.history = data.history || [];
+    if(!data.history.includes(today)) data.history.push(today);
+    if(data.history.length>30) data.history=data.history.slice(-30);
+    saveCheckinData(data);
+    renderCheckin(data);
+    confetti({particleCount:80,spread:60,origin:{y:0.6},colors:['#9c27b0','#ce93d8','#ffffff']});
+    if(data.streak>=7) confetti({particleCount:120,spread:80,origin:{y:0.5}});
+}
+
+// ===== 📊 Stats =====
+function updateStats() {
+    const moodData = JSON.parse(localStorage.getItem('moodHistory')||'{}');
+    const now = new Date();
+    const monthKey = `${now.getFullYear()}-${now.getMonth()+1}-`;
+    let counts = {happy:0,sad:0,angry:0,hungry:0};
+    Object.entries(moodData).forEach(([k,v])=>{ if(k.startsWith(monthKey)) counts[v]=(counts[v]||0)+1; });
+    const total = Object.values(counts).reduce((a,b)=>a+b,0)||1;
+    ['happy','sad','angry','hungry'].forEach(t=>{
+        document.getElementById('cnt-'+t).innerText=counts[t];
+        document.getElementById('bar-'+t).style.width=(counts[t]/total*100)+'%';
+    });
+}
+
+function updateStatsFromData(rec) {
+    const wishes = rec.wishlist || [];
+    document.getElementById('stat-wishes').innerText = wishes.filter(w=>w.done).length;
+    const posts = rec.boardPosts || [];
+    document.getElementById('stat-posts').innerText = posts.length;
+    updateStats();
+}
+
+// ===== 💌 Countdown Letters =====
+const letters = [
+    { num:1, title:'จดหมายฉบับแรก 💕', unlockDays:0, content:'ถึงไอ้อ้วนที่รักมากที่สุด\n\nตั้งแต่วันแรกที่เราคบกัน เค้ารู้สึกว่าชีวิตมันสดใสขึ้นมากเลยนะ ขอบคุณที่ยอมรับเค้าในทุกรูปแบบ ทั้งตอนที่เค้าน่ารักและตอนที่เค้าอ๋อง 😅\n\nสัญญาว่าจะทำให้อ้วนยิ้มทุกวัน รักอ้วนนะ 🍰💖' },
+    { num:2, title:'จดหมาย 7 วัน 🌸', unlockDays:7, content:'อ้วน 🍰\n\nผ่านมา 1 สัปดาห์แล้วนะ เวลาผ่านไปเร็วมากเลย แต่ทุกวันที่มีอ้วนอยู่ด้วยมันพิเศษทุกวันเลย\n\nขอบคุณที่อยู่ข้างๆ กันนะ จะดูแลอ้วนไปอีกนานๆ 💕' },
+    { num:3, title:'จดหมาย 1 เดือน 🌙', unlockDays:30, content:'ครบ 1 เดือนแล้วนะอ้วน! 🎉\n\nเค้าอยากบอกว่า ทุกช่วงเวลาที่ผ่านมามันทำให้เค้ายิ่งรักอ้วนมากขึ้นเรื่อยๆ อ้วนทำให้ชีวิตเค้าสมบูรณ์ขึ้นมากจริงๆ\n\nรักอ้วนที่สุดในโลก 🌍💖' },
+    { num:4, title:'จดหมาย 3 เดือน ⭐', unlockDays:90, content:'3 เดือนแล้วน้า! 🥰\n\nตอนนี้เค้ารู้สึกว่าอ้วนเป็นส่วนหนึ่งของชีวิตที่ขาดไม่ได้เลย ขอบคุณที่รักและดูแลเค้านะ\n\nยังอยากอยู่ด้วยกันไปอีกนานๆ เลยนะ 💕✨' },
+    { num:5, title:'จดหมาย 6 เดือน 🌺', unlockDays:180, content:'ครึ่งปีแล้วนะอ้วน! 🎊\n\nมองย้อนกลับไป ทุกความทรงจำที่เรามีด้วยกันมันล้วนแต่สวยงามทั้งนั้นเลย แม้จะมีเรื่องทะเลาะกันบ้าง แต่มันก็ทำให้เราแข็งแกร่งขึ้น\n\nรักอ้วนมากเท่าท้องฟ้า ☁️💙' },
+];
+
+function initLetters() {
+    const now = new Date();
+    const daysTogether = Math.floor((now - startDate) / 864e5);
+    const openedLetters = JSON.parse(localStorage.getItem('openedLetters')||'[]');
+    const grid = document.getElementById('letters-grid');
+    grid.innerHTML = letters.map(l => {
+        const isLocked = daysTogether < l.unlockDays;
+        const isOpened = openedLetters.includes(l.num);
+        const unlockDate = new Date(startDate.getTime() + l.unlockDays*864e5);
+        const dateStr = unlockDate.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});
+        return `<div class="letter-card ${isLocked?'locked':isOpened?'opened':'unlocked'}" onclick="${isLocked?'':` readLetter(${l.num})`}">
+            <div class="letter-header">
+                <div class="letter-num">${l.num}</div>
+                <div class="letter-info">
+                    <div class="letter-title">${isLocked?'🔒 ยังเปิดไม่ได้...':l.title}</div>
+                    <div class="letter-date">${isLocked?`เปิดได้ ${dateStr}`:(isOpened?'อ่านแล้ว ✓':'✨ เปิดจดหมายได้แล้ว!')}</div>
+                </div>
+                <div class="letter-status">${isLocked?'🔒':isOpened?'💜':'💌'}</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function readLetter(num) {
+    const l = letters.find(x=>x.num===num);
+    if(!l) return;
+    document.getElementById('letter-modal-num').innerText = `LETTER #${l.num}`;
+    document.getElementById('letter-modal-title').innerText = l.title;
+    document.getElementById('letter-modal-text').innerText = l.content;
+    document.getElementById('letterModal').style.display='block';
+    const opened = JSON.parse(localStorage.getItem('openedLetters')||'[]');
+    if(!opened.includes(num)) { opened.push(num); localStorage.setItem('openedLetters',JSON.stringify(opened)); initLetters(); }
+    confetti({particleCount:60,spread:60,origin:{y:0.6},colors:['#ff80ab','#ffffff','#ffd6e0']});
+}
+function closeLetter2() { document.getElementById('letterModal').style.display='none'; }
+
+// ===== 💬 Message Board (SYNCED via JSONBin) =====
+let boardWho = 'me';
+function setBoardWho(w) {
+    boardWho = w;
+    document.getElementById('board-me-btn').className='board-who-btn'+(w==='me'?' active':'');
+    document.getElementById('board-you-btn').className='board-who-btn'+(w==='you'?' active':'');
+}
+function updateBoardChar() {
+    const v = document.getElementById('board-textarea').value;
+    document.getElementById('board-char-count').innerText=`${v.length}/200`;
+}
+
+function renderBoardFromData(posts) {
+    const feed = document.getElementById('board-feed');
+    if(!posts.length){feed.innerHTML='<div class="board-empty">ยังไม่มีข้อความ เริ่มโพสต์กันเลย! 💬</div>';return;}
+    feed.innerHTML = [...posts].reverse().map((p,ri) => {
+        const i = posts.length-1-ri;
+        return `<div class="board-post ${p.who}">
+            <button class="board-del-btn" onclick="deleteBoardPost(${i})">✕</button>
+            <div class="board-post-who">${p.who==='me'?'👦 เค้า':'🍰 อ้วน'}</div>
+            <div class="board-post-text">${escapeHtml(p.text)}</div>
+            <div class="board-post-time">${p.time}</div>
+        </div>`;
+    }).join('');
+    document.getElementById('stat-posts').innerText=posts.length;
+}
+
+async function addBoardPost() {
+    const ta = document.getElementById('board-textarea');
+    const text = ta.value.trim();
+    if(!text) return;
+    setSyncStatus('syncing','กำลังโพสต์...');
+    const rec = await loadBin();
+    const posts = rec.boardPosts || [];
+    const now = new Date();
+    posts.push({who:boardWho, text, time: now.toLocaleDateString('th-TH',{day:'numeric',month:'short'})+' '+now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})});
+    rec.boardPosts = posts;
+    await saveBin(rec);
+    syncedData = rec;
+    ta.value=''; updateBoardChar();
+    renderBoardFromData(posts);
+    setSyncStatus('ok','โพสต์แล้ว ✓');
+    confetti({particleCount:30,spread:50,origin:{y:0.7},colors:['#7986cb','#ce93d8','#ffffff']});
+}
+
+async function deleteBoardPost(i) {
+    const rec = await loadBin();
+    const posts = rec.boardPosts || [];
+    posts.splice(i,1);
+    rec.boardPosts = posts;
+    await saveBin(rec);
+    syncedData = rec;
+    renderBoardFromData(posts);
+}
+
+// ===== 🎯 Wishlist (SYNCED via JSONBin) =====
+let wishWho = 'both';
+function setWishWho(w) {
+    wishWho=w;
+    ['me','you','both'].forEach(x=>{
+        document.getElementById('wish-'+x+'-btn').className='who-btn'+(x===w?' active':'');
+    });
+}
+
+function renderWishlistFromData(wishes) {
+    const list = document.getElementById('wish-list');
+    if(!wishes.length){list.innerHTML='<div class="wish-empty">ยังไม่มี Wishlist เพิ่มเข้ามาเลย! 🎯</div>';return;}
+    list.innerHTML = wishes.map((w,i)=>`
+        <div class="wish-item${w.done?' done':''}">
+            <div class="wish-check${w.done?' checked':''}" onclick="toggleWish(${i})">${w.done?'✓':''}</div>
+            <span class="wish-text">${escapeHtml(w.text)}</span>
+            <span class="wish-who">${w.who==='me'?'👦':w.who==='you'?'🍰':'💕'}</span>
+            <button class="wish-del" onclick="deleteWish(${i})">✕</button>
+        </div>
+    `).join('');
+    document.getElementById('stat-wishes').innerText=wishes.filter(w=>w.done).length;
+}
+
+async function addWish() {
+    const inp = document.getElementById('wish-input');
+    const text = inp.value.trim();
+    if(!text) return;
+    setSyncStatus('syncing','กำลังเพิ่ม Wish...');
+    const rec = await loadBin();
+    const wishes = rec.wishlist || [];
+    wishes.push({text, who:wishWho, done:false});
+    rec.wishlist = wishes;
+    await saveBin(rec);
+    syncedData = rec;
+    inp.value='';
+    renderWishlistFromData(wishes);
+    setSyncStatus('ok','เพิ่ม Wish แล้ว ✓');
+}
+
+async function toggleWish(i) {
+    const rec = await loadBin();
+    const wishes = rec.wishlist || [];
+    if(!wishes[i]) return;
+    wishes[i].done=!wishes[i].done;
+    rec.wishlist = wishes;
+    await saveBin(rec);
+    syncedData = rec;
+    renderWishlistFromData(wishes);
+    if(wishes[i].done) confetti({particleCount:60,spread:60,origin:{y:0.6},colors:['#ff7043','#ffb74d','#ffffff']});
+}
+
+async function deleteWish(i) {
+    const rec = await loadBin();
+    const wishes = rec.wishlist || [];
+    wishes.splice(i,1);
+    rec.wishlist = wishes;
+    await saveBin(rec);
+    syncedData = rec;
+    renderWishlistFromData(wishes);
+}
+
+// ===== 🎵 Song Request (SYNCED via JSONBin) =====
+function renderRequestedSongsFromData(songs) {
+    const container = document.getElementById('requested-songs');
+    if(!songs.length){container.innerHTML='';return;}
+    container.innerHTML = songs.map((s,i)=>`
+        <div class="track-card requested" style="cursor:default;">
+            <div class="track-icon-wrap request-color">🎵</div>
+            <div class="track-info">
+                <div class="track-name">${escapeHtml(s.name)}</div>
+                <div class="track-sub"><span class="request-tag">📬 ขอโดย ${s.who==='me'?'เค้า':'อ้วน'}</span></div>
+            </div>
+            <button onclick="deleteRequest(${i})" style="background:none;border:none;color:#ffcdd2;font-size:0.8rem;cursor:pointer;padding:4px;">✕</button>
+        </div>
+    `).join('');
+}
+
+async function addSongRequest() {
+    const inp = document.getElementById('song-req-input');
+    const name = inp.value.trim();
+    if(!name) return;
+    setSyncStatus('syncing','กำลังเพิ่มเพลง...');
+    const rec = await loadBin();
+    const songs = rec.songRequests || [];
+    songs.push({name, who:'you'});
+    rec.songRequests = songs;
+    await saveBin(rec);
+    syncedData = rec;
+    inp.value='';
+    renderRequestedSongsFromData(songs);
+    setSyncStatus('ok','เพิ่มเพลงแล้ว ✓');
+    confetti({particleCount:40,spread:50,origin:{y:0.6},colors:['#ff80ab','#ffb3c6','#fff']});
+}
+
+async function deleteRequest(i) {
+    const rec = await loadBin();
+    const songs = rec.songRequests || [];
+    songs.splice(i,1);
+    rec.songRequests = songs;
+    await saveBin(rec);
+    syncedData = rec;
+    renderRequestedSongsFromData(songs);
+}
+
+// ===== Time Capsule =====
+let capsuleMessages=[];
+async function initCapsule() {
+    const rec = await loadBin();
+    capsuleMessages = rec.messages||[];
+    updateCapsuleCount();
+    document.getElementById('stat-capsules').innerText=capsuleMessages.length;
+}
+function updateCapsuleCount() {
+    document.getElementById('capsule-count').innerText=capsuleMessages.length;
+    document.getElementById('stat-capsules').innerText=capsuleMessages.length;
+}
+async function saveCapsuleMessage() {
+    const input=document.getElementById('capsule-input'), text=input.value.trim();
+    if(!text){input.style.borderColor='#ff5252';setTimeout(()=>input.style.borderColor='#ffcc80',1000);return;}
+    const btn=document.querySelector('.capsule-save-btn');
+    btn.innerText='⏳ กำลังบันทึก...';btn.disabled=true;
+    const now=new Date(), diff=now-startDate;
+    const entry={id:Date.now(),message:text,timestamp:now.toISOString(),
+        displayDate:now.toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}),
+        displayTime:now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}),
+        daysTogether:Math.floor(diff/864e5)};
+    const rec=await loadBin();
+    rec.messages=[entry,...(rec.messages||[])];
+    await saveBin(rec);
+    syncedData=rec;
+    capsuleMessages=rec.messages; updateCapsuleCount();
+    input.value=''; btn.innerText='📸 บันทึกช่วงเวลานี้'; btn.disabled=false;
+    document.getElementById('capsule-meta-info').innerText=`✅ บันทึกแล้ว! (${entry.displayDate} ${entry.displayTime})`;
+    setTimeout(()=>document.getElementById('capsule-meta-info').innerText='วันที่ + เวลาจะถูกบันทึกอัตโนมัติ',3000);
+    confetti({particleCount:50,spread:60,origin:{y:0.6},colors:['#ff7043','#ffb74d','#ffffff']});
+}
+function renderCapsuleList() {
+    const list=document.getElementById('capsule-list');
+    if(!capsuleMessages.length){list.innerHTML='<div class="capsule-empty">ยังไม่มีข้อความ 💌</div>';return;}
+    list.innerHTML=capsuleMessages.map(e=>`
+        <div class="capsule-entry">
+            <button class="capsule-delete-btn" onclick="deleteCapsuleEntry(${e.id})">🗑</button>
+            <div class="capsule-entry-msg">${escapeHtml(e.message)}</div>
+            <div class="capsule-entry-time">📅 ${e.displayDate} เวลา ${e.displayTime}</div>
+            <div class="capsule-entry-days">💕 วันที่ ${e.daysTogether} ของเรา</div>
+        </div>`).join('');
+}
+async function deleteCapsuleEntry(id) {
+    const rec=await loadBin(); rec.messages=(rec.messages||[]).filter(e=>e.id!==id);
+    await saveBin(rec); syncedData=rec; capsuleMessages=rec.messages; updateCapsuleCount(); renderCapsuleList();
+}
+async function openCapsuleModal() {
+    const rec=await loadBin(); capsuleMessages=rec.messages||[]; updateCapsuleCount(); renderCapsuleList();
+    document.getElementById('capsuleModal').style.display='block';
+}
+function closeCapsuleModal() { document.getElementById('capsuleModal').style.display='none'; }
+
+// ===== Photos =====
+let photosData=[], pendingUploadFile=null;
+async function initPhotos() {
+    const rec=await loadBin(); photosData=rec.photos||[]; renderDynamicPhotos();
+    document.getElementById('stat-photos').innerText=photosData.length;
+}
+function renderDynamicPhotos() {
+    const grid=document.getElementById('dynamic-photos');
+    if(!photosData.length){grid.innerHTML='';return;}
+    grid.innerHTML=photosData.map((p,i)=>`
+        <div class="polaroid-card">
+            <div class="polaroid-pin"></div>
+            <img class="polaroid-photo" src="${escapeHtml(p.url)}" loading="lazy">
+            <div class="polaroid-caption">${escapeHtml(p.caption)}</div>
+            <button class="photo-delete-btn" onclick="deletePhoto(${i})">✕</button>
+        </div>`).join('');
+    document.getElementById('stat-photos').innerText=photosData.length;
+}
+function handlePhotoUpload(e) {
+    const file=e.target.files[0]; if(!file) return;
+    if(file.size>10*1024*1024){setPhotoStatus('⚠️ รูปใหญ่เกินไป');return;}
+    pendingUploadFile=file;
+    document.getElementById('caption-input').value='';
+    document.getElementById('captionModal').style.display='block';
+    setTimeout(()=>document.getElementById('caption-input').focus(),100);
+    e.target.value='';
+}
+async function confirmCaption() {
+    const caption=document.getElementById('caption-input').value.trim()||'ความทรงจำดีๆ 🌸';
+    document.getElementById('captionModal').style.display='none';
+    if(!pendingUploadFile) return;
+    await uploadToCloudinary(pendingUploadFile,caption); pendingUploadFile=null;
+}
+function setPhotoStatus(msg){document.getElementById('photo-upload-status').innerText=msg;}
+async function uploadToCloudinary(file,caption) {
+    setPhotoStatus('⏳ กำลังอัปโหลด...');
+    const pw=document.getElementById('upload-progress-wrap'), pb=document.getElementById('upload-progress-bar');
+    pw.style.display='block'; pb.style.width='0%';
+    const fd=new FormData(); fd.append('file',file); fd.append('upload_preset',CLOUDINARY_PRESET);
+    return new Promise(resolve=>{
+        const xhr=new XMLHttpRequest(); xhr.open('POST',CLOUDINARY_UPLOAD_URL);
+        xhr.upload.onprogress=e=>{ if(e.lengthComputable) pb.style.width=Math.round(e.loaded/e.total*80)+'%'; };
+        xhr.onload=async()=>{
+            pb.style.width='90%';
+            try {
+                const r=JSON.parse(xhr.responseText);
+                if(r.secure_url){
+                    const rec=await loadBin();
+                    rec.photos=[{id:Date.now(),url:r.secure_url,caption},...(rec.photos||[])];
+                    await saveBin(rec); syncedData=rec; photosData=rec.photos; renderDynamicPhotos();
+                    pb.style.width='100%'; setPhotoStatus('✅ เพิ่มรูปแล้ว!');
+                    setTimeout(()=>{setPhotoStatus('');pw.style.display='none';pb.style.width='0%';},2500);
+                    confetti({particleCount:60,spread:70,origin:{y:0.6},colors:['#ff80ab','#ffffff','#ffd6e0']});
+                } else { setPhotoStatus('❌ อัปโหลดไม่สำเร็จ'); pw.style.display='none'; }
+            } catch(e){ setPhotoStatus('❌ เกิดข้อผิดพลาด'); pw.style.display='none'; }
+            resolve();
+        };
+        xhr.onerror=()=>{setPhotoStatus('❌ อินเทอร์เน็ตมีปัญหา');pw.style.display='none';resolve();};
+        xhr.send(fd);
+    });
+}
+async function deletePhoto(i) {
+    if(!confirm('ลบรูปนี้เลยนะ?')) return;
+    const rec=await loadBin(); rec.photos=(rec.photos||[]).filter((_,j)=>j!==i);
+    await saveBin(rec); syncedData=rec; photosData=rec.photos; renderDynamicPhotos();
+}
+
+// ===== Playlist =====
+const mySong=document.getElementById('mySong'), happySong=document.getElementById('happySong');
+let currentTrack=null;
+function playTrack(track) {
+    const pc=document.getElementById('track-proud'), hc=document.getElementById('track-happy');
+    const bp=document.getElementById('btn-proud'), bh=document.getElementById('btn-happy');
+    if(currentTrack===track){mySong.pause();happySong.pause();pc.classList.remove('playing');hc.classList.remove('playing');bp.innerHTML='▶';bh.innerHTML='▶';currentTrack=null;return;}
+    mySong.pause();happySong.pause();pc.classList.remove('playing');hc.classList.remove('playing');bp.innerHTML='▶';bh.innerHTML='▶';
+    if(track==='proud'){mySong.play().then(()=>{pc.classList.add('playing');bp.innerHTML='⏸';currentTrack='proud';}).catch(()=>{});}
+    else{happySong.play().then(()=>{hc.classList.add('playing');bh.innerHTML='⏸';currentTrack='happy';}).catch(()=>{});}
+}
+
+// ===== Mood / Calendar =====
+let moodData=JSON.parse(localStorage.getItem('moodHistory')||'{}');
+function initCalendar() {
+    const grid=document.getElementById('calendar-grid'), mn=document.getElementById('month-name');
+    const now=new Date();
+    mn.innerText=new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric'}).format(now);
+    const labels=Array.from(grid.querySelectorAll('.calendar-day-label'));
+    grid.innerHTML=''; labels.forEach(l=>grid.appendChild(l));
+    const firstDay=new Date(now.getFullYear(),now.getMonth(),1).getDay();
+    const daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+    for(let i=0;i<firstDay;i++) grid.appendChild(document.createElement('div'));
+    for(let d=1;d<=daysInMonth;d++){
+        const cell=document.createElement('div'); cell.className='day-cell';
+        if(d===now.getDate()) cell.classList.add('today');
+        cell.innerText=d;
+        const dk=`${now.getFullYear()}-${now.getMonth()+1}-${d}`;
+        if(moodData[dk]){const dot=document.createElement('div');dot.className=`mood-dot dot-${moodData[dk]}`;cell.appendChild(dot);}
+        grid.appendChild(cell);
+    }
+}
+function mood(type) {
+    const replies={'😊':"ดีมาก! ยิ้มเยอะๆ นะ 🎶",'😔':"โอ๋ๆ เดี๋ยวเค้ากอดนะ",'😤':"ใจเย็นๆ เดี๋ยวพาไปกินขนม",'😋':"หิวหรอ? ไปกินของอร่อยกัน!"};
+    document.getElementById('mood-reply').innerText=replies[type];
+    const now=new Date(), dk=`${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+    const tm={'😊':'happy','😔':'sad','😤':'angry','😋':'hungry'};
+    moodData[dk]=tm[type]; localStorage.setItem('moodHistory',JSON.stringify(moodData));
+    initCalendar(); updateStats();
+    if(type==='😊'){mySong.pause();currentTrack=null;document.getElementById('track-proud').classList.remove('playing');document.getElementById('btn-proud').innerHTML='▶';happySong.play().catch(()=>{});confetti({particleCount:100,spread:70,origin:{y:0.6}});}
+}
+
+// ===== Greeting / Birthday =====
+function updateGreeting() {
+    const h=new Date().getHours(), el=document.getElementById('greeting');
+    if(h>=5&&h<12) el.innerText="อรุณสวัสดิ์นะไอ้อ้วน ☀️";
+    else if(h>=12&&h<18) el.innerText="เที่ยงแล้ว หาไรกินยัง? 🍰";
+    else if(h>=18&&h<22) el.innerText="เย็นแล้ว พักผ่อนนะอ้วน 🌸";
+    else el.innerText="ดึกแล้ว ฝันดีนะไอ้อ้วน 🌙";
+    if(h<6||h>=18) document.body.classList.add('night-mode');
+    else document.body.classList.remove('night-mode');
+}
+function updateBirthday() {
+    const today=new Date(); let bday=new Date(today.getFullYear(),8,7);
+    if(today>bday&&!(today.getDate()===7&&today.getMonth()===8)) bday.setFullYear(today.getFullYear()+1);
+    const days=Math.ceil((bday-today)/864e5);
+    document.getElementById('bday-timer').innerText=(today.getMonth()===8&&today.getDate()===7)?"🎉 สุขสันต์วันเกิดนะอ้วน! 🎂":`เหลืออีก ${days} วัน 🎈`;
+}
+
+// ===== Garden / Secret =====
+let treeProgress=parseInt(localStorage.getItem('treeProgress'))||0;
+let lastWaterDate=localStorage.getItem('lastWaterDate');
+function updateTreeUI(){
+    const bar=document.getElementById('growth-bar'),icon=document.getElementById('tree-icon'),btn=document.getElementById('water-btn');
+    bar.style.width=treeProgress+'%';
+    if(treeProgress>=100) icon.innerText='🌻'; else if(treeProgress>=50) icon.innerText='🌿'; else icon.innerText='🌱';
+    if(lastWaterDate===getTodayStr()||treeProgress>=100) btn.classList.add('disabled'); else btn.classList.remove('disabled');
+}
+function waterTree(){
+    if(lastWaterDate===getTodayStr()||treeProgress>=100) return;
+    treeProgress=Math.min(treeProgress+10,100); lastWaterDate=getTodayStr();
+    localStorage.setItem('treeProgress',treeProgress); localStorage.setItem('lastWaterDate',lastWaterDate);
+    updateTreeUI(); confetti({particleCount:30,colors:['#2196f3'],origin:{y:0.8}});
+}
+function showSecret(){
+    if(localStorage.getItem('lastSecret')===getTodayStr()){alert("วันนี้อ่านไปแล้วน้า ❤️");return;}
+    const q=["วันนี้อ้วนน่ารักจัง","รักอ้วนที่สุดเลย","ดีใจที่มีอ้วนนะ"];
+    document.getElementById('secret-text').innerText="💌 "+q[Math.floor(Math.random()*q.length)];
+    localStorage.setItem('lastSecret',getTodayStr());
+}
+function openLetter(){document.getElementById('loveLetter').style.display='block';}
+
+// ===== Gift System =====
+const gifts=[
+    {id:'g1',icon:'🎀',name:'โบว์สีชมพู',desc:'สัญญาว่าจะผูกผมให้อ้วนทุกครั้งที่อยู่ด้วยกัน 🎀',unlockDay:0},
+    {id:'g2',icon:'🍰',name:'เค้กพิเศษ',desc:'เค้กวันเกิดที่เค้าจะทำให้อ้วนด้วยตัวเอง 🍰',unlockDay:0},
+    {id:'g3',icon:'🌷',name:'ช่อดอกไม้',desc:'ดอกทิวลิปสีชมพูที่อ้วนชอบ จะซื้อให้เวลาเจอกัน 🌷',unlockDay:0},
+    {id:'g4',icon:'🎬',name:'มูวี่ไนท์',desc:'ดูหนังด้วยกันทั้งคืน อ้วนเลือกเองเลย 🎬🍿',unlockDay:7},
+    {id:'g5',icon:'🍜',name:'คุกกิ้งเดต',desc:'เค้าจะทำอาหารให้อ้วนกินเองเลย 🍜',unlockDay:7},
+    {id:'g6',icon:'⭐',name:'ดูดาวด้วยกัน',desc:'พาอ้วนไปดูดาวยามค่ำคืน ✨🌙',unlockDay:14},
+    {id:'g7',icon:'🎵',name:'เพลงพิเศษ',desc:'จะร้องเพลงให้อ้วนฟังสักเพลง 🎵',unlockDay:14},
+    {id:'g8',icon:'📸',name:'โฟโต้เดต',desc:'พาอ้วนไปถ่ายรูปด้วยกัน 📸',unlockDay:30},
+    {id:'g9',icon:'🌍',name:'ทริปพิเศษ',desc:'วันหนึ่งจะพาอ้วนไปเที่ยวที่อ้วนอยากไป 🌍✈️',unlockDay:30},
+];
+let openedGifts=JSON.parse(localStorage.getItem('openedGifts')||'[]');
+function renderGifts(){
+    const d=Math.floor((new Date()-startDate)/864e5);
+    document.getElementById('gift-grid').innerHTML=gifts.map(g=>{
+        const lk=d<g.unlockDay, op=openedGifts.includes(g.id);
+        return `<div class="gift-item${lk?' locked':''}" onclick="${lk?'':` openGift('${g.id}')`}">
+            ${!lk&&!op?'<div class="gift-unlock-badge">!</div>':''}
+            <div class="gift-item-icon">${op?'✅':lk?'🔒':g.icon}</div>
+            <div class="gift-item-name">${g.name}</div>
+            <div class="gift-item-hint">${lk?`ปลดล็อกวันที่ ${g.unlockDay}`:op?'รับแล้ว!':'แตะเพื่อเปิด'}</div>
+        </div>`;
+    }).join('');
+}
+function openGiftModal(){renderGifts();document.getElementById('giftModal').style.display='block';}
+function closeGiftModal(){document.getElementById('giftModal').style.display='none';}
+function openGift(id){
+    const g=gifts.find(x=>x.id===id); if(!g) return;
+    document.getElementById('gift-detail-emoji').innerText=g.icon;
+    document.getElementById('gift-detail-title').innerText=g.name;
+    document.getElementById('gift-detail-desc').innerText=g.desc;
+    document.getElementById('giftDetailModal').style.display='block';
+    document.getElementById('giftDetailModal').dataset.currentId=id;
+    confetti({particleCount:80,spread:70,origin:{y:0.5},colors:['#ce93d8','#ff80ab','#ffffff']});
+}
+function closeGiftDetailBtn(){
+    const id=document.getElementById('giftDetailModal').dataset.currentId;
+    if(id&&!openedGifts.includes(id)){openedGifts.push(id);localStorage.setItem('openedGifts',JSON.stringify(openedGifts));}
+    document.getElementById('giftDetailModal').style.display='none'; renderGifts();
+}
+
+const coupons=[
+    {emoji:'🤗',title:'คูปองกอด',desc:'สามารถขอกอดเค้าได้ 1 ครั้ง ไม่มีเงื่อนไข 🤗'},
+    {emoji:'🍡',title:'คูปองของหวาน',desc:'เค้าจะพาอ้วนไปกินของหวานที่อ้วนอยากกิน! 🍡🍰'},
+    {emoji:'🎮',title:'คูปองเกมส์',desc:'เล่นเกมอะไรก็ได้ด้วยกัน เค้าจะไม่โกง (มั้ง) 🎮'},
+    {emoji:'💆',title:'คูปองนวด',desc:'นวดไหล่ให้อ้วน 15 นาที ไม่มีข้ออ้าง! 💆'},
+    {emoji:'🌙',title:'คูปองคุยทั้งคืน',desc:'คืนนี้คุยด้วยกันยันเช้า 🌙✨'},
+    {emoji:'🎁',title:'คูปองซื้อของ',desc:'อ้วนอยากได้อะไร บอกมาได้เลย! 🎁'},
+    {emoji:'📷',title:'คูปองถ่ายรูป',desc:'เค้าจะถ่ายรูปให้อ้วนสวยๆ ไม่จำกัดจำนวน 📷💕'},
+    {emoji:'🍳',title:'คูปองอาหาร',desc:'เค้าจะทำอาหารให้อ้วนกิน 1 มื้อ 🍳'},
+    {emoji:'🌈',title:'คูปองซัพไพรส์',desc:'เค้าจะทำสิ่งพิเศษให้อ้วน 1 อย่าง...ต้องแลกถึงจะรู้! 🌈✨'},
+];
+let currentCoupon=null;
+function drawCoupon(){
+    const today=getTodayStr(), saved=JSON.parse(localStorage.getItem('todayCoupon')||'null');
+    if(saved&&saved.date===today) currentCoupon=saved;
+    else{const c=coupons[Math.floor(Math.random()*coupons.length)];currentCoupon={...c,date:today,used:false};localStorage.setItem('todayCoupon',JSON.stringify(currentCoupon));}
+    document.getElementById('coupon-emoji').innerText=currentCoupon.emoji;
+    document.getElementById('coupon-title').innerText=currentCoupon.title;
+    document.getElementById('coupon-desc').innerText=currentCoupon.desc;
+    document.getElementById('coupon-expire').innerText=`หมดอายุ: วันนี้ ${today} เท่านั้น!`;
+    const un=document.getElementById('coupon-used-note'),ub=document.getElementById('coupon-use-btn');
+    if(currentCoupon.used){un.style.display='block';un.innerText='✅ ใช้คูปองนี้ไปแล้ววันนี้';ub.style.opacity='0.4';ub.style.pointerEvents='none';}
+    else{un.style.display='none';ub.style.opacity='1';ub.style.pointerEvents='auto';}
+    document.getElementById('couponModal').style.display='block';
+}
+function useCoupon(){
+    if(!currentCoupon||currentCoupon.used) return;
+    currentCoupon.used=true; localStorage.setItem('todayCoupon',JSON.stringify(currentCoupon));
+    document.getElementById('coupon-used-note').style.display='block';
+    document.getElementById('coupon-used-note').innerText='✅ ใช้คูปองนี้ไปแล้ววันนี้ — อย่าลืมทวงนะ! 💙';
+    document.getElementById('coupon-use-btn').style.opacity='0.4';
+    document.getElementById('coupon-use-btn').style.pointerEvents='none';
+    confetti({particleCount:60,spread:60,origin:{y:0.6},colors:['#1565c0','#64b5f6','#ffffff']});
+}
+function closeCouponModal(){document.getElementById('couponModal').style.display='none';}
+
+// ===== Click hearts / floating =====
+document.addEventListener('click',e=>{
+    const skip=['.capsule-modal-content','.capsule-box','.gift-modal-content','.gift-detail-content','.coupon-card','.gift-section','.photo-upload-area','.memories-section','.caption-modal-content','.board-box','.wishlist-box','.song-request-box','.letters-section','.checkin-box'];
+    if(skip.some(s=>e.target.closest(s))) return;
+    const h=document.createElement('div');
+    h.innerHTML=['❤️','🌸','💖','✨'][Math.floor(Math.random()*4)];
+    h.className='click-heart'; h.style.left=(e.clientX-10)+'px'; h.style.top=(e.clientY-10)+'px';
+    document.getElementById('click-container').appendChild(h);
+    setTimeout(()=>h.remove(),800);
+});
+setInterval(()=>{
+    const item=document.createElement('div');
+    item.innerHTML=['❤️','🌸','💖','✨'][Math.floor(Math.random()*4)];
+    item.className='floating-item'; item.style.left=Math.random()*100+'vw';
+    document.getElementById('heart-container').appendChild(item);
+    setTimeout(()=>item.remove(),5000);
+},800);
+
+// Allow user-select on inputs
+['capsule-input','caption-input','board-textarea','wish-input','song-req-input'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('click',e=>e.stopPropagation());
+    el.style.userSelect='text';
+    el.addEventListener('mousedown',e=>e.stopPropagation());
+});
+document.getElementById('caption-input').addEventListener('keydown',e=>{if(e.key==='Enter')confirmCaption();});
+document.getElementById('wish-input').addEventListener('keydown',e=>{if(e.key==='Enter')addWish();});
+document.getElementById('song-req-input').addEventListener('keydown',e=>{if(e.key==='Enter')addSongRequest();});
+
+// ===== Init =====
+setInterval(()=>{updateAnniversary();updateGreeting();updateBirthday();},1000);
+updateAnniversary(); updateGreeting(); updateBirthday();
+initCalendar(); updateTreeUI(); updateStats();
+initCheckin(); initLetters();
+
+// Initial full sync (loads board, wishlist, songs, capsule, photos all at once)
+fullSync(false);
+</script>
+</body>
+</html>

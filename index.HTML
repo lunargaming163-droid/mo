@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .cool {
+            width: 960px;
+            margin: 0 auto;
+        }
+        .car{
+            width: 100px;
+            height: 100px;
+            background-color: violet;
+            margin: 10px;
+        }
+
+        /* id */
+        #CAKE {
+            width: 100px;
+            height: 100px;
+            background-color: rgb(146, 10, 146);    
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <H1> TEXT </H1>
+    <H2> TEXT </H2>
+    <H3> TEXT </H3>
+    <H4> TEXT </H4>
+    <H5> TEXT </H5>
+    <H6> TEXT </H6>
+
+    <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt error ea, aut, quae odit aspernatur sit accusamus commodi optio eligendi sed laboriosam porro. Culpa totam doloribus, nesciunt explicabo aliquam excepturi.</p>
+    <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt error ea, aut, quae odit aspernatur sit accusamus commodi optio eligendi sed laboriosam porro. Culpa totam doloribus, nesciunt explicabo aliquam excepturi.</p>
+    <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt error ea, aut, quae odit aspernatur sit accusamus commodi optio eligendi sed laboriosam porro. Culpa totam doloribus, nesciunt explicabo aliquam excepturi.</p>
+    <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt error ea, aut, quae odit aspernatur sit accusamus commodi optio eligendi sed laboriosam porro. Culpa totam doloribus, nesciunt explicabo aliquam excepturi.</p>
+
+    <a href="https://www.youtube.com/watch?v=leihudXxqAY" target="_blank">go to learn HTML-CSS code video</a> <br>
+    <a href="about.HTML">GO TO ABOUT PAGE</a> <br>
+    <a href="Table.HTML">Go to Table page</a> <br>
+    <a href="cake.HTML">GO to cake</a>
+    <img width="500" lenth="500" src="https://s-media-cache-ak0.pinimg.com/736x/38/25/fe/3825fee18f15bbe8084fdc8b509426dd.jpg" 
+    alt= <br><p><h4> "This pic is my type" </h4>
+    
+    <!-- Html table -->
+    <table>
+        <tr>
+            <!-- table headersale หัวตาราง -->
+            <th>ID</th> 
+            <th>NAME</th>
+            <th>AGE</th>
+            <th>Position</th>
+        </tr>
+        <tr>
+            <!-- table datasale ข้อมูลในตาราง -->
+            <td>1</td>
+            <td>A</td>
+            <td>56</td>
+            <td>Dev</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>B</td>
+            <td>55</td>
+            <td>Office</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>C</td>
+            <td>57</td>
+            <td>CEO</td>
+        </tr>
+    </table>
+
+    <!-- HTML list -->
+     <!-- Unoered list จุดไข่ปลาดำ  -->
+    <ul>
+        <li>Coffee</li>
+        <li>Tea</li>
+        <li>Milk</li>
+    </ul>
+
+    <!-- Ordered list ตัวเลข -->
+     <ol>
+        <li>Bread</li>
+        <li>Peanut</li>
+        <li>Cake</li>
+     </ol>
+
+     <!-- HTML Text Formatting dารกำหนดลักษณะให้ข้อความ ใช้บ่อยๆ <b> <strong> other -->
+        <b>Bold text</b> <br>
+        <strong>Important text</strong> <br>
+        <i>Italic text</i> <br>
+        <em>Emphasized text</em> <br>
+        <mark>Marked text</mark> <br>
+        <small>Smaller text</small> <br>
+        <del>Deleted text</del> <br> 
+        <ins>Inserted text</ins> <br> 
+        <sub>Subscript text</sub> <br> 
+        <sup>Superscript text</sup> <br>
+
+        <!-- HTML Forms -->
+         <form action="">
+            <!-- fieldset คือกรอบ และ legend คือบอกว่ากรอบนั้นไว้ทำอะไร -->
+            <fieldset>
+                <legend> FPS info</legend>
+            <label for="First name">f name</label>
+            <input type="text" name="firstname" placeholder="mklo"> <br>
+            <label for="First name">Last name</label>
+            <input type="text" name="lastname" placeholder="enter your last name"> <br>
+            </fieldset>
+            
+            <!-- Select ไว้สำหรับเลือกตัวเลือก
+             ต้องมี option -->
+            <select name="cars" id="cars">
+                <option value="volvo">Volvo</option>
+                <option value="toyota">Toyota</option>
+                <option value="Honda" selected>Honda</option>
+                <option value="YAMAHA">Yamaha</option>
+            </select>
+
+            <!-- Datalist ไว้สำหรับเลือกช้อยแบบ select แต่พิมพ์ได้ -->
+            <input list="browser" name="browser">
+            <datalist id="browser">
+                <option value="volvo">Volvo
+                <option value="toyota">Toyota
+                <option value="Honda" selected>Honda
+                <option value="YAMAHA">Yamaha
+            </datalist>
+
+            <!-- textarea คือกรอบสำหรับเขียน -->
+            <textarea name="" id=""></textarea>
+            <!-- Button ก็ปุ่มอะ -->
+            <button type="submit">SUBMIT</button>
+            <!-- <input type="button" value="Sumbit">
+            <input type="button" value="button"> <br>
+            <input type="checkbox"> Check <br>
+            <input type="color"> <br>
+            <input type="date"> <br>
+            <input type="datetime-local"> <br>
+            <input type="email"> Email <br>
+            <input type="file"> <br>
+            <input type="hidden"><br>
+            <input type="image"><br>
+            <input type="month"><br>
+            <input type="number"><br>
+            <input type="password"><br>
+            <input type="radio"><br>
+            <input type="range"><br>
+            <input type="reset"><br>
+            <input type="search"><br>
+            <input type="submit"><br>
+            <input type="tel"><br>
+            <input type="text"><br>
+            <input type="time"><br>
+            <input type="url"><br>
+            <input type="week"><br> -->
+            
+         </form>
+
+         <!-- HTML Block ELement สามารถทำเป้นกล่องไว้โครงสร้างหน้าเว็ปได้ -->
+
+         <div>
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit saepe fugit, consequatur doloribus
+                 consectetur dolorem eveniet at distinctio enim magni similique? Nostrum sint pariatur animi explicabo dignissimos fugiat et quos.
+            </p>
+
+                <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit saepe fugit, consequatur doloribus consectetur dolorem eveniet at distinctio enim magni similique? Nostrum sint pariatur animi explicabo dignissimos fugiat et quos.
+            </p>
+         </div>
+
+         <!-- HTML Inline Elements จะไม่เริ่มบรรทัดใหม่ และ จะมีความกว้างตามเนื้อหาภายใน ไว้สำหรับทำเมนูได้ -->
+
+         <hr>
+         <a f=hre"#">Home</a>
+         <a href="#">Info</a>
+         <a href="#">Contact</a>
+         <a href="#">About</a>
+         <a href="#">Blog</a>
+         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae ratione eum repudiandae nulla eaque laudantium veritatis repellendus culpa, rerum quidem facere. Veritatis molestias aspernatur, laboriosam minima et nobis ea eveniet?
+         <span> Text 1</span>
+         <span> Text 2</span>
+         <span> Text 3</span>
+
+         <!-- HTML Div แท็ก div จะถูกใช้เป็นกล่องสำหรับ HTML Elements ตัวอื่นๆ แท็ก Div จะเป็น block element เราจะใข้ div สำหรับการวางโครงสร้างให้กับหน้าเว็บ-->
+       
+         <!-- Parent Element -->
+         <div>
+            <!-- Child element -->
+            <h1>Hello HTML</h1>
+            <p>Learn html and stuff</p>
+            <div>
+                <p> Lorem, ipsum dolor sit amet consectetur adipisicing elit. Velit optio ipsa aperiam, laboriosam, veniam deserunt id totam tenetur voluptatem aliquid est maxime illum in ipsam quod aut laudantium. Accusantium, tempore?</p>
+            </div>
+         </div>
+
+                         <!-- HTML class class จะถูกอ้างไปที่ css 
+                 class can use again 
+                 we can class many for tag HTML-->
+
+                 <div class="cool">
+                    <h1> U Can do it</h1>
+                <div class="car"></div>
+
+                <div class="car"></div>
+                    
+
+                 </div>
+
+                 <!-- HTML Id can't use again -->
+
+                 <div id="CAKE">
+                 </div>
+
+                 <script>
+                    let CAKE = document.getElementById("CAKE")
+                    CAKE.addEventListener("click", function() {
+                        alert("Hello Cake");
+                    })
+                 </script>
+
+                 <!-- HTML Semantic Element คือ element ที่มีความหมายในตัวมันเอง -->
+                  <header class="header=area header-sticky">
+                    <div></div>
+                  </header>
+</body>
+</html>
